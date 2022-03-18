@@ -3,11 +3,11 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -19,6 +19,9 @@ import {
 import React from "react";
 import "@fontsource/inter";
 import { FaChevronDown } from "react-icons/fa";
+import { BsFillPersonFill } from "react-icons/bs";
+import { IoLogOut } from "react-icons/io5";
+import "@fontsource/inter";
 
 const Header = () => {
   return (
@@ -62,29 +65,50 @@ const Header = () => {
                   variant={"link"}
                   cursor={"pointer"}
                   minW={0}
-                >
-                  <Box display="flex" justifyContent="center">
-                    <Avatar
-                      w="3.5rem"
-                      h="3.5rem"
-                      src="https://avatars.dicebear.com/api/male/username.svg"
-                    />
+                  rightIcon={
                     <Icon
                       color="light"
                       alignSelf="center"
                       ml={4}
                       as={FaChevronDown}
                     />
-                  </Box>
+                  }
+                >
+                  <Avatar
+                    w="3.5rem"
+                    h="3.5rem"
+                    src="https://avatars.dicebear.com/api/male/username.svg"
+                  />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
                   <Center>
-                    <p>username</p>
+                    <Avatar
+                      w="5rem"
+                      h="5rem"
+                      src="https://avatars.dicebear.com/api/male/username.svg"
+                    />
+                  </Center>
+                  <Center mt={2}>
+                    <Text fontWeight="600" fontFamily="Inter">
+                      username
+                    </Text>
                   </Center>
                   <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Profile</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem
+                    fontWeight="600"
+                    fontFamily="Inter"
+                    icon={<BsFillPersonFill size={25} />}
+                  >
+                    Profile
+                  </MenuItem>
+                  <Divider height="inherit" orientation="horizontal" />
+                  <MenuItem
+                    fontWeight="600"
+                    fontFamily="Inter"
+                    icon={<IoLogOut size={25} />}
+                  >
+                    Logout
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </Stack>
