@@ -16,13 +16,25 @@ const UIAccount = ({
 }: IUIAccount & BoxProps) => {
   return (
     <Box bg="background.container">
-      <Flex minH="100vh">
-        <Box flexGrow={1} width="15rem" position="relative">
+      <Flex minH="100vh" flexDirection={{ base: "column", lg: "row" }}>
+        <Box flexGrow={{ base: 0, lg: 1 }} position="relative">
           <Image src={image} alt={alt} layout="fill" />
         </Box>
-        <Flex flexGrow={1} ml={32} alignItems="center">
-          <Stack align="left" w="25rem">
-            <Box pb={8}>
+        <Flex
+          flexGrow={{ lg: 1, base: 0 }}
+          justify={{ base: "center", lg: "normal" }}
+          alignItems="center"
+        >
+          <Stack
+            align="left"
+            ml={{ base: 0, lg: 32 }}
+            minWidth={{ base: "375px", lg: "400px" }}
+          >
+            <Box
+              pb={8}
+              display={{ base: "flex", lg: "block" }}
+              justifyContent={{ base: "center" }}
+            >
               <Heading
                 fontFamily="Inter"
                 fontStyle="normal"

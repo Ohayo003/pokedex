@@ -10,26 +10,65 @@ import {
   MenuItem,
   MenuButton,
   MenuList,
-  useDisclosure,
   Button,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
 import "@fontsource/inter";
 import { HiViewList, HiOutlineFilter } from "react-icons/hi";
 import { BsGridFill } from "react-icons/bs";
-import PokemonList from "src/components/widgets/Pokemon/PokemonList";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import PokemonGrid from "src/components/widgets/Pokemon/PokemonGrid";
+import PokemonListView from "src/components/widgets/Pokemon/PokemonListView";
+import PokemonGridView from "src/components/widgets/Pokemon/PokemonGridView";
 import useStore from "src/hooks/useStore";
+import { useSession } from "next-auth/react";
+import { GET_POKEMON_DATA_LIST } from "../../graphql/queries/pokemon/pokemonlist";
+import { useQuery } from "@apollo/client";
+import Loading from "src/components/widgets/Loading";
+import { usePagination } from "src/hooks/usePagination";
+import { GetPokemonDataList } from "../../types/GetPokemonDataList";
 
 const HomePage = () => {
-  const listView = useStore((state) => state.listView);
+  const { loading, data, error } = useQuery(GET_POKEMON_DATA_LIST, {
+    context: { clientName: "pokedexapi" },
+  });
+
+  let pokemon: GetPokemonDataList["pokemon"] = [];
+
+  if (data) {
+    pokemon = [...data.pokemon];
+  }
+
+  const list = useStore((state) => state.listView);
+  const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
+
+  const { data: session } = useSession({ required: true });
+  const {
+    currentPage,
+    numberOfPages,
+    setCurrentPage,
+    nextPage,
+    previousPage,
+    selectedPage,
+    currentData,
+  } = usePagination(10, { pokemon });
+
+  useEffect(() => {
+    setlistView(list);
+  }, [list]);
+
+  
+
   return (
-    <Box minH="100vh" w={{ base: "full" }} mt={9} mb={14}>
-      <Flex flexDirection="column" mx="auto" maxW="65%">
+    <Box
+      minH={{ lg: "100vh", base: "fit-content" }}
+      w={{ base: "full" }}
+      mt={9}
+      mb={14}
+    >
+      <Flex flexDirection="column" mx="auto" maxW="70%">
         <Flex justifyContent="space-between">
           <Text
             fontFamily="Inter"
@@ -68,7 +107,17 @@ const HomePage = () => {
         </Flex>
 
         <Box mt={10} zIndex={1}>
-          {listView ? <PokemonList /> : <PokemonGrid />}
+          {listView ? (
+            loading ? (
+              <Loading />
+            ) : (
+              <PokemonListView pokemon={currentData()} />
+            )
+          ) : loading ? (
+            <Loading />
+          ) : (
+            <PokemonGridView pokemons={currentData()} />
+          )}
         </Box>
 
         <HStack justify="end" mt={4}>
@@ -80,34 +129,53 @@ const HomePage = () => {
             lineHeight="md"
             color="text.light"
           >
-            Showing 1-10 of 20
+            Showing{" "}
+            {currentPage * currentData().length - currentData().length + 1}-
+            {currentPage * currentData().length} of {pokemon?.length}
           </Text>
         </HStack>
 
         {/** Pagination Section */}
-        <Flex justifyContent="center" gap={6} align="center">
-          <Icon as={BiChevronLeft} w={6} h={6} fill="#718096" />
+        <Flex justifyContent="center" gap={6} align="center" zIndex={1}>
+          <Icon
+            onClick={previousPage}
+            as={BiChevronLeft}
+            w={6}
+            h={6}
+            _hover={{
+              cursor: "pointer",
+              fill: "primary",
+            }}
+            fill="#718096"
+          />
           <HStack>
-            <Button
-              fontFamily="Inter"
-              fontStyle="normal"
-              fontWeight="500"
-              lineHeight="lg"
-              background="primary"
-            >
-              1
-            </Button>
-            <Button
-              fontFamily="Inter"
-              fontStyle="normal"
-              fontWeight="500"
-              lineHeight="lg"
-              background="primary"
-            >
-              2
-            </Button>
+            {numberOfPages.map((idx) => {
+              return (
+                <Button
+                  key={idx}
+                  fontFamily="Inter"
+                  fontStyle="normal"
+                  fontWeight="500"
+                  onClick={() => selectedPage(idx)}
+                  lineHeight="lg"
+                  background={currentPage === idx ? "primary" : "gray100"}
+                  _hover={{ background: "primary" }}
+                >
+                  {idx}
+                </Button>
+              );
+            })}
           </HStack>
-          <Icon as={BiChevronRight} w={6} h={6} fill="#718096" />
+          <Icon
+            onClick={nextPage}
+            as={BiChevronRight}
+            w={6}
+            h={6}
+            fill="#718096"
+            _hover={{
+              cursor: "pointer",
+            }}
+          />
         </Flex>
       </Flex>
     </Box>

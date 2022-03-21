@@ -73,6 +73,7 @@ const PokemonId = () => {
                         height="57px"
                         overflow="hidden"
                         borderRadius="4px"
+                        _hover={{ cursor: "pointer" }}
                       >
                         <Image
                           src={dragon}

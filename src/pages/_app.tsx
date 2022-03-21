@@ -2,6 +2,9 @@ import type { AppProps } from "next/app";
 import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { SessionProvider } from "next-auth/react";
+import { ApolloProvider } from "@apollo/client";
+import client from "src/apollo/apollo-client";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -16,6 +19,7 @@ const theme = extendTheme({
     primary: "#FFC107",
     secondary: "#1E40AF",
     light: "#EDF2F7",
+    gray100: "#EDF2F7",
     gray400: "#A0AEC0",
     gray500: "#718096",
     gray700: "#374151",
@@ -53,13 +57,20 @@ const theme = extendTheme({
   },
 });
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({
+  Component,
+  pageProps: { session, pageProps },
+}: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <ChakraProvider theme={theme}>
-      {getLayout(<Component {...pageProps} />)}
-    </ChakraProvider>
+    <ApolloProvider client={client}>
+      <SessionProvider session={session}>
+        <ChakraProvider theme={theme}>
+          {getLayout(<Component {...pageProps} />)}
+        </ChakraProvider>
+      </SessionProvider>
+    </ApolloProvider>
   );
 }
 

@@ -16,14 +16,24 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import "@fontsource/inter";
 import { FaChevronDown } from "react-icons/fa";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoLogOut } from "react-icons/io5";
+import { useSession, signOut } from "next-auth/react";
+import { useQuery } from "@apollo/client";
 import "@fontsource/inter";
+import { GET_ME } from "../../graphql/queries/profile/me";
+import { getMe } from "src/types/getMe";
 
 const Header = () => {
+  const { data: session } = useSession({ required: true });
+
+  // console.log(session?.user);
+
+  const { data } = useQuery<getMe>(GET_ME);
+
   return (
     <Box h="7.25rem" background="background.gray500">
       <Flex justifyContent="space-between" ml={16} mr={32}>
@@ -49,7 +59,7 @@ const Header = () => {
             color="text.default"
             mr={5}
           >
-            Welcome, [Username]
+            Welcome, [{data?.me.firstname}]
           </Text>
           <Flex
             alignItems={"center"}
@@ -69,7 +79,7 @@ const Header = () => {
                     <Icon
                       color="light"
                       alignSelf="center"
-                      ml={4}
+                      // ml={4}
                       as={FaChevronDown}
                     />
                   }
@@ -88,7 +98,7 @@ const Header = () => {
                       src="https://avatars.dicebear.com/api/male/username.svg"
                     />
                   </Center>
-                  <Center mt={2}>
+                  <Center>
                     <Text fontWeight="600" fontFamily="Inter">
                       username
                     </Text>
@@ -106,6 +116,7 @@ const Header = () => {
                     fontWeight="600"
                     fontFamily="Inter"
                     icon={<IoLogOut size={25} />}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                   >
                     Logout
                   </MenuItem>

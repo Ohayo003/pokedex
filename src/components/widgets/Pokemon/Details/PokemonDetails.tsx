@@ -2,9 +2,9 @@ import { Box, Divider, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import "@fontsource/inter";
 import Statistics from "./Statistics";
-import About from "./About";
-import Evolution from "./Evolution";
-import Moves from "./Moves";
+import About from "src/components/widgets/Pokemon/Details/About";
+import Evolution from "src/components/widgets/Pokemon/Details/Evolution";
+import Moves from "src/components/widgets/Pokemon/Details/Moves";
 
 const PokemonDetails = () => {
   const [currentSelected, setCurrentSelected] = useState(0);
@@ -43,6 +43,8 @@ const PokemonDetails = () => {
           Fire Type
         </Text>
       </Box>
+
+      {/** Buttons Section */}
       <HStack gap={4} pt={14}>
         {buttonName.map((item, idx) => {
           return (
@@ -56,7 +58,10 @@ const PokemonDetails = () => {
               alignItems="center"
               background={currentSelected === idx ? "primary" : "#1F2937"}
               borderRadius="md"
-              _hover={{ cursor: "pointer" }}
+              _hover={{
+                cursor: "pointer",
+                background: "primary",
+              }}
             >
               <Text
                 fontFamily="Inter"

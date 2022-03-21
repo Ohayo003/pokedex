@@ -19,6 +19,7 @@ const SkillCard = ({ name, borderColor, bg, color }: ISkillCard) => {
       justifyContent="center"
       alignItems="center"
       textAlign="center"
+      variant="solid"
       fontFamily="Public Sans"
       fontStyle="normal"
       fontWeight="400"
@@ -31,4 +32,4 @@ const SkillCard = ({ name, borderColor, bg, color }: ISkillCard) => {
   );
 };
 
-export default SkillCard
+export default SkillCard;

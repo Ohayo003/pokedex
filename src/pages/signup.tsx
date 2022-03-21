@@ -17,28 +17,51 @@ import { VStack } from "@chakra-ui/react";
 import ProviderButtons from "src/components/widgets/Forms/ProviderButtons";
 import { BsFacebook, BsGithub, BsGoogle } from "react-icons/bs";
 import UIAccount from "src/components/Layouts/UIAccount";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ISignup } from "src/interfaces/credentials";
 import Links from "src/components/widgets/Forms/Links";
+import { signIn, useSession } from "next-auth/react";
+import { useCallbackUrl } from "src/hooks/useCallbackUrl";
+import { useRouter } from "next/router";
+import Loading from "src/components/widgets/Loading";
 
 let schema = yup.object().shape({
-  email: yup.string().email("The email is invalid").required(),
-  Firstname: yup.string().required(),
-  Lastname: yup.string().required(),
+  emailAddress: yup.string().email("The email is invalid").required(),
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
   password: yup.string().required(),
 });
 
 const SignUp = () => {
+  const router = useRouter();
+  const callbackUrl = useCallbackUrl();
+
+  const { status } = useSession();
+
   const {
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm<ISignup>({ mode: "onChange", resolver: yupResolver(schema) });
 
-  // const [first, setfirst] = useState(second)
+  const onSubmit: SubmitHandler<ISignup> = (data) => {
+    console.log(data);
+    signIn("credentials", {
+      ...data,
+      callbackUrl: "/home",
+      // redirect: false,
+    });
+  };
+
+  if (status === "loading") {
+    return <Loading />;
+  }
+  if (status === "authenticated") {
+    router.push(callbackUrl);
+    return null;
+  }
 
   return (
     <UIAccount heading="Sign up" image={dragon} alt="dragon">
@@ -51,50 +74,49 @@ const SignUp = () => {
 
       {/**INPUT FORM SECTION */}
       <Box>
-        <form>
-          <Stack>
-
+        <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={4}>
             {/** Email Field Section */}
-            <Box pb={4}>
+            <Box>
               <Box pb={2}>
                 <Label label="Email" />
               </Box>
               <TextField
                 type="email"
                 placeholder="Enter Email"
-                error={errors.email?.message}
-                {...register("email")}
+                error={errors.emailAddress?.message}
+                {...register("emailAddress")}
               />
             </Box>
 
             {/** Firstname Field Section */}
-            <Box pb={4}>
+            <Box>
               <Box pb={2}>
                 <Label label="First Name" />
               </Box>
               <TextField
                 type="text"
                 placeholder="Enter Firstname"
-                error={errors.email?.message}
-                {...register("Firstname")}
+                error={errors.firstName?.message}
+                {...register("firstName")}
               />
             </Box>
 
             {/** Lastname Field Section */}
-            <Box pb={4}>
+            <Box>
               <Box pb={2}>
                 <Label label="Last Name" />
               </Box>
               <TextField
                 type="text"
                 placeholder="Enter Lastname"
-                error={errors.email?.message}
-                {...register("Lastname")}
+                error={errors.lastName?.message}
+                {...register("lastName")}
               />
             </Box>
 
             {/** Password Field Section */}
-            <Box pb={6}>
+            <Box pb={2}>
               <Box pb={2}>
                 <Label label="Password" />
               </Box>
@@ -145,6 +167,7 @@ const SignUp = () => {
 
 export default SignUp;
 
+///Provider Buttons
 const Social = () => {
   return (
     <HStack justify="center" gap={4}>

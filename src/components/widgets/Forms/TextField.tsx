@@ -49,7 +49,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps & InputProps>(
             focusBorderColor="primary"
             color="text.light"
             ref={ref}
-            type={type}
+            type={isPswd && showPassword ? "text" : type}
             {...props}
           />
 

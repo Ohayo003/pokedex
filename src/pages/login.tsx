@@ -17,20 +17,26 @@ import { VStack } from "@chakra-ui/react";
 import ProviderButtons from "src/components/widgets/Forms/ProviderButtons";
 import { BsFacebook, BsGithub, BsGoogle } from "react-icons/bs";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ILogin } from "src/interfaces/credentials";
 import UIAccount from "src/components/Layouts/UIAccount";
 import Links from "src/components/widgets/Forms/Links";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import Loading from "src/components/widgets/Loading";
+import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 
 ///schema for validating text field using yup
 let schema = yup.object().shape({
-  email: yup.string().email("The email is invalid").required(),
+  emailAddress: yup.string().email("The email is invalid").required(),
   password: yup.string().required(),
 });
 
 const Login = () => {
-
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const callbackUrl = useCallbackUrl();
   ///Using useForm from react-hook-form
   const {
     register,
@@ -42,6 +48,21 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
+  const onSubmit: SubmitHandler<ILogin> = async (data) => {
+    await signIn("credentials", {
+      ...data,
+      // redirect: false,
+    });
+  };
+
+  if (status === "loading") {
+    return <Loading />;
+  }
+  if (status === "authenticated") {
+    router.push(callbackUrl);
+    return null;
+  }
+
   return (
     <UIAccount heading="Log in" image={pikatchu} alt="pikatchu">
       <Social />
@@ -52,10 +73,10 @@ const Login = () => {
       </Flex>
       {/**INPUT COMPONENT */}
       <Box>
-        <form>
-          <Stack>
+        <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={4}>
             {/** Email Field Section */}
-            <Box pb={4}>
+            <Box>
               <Box pb={2}>
                 <Label label="Email" />
               </Box>
@@ -63,15 +84,15 @@ const Login = () => {
                 type="email"
                 placeholder="Enter Email"
                 onSelect={() => {
-                  touchedFields.email = true;
+                  touchedFields.emailAddress = true;
                 }}
-                error={errors.email?.message}
-                {...register("email")}
+                error={errors.emailAddress?.message}
+                {...register("emailAddress")}
               />
             </Box>
 
             {/** Password Field Section */}
-            <Box pb={6}>
+            <Box pb={2}>
               <Box pb={2}>
                 <Label label="Password" />
               </Box>
@@ -90,9 +111,9 @@ const Login = () => {
               fontWeight="600"
               fontSize="xs"
               lineHeight="md"
-              isDisabled={
-                !getValues().email || !getValues().password ? true : false
-              }
+              // isDisabled={
+              //   !getValues().email || !getValues().password ? true : false
+              // }
               bg="primary"
               type="submit"
               width="full"
@@ -120,6 +141,7 @@ const Login = () => {
 
 export default Login;
 
+///Provider Buttons
 const Social = () => {
   return (
     <HStack justify="center" gap={4}>

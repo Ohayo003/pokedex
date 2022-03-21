@@ -1,15 +1,20 @@
 export interface ILogin {
-  email: string;
+  emailAddress: string;
   password: string;
 }
 
 export interface ISignup {
-  Firstname: string;
-  Lastname: string;
-  email: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
   password: string;
 }
 
 export interface IForgotpassword {
   email: string;
+}
+
+export interface IResetPassword {
+  newPassword: string;
+  confirmPassword: string;
 }
