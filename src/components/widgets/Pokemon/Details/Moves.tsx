@@ -39,25 +39,22 @@ const Moves = ({ moves, abilities }: MovesType) => {
             >
               Quick Moves
             </Text>
-            <SkillCard
-              name="Ember"
-              borderColor="text.blue200"
-              bg="text.blue50"
-              color="text.blue700"
-            />
-            {abilities.map((ability, idx) => {
-              return (
-                <SkillCard
-                  key={idx}
-                  name={ability.ability?.name!}
-                  borderColor="text.blue200"
-                  bg="text.blue50"
-                  color="text.blue700"
-                />
-              );
-            })}
+            <HStack gap={10}>
+              {abilities.map((ability, idx) => {
+                return (
+                  <SkillCard
+                    key={idx}
+                    name={ability.ability?.name!}
+                    borderColor="text.blue200"
+                    bg="text.blue50"
+                    color="text.blue700"
+                  />
+                );
+              })}
+            </HStack>
           </VStack>
-          <Box>
+
+          {/* <Box>
             <Table
               width="18.563rem"
               fontFamily="Inter"
@@ -86,11 +83,11 @@ const Moves = ({ moves, abilities }: MovesType) => {
                   })}
               </Tbody>
             </Table>
-          </Box>
+          </Box> */}
         </Flex>
       </Card>
 
-      <Card mt={8}>
+      <Card mt={8} overflowY="scroll" height="341px">
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
           <VStack align="left" gap={6}>
             <Text
@@ -102,19 +99,17 @@ const Moves = ({ moves, abilities }: MovesType) => {
             >
               Main Moves
             </Text>
-            {Array(4)
-              .fill(["Fireblast", "Flame Thrower", "Heat Wave", "Over Heat"])
-              .map((item, idx) => {
-                return (
-                  <SkillCard
-                    key={idx}
-                    name={item[idx]}
-                    borderColor="text.blue200"
-                    bg="text.blue50"
-                    color="text.blue700"
-                  />
-                );
-              })}
+            {moves.map((item, idx) => {
+              return (
+                <SkillCard
+                  key={idx}
+                  name={item.move?.name!}
+                  borderColor="text.blue200"
+                  bg="text.blue50"
+                  color="text.blue700"
+                />
+              );
+            })}
           </VStack>
           <Box>
             <Table
@@ -132,17 +127,15 @@ const Moves = ({ moves, abilities }: MovesType) => {
                 <Td>EPS</Td>
               </Tr>
               <Tbody>
-                {Array(4)
-                  .fill(null)
-                  .map((item, idx) => {
-                    return (
-                      <Tr key={idx}>
-                        <Td>10</Td>
-                        <Td>10</Td>
-                        <Td>10</Td>
-                      </Tr>
-                    );
-                  })}
+                {moves.map((item, idx) => {
+                  return (
+                    <Tr key={idx}>
+                      <Td>{item.move?.power}</Td>
+                      <Td>10</Td>
+                      <Td>10</Td>
+                    </Tr>
+                  );
+                })}
               </Tbody>
             </Table>
           </Box>

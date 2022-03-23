@@ -26,10 +26,9 @@ const About = ({ pokemon }: AboutType) => {
         lineHeight="26px"
         color="text.default"
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sollicitudin
-        mauris tempus consectetur arcu maecenas id mauris pretium. Integer
-        laoreet morbi cursus consectetur. Ipsum turpis id quisque morbi est in
-        id nibh sagittis. Ipsum ornare quam vitae praesent.
+        {pokemon?.pokemon_v2_pokemonspecy?.description.map((d) => {
+          return d.flavor_text;
+        })}
       </Text>
       <Box pt={8}>
         <Card
