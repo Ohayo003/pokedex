@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
+import useStore from "./useStore";
 
 type PaginationType = {
-  pokemon: GetPokemonDataList["pokemon"];
+  datas: GetPokemonDataList["pokemons"] | any[];
 };
 
 export const usePagination = (
   itemsPerPage: number,
-  { pokemon }: PaginationType
+  { datas }: PaginationType
 ) => {
-  const copyData = [...pokemon];
-  const [currentPage, setCurrentPage] = useState(1);
+  const copyData = [...datas];
+  const currentPage = useStore((state) => state.currentPage);
+  const setCurrentPage = useStore((state) => state.setCurrentPage);
   let numberOfPages: number[] = [];
 
   for (
@@ -32,13 +34,13 @@ export const usePagination = (
   }
 
   function nextPage() {
-    setCurrentPage(() => currentPage + 1);
+    setCurrentPage(currentPage + 1);
   }
   function previousPage() {
-    setCurrentPage(() => currentPage - 1);
+    setCurrentPage(currentPage - 1);
   }
   function selectedPage(idx: number) {
-    setCurrentPage(() => idx);
+    setCurrentPage(idx);
   }
 
   return {

@@ -1,10 +1,20 @@
 import create from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
-interface IStore {
+export interface IStore {
   listView?: boolean;
   toggleView: (value?: boolean) => void;
-  // currentData: (value?: )
+  currentPage: number;
+  loading: boolean;
+  setLoading: (value: boolean) => void;
+  setCurrentPage: (value: number) => void;
+  carousel: {
+    id: number;
+    image: string;
+    bg: string;
+  }[];
+  addCarousel: (id: number, image: string, bg: string) => void;
+  removeCarouseItem: () => void;
 }
 
 const useStore = create<IStore>(
@@ -16,8 +26,33 @@ const useStore = create<IStore>(
           listView: typeof value === "boolean" ? value : !state.listView,
         }));
       },
+      loading: false,
+      setLoading: (value: boolean) => {
+        return set({ loading: value });
+      },
+      currentPage: 1,
+      setCurrentPage: (value) => {
+        return set({ currentPage: value });
+      },
+      carousel: [],
+      addCarousel: (id: number, image: string, bg: string) => {
+        return set((state) => ({
+          ...state.carousel,
+          carousel: [
+            ...state.carousel,
+            {
+              id,
+              image,
+              bg,
+            },
+          ],
+        }));
+      },
+      removeCarouseItem: () => {
+        return set({ carousel: [] });
+      },
     })),
-    { name: "currentState" }
+    { name: "useStore" }
   )
 );
 

@@ -1,23 +1,21 @@
 import {
-  Button,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
   InputProps,
-  Link,
   chakra,
   Icon,
 } from "@chakra-ui/react";
 import { useState, forwardRef } from "react";
-import { FaUserAlt, FaLock, FaUser } from "react-icons/fa";
+import { FaLock, FaUser } from "react-icons/fa";
+import { HiMail } from "react-icons/hi";
 import { BiShow, BiHide } from "react-icons/bi";
 import "@fontsource/inter";
 
-const CFaUserAlt = chakra(FaUserAlt);
+const CFaMailAlt = chakra(HiMail);
 const CFaLock = chakra(FaLock);
 const CFaUser = chakra(FaUser);
 
@@ -29,17 +27,18 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps & InputProps>(
   ({ error, type, ...props }, ref) => {
     const isEmail = type === "email";
     const isPswd = type === "password";
+    const isText = type === "text";
 
     const [showPassword, setShowPassword] = useState(false);
 
     return (
       <FormControl isInvalid={!!error}>
         <InputGroup>
-          {/* <InputLeftElement pointerEvents="none">
-            {isEmail && <CFaUserAlt color="gray.300" />}
+          <InputLeftElement pointerEvents="none">
+            {isEmail && <CFaMailAlt color="gray.300" size={20} />}
             {isPswd && <CFaLock color="gray.300" />}
-            {isName && <CFaUser color="gray.300" />}
-          </InputLeftElement> */}
+            {isText && <CFaUser color="gray.300" />}
+          </InputLeftElement>
 
           <Input
             fontFamily="Inter"

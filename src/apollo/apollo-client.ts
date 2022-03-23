@@ -18,7 +18,7 @@ const authentication = new HttpLink({
 
 const authLink = setContext(async (_, { headers }) => {
   const data = await getSession();
-  console.log(data?.user);
+  // console.log(data?.user);
   const token = data?.user!;
 
   return {

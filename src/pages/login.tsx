@@ -62,7 +62,6 @@ const Login = () => {
     router.push(callbackUrl);
     return null;
   }
-
   return (
     <UIAccount heading="Log in" image={pikatchu} alt="pikatchu">
       <Social />

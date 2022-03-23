@@ -1,9 +1,9 @@
 module.exports = {
   client: {
-    includes: ["./src/graphql/mutations/*.ts"],
+    includes: ["./src/graphql/queries/pokemon/*.ts"],
     service: {
-      name: "auth-api",
-      url: "https://frontend-engineer-onboarding-api-thxaa.ondigitalocean.app/graphql",
+      name: "pokedex-api",
+      url: "https://beta.pokeapi.co/graphql/v1beta",
       skipSSLValidation: true,
     },
   },

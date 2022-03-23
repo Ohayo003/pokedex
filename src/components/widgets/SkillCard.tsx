@@ -12,19 +12,19 @@ const SkillCard = ({ name, borderColor, bg, color }: ISkillCard) => {
   return (
     <Tag
       border="1px solid "
-      px={4}
+      px={2}
       borderColor={borderColor}
       background={bg}
-      display="flex"
+      // display="flex"
       justifyContent="center"
-      alignItems="center"
+      // alignItems="center"
       textAlign="center"
       variant="solid"
       fontFamily="Public Sans"
       fontStyle="normal"
       fontWeight="400"
-      fontSize="0.75rem"
-      lineHeight="14px"
+      fontSize="md"
+      lineHeight="xl"
       color={color}
     >
       {name}

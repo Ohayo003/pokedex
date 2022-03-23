@@ -26,11 +26,13 @@ import { useQuery } from "@apollo/client";
 import "@fontsource/inter";
 import { GET_ME } from "../../graphql/queries/profile/me";
 import { getMe } from "src/types/getMe";
+import useStore from "src/hooks/useStore";
 
 const Header = () => {
   const { data: session } = useSession({ required: true });
 
-  // console.log(session?.user);
+  const removeCarouseItem = useStore((state) => state.removeCarouseItem);
+  const setCurrentPage = useStore((state) => state.setCurrentPage);
 
   const { data } = useQuery<getMe>(GET_ME);
 
@@ -59,7 +61,7 @@ const Header = () => {
             color="text.default"
             mr={5}
           >
-            Welcome, [{data?.me.firstname}]
+            Welcome, {data?.me.firstname}
           </Text>
           <Flex
             alignItems={"center"}
@@ -87,7 +89,7 @@ const Header = () => {
                   <Avatar
                     w="3.5rem"
                     h="3.5rem"
-                    src="https://avatars.dicebear.com/api/male/username.svg"
+                    src={"https://avatars.dicebear.com/api/male/username.svg"}
                   />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
@@ -116,7 +118,11 @@ const Header = () => {
                     fontWeight="600"
                     fontFamily="Inter"
                     icon={<IoLogOut size={25} />}
-                    onClick={() => signOut({ callbackUrl: "/" })}
+                    onClick={() => {
+                      signOut({ callbackUrl: "/" });
+                      removeCarouseItem();
+                      setCurrentPage(1);
+                    }}
                   >
                     Logout
                   </MenuItem>

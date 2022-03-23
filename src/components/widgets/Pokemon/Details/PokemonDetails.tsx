@@ -1,13 +1,22 @@
-import { Box, Divider, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Divider, HStack, Text, VStack, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import "@fontsource/inter";
 import Statistics from "./Statistics";
 import About from "src/components/widgets/Pokemon/Details/About";
 import Evolution from "src/components/widgets/Pokemon/Details/Evolution";
 import Moves from "src/components/widgets/Pokemon/Details/Moves";
+import { GetPokemon } from "src/types/GetPokemon";
+import colorTypes from "src/utils/colorTypes";
+import usePokemonHelper from "src/hooks/usePokemonHelper";
 
-const PokemonDetails = () => {
+type PokemonDetailsType = {
+  pokemon: GetPokemon["pokemon"];
+};
+
+const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
   const [currentSelected, setCurrentSelected] = useState(0);
+
+  const { capitalizedName } = usePokemonHelper({ name: pokemon?.name! });
 
   const buttonName = ["About", "Statistics", "Evolutions", "Moves"];
   return (
@@ -19,30 +28,38 @@ const PokemonDetails = () => {
         fontSize="32px"
         color="text.default"
         lineHeight="130%"
+        letterSpacing="widest"
       >
-        Pokemon Name
+        {capitalizedName}
       </Text>
-      <Box
-        width="102px"
-        height="35px"
-        background="#EF4444"
-        textAlign="center"
-        alignItems="center"
-        justifyContent="center"
-        display="flex"
-        py={2}
-        borderRadius="full"
-      >
-        <Text
-          fontFamily="Inter"
-          fontStyle="normal"
-          fontWeight="400"
-          lineHeight="19px"
-          color="#F7FAFC"
-        >
-          Fire Type
-        </Text>
-      </Box>
+      <Flex gap={2}>
+        {pokemon?.element?.map((name, idx) => {
+          return (
+            <Box
+              key={idx}
+              width="102px"
+              height="35px"
+              background={colorTypes(name.type?.name!)}
+              textAlign="center"
+              alignItems="center"
+              justifyContent="center"
+              display="flex"
+              py={2}
+              borderRadius="full"
+            >
+              <Text
+                fontFamily="Inter"
+                fontStyle="normal"
+                fontWeight="400"
+                lineHeight="19px"
+                color="#F7FAFC"
+              >
+                {name.type?.name}
+              </Text>
+            </Box>
+          );
+        })}
+      </Flex>
 
       {/** Buttons Section */}
       <HStack gap={4} pt={14}>
@@ -78,13 +95,17 @@ const PokemonDetails = () => {
       </HStack>
       <Box pt={14}>
         {currentSelected === 1 ? (
-          <Statistics />
+          <Statistics pokemon={pokemon!} />
         ) : currentSelected === 2 ? (
-          <Evolution />
+          <Evolution
+            evolution={pokemon?.pokemon_v2_pokemonspecy!}
+            element={pokemon?.element!}
+            name={pokemon?.name!}
+          />
         ) : currentSelected === 3 ? (
-          <Moves />
+          <Moves moves={pokemon?.moves!} abilities={pokemon?.abilities!} />
         ) : (
-          <About />
+          <About pokemon={pokemon!} />
         )}
       </Box>
     </VStack>

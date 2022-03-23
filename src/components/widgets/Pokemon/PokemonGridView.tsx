@@ -1,19 +1,19 @@
-import { Box, Flex, Grid } from "@chakra-ui/react";
+import { Box, type BoxProps, Grid } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 import _1 from "public/assets/background/login-image.png";
-import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 import colorTypes from "src/utils/colorTypes";
+import { motion } from "framer-motion";
+import { GetPokemonDataList } from "src/types/GetPokemonDataList";
+
+export const MotionBox = motion<BoxProps>(Box);
 
 type PokemonGridViewType = {
-  pokemons: GetPokemonDataList["pokemon"];
+  pokemons: GetPokemonDataList["pokemons"];
 };
 
 const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
   const pokemonCopy = [...pokemons];
-
-  // const { currentData, setCurrentPage, currentPage, nextPage, previousPage } =
-  //   usePagination(8, { pokemons });
 
   return (
     <Box zIndex={1}>
@@ -27,11 +27,14 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
       >
         {pokemonCopy.map((pokemon, idx) => {
           return (
-            <Box
+            <MotionBox
               key={idx}
               height="15rem"
               // width={}
+              _hover={{ cursor: "pointer" }}
               borderRadius="2xl"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               background={colorTypes(pokemon?.element[0]?.type?.name!)}
               boxShadow="0px 4px 4px 0px gray"
               overflow="hidden"
@@ -41,12 +44,12 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon?.id}.png`}
                 alt="pikatchu"
                 layout="responsive"
-                width={10}
-                height={12}
-                objectFit="cover"
+                width={25}
+                height={30}
+                // objectFit="cover"
                 // objectPosition="center"
               />
-            </Box>
+            </MotionBox>
           );
         })}
       </Grid>

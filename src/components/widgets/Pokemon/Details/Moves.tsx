@@ -14,13 +14,22 @@ import "@fontsource/inter";
 import { Flex } from "@chakra-ui/react";
 import Card from "src/components/widgets/Card";
 import SkillCard from "src/components/widgets/SkillCard";
+import {
+  GetPokemon_pokemon_moves,
+  GetPokemon_pokemon_abilities,
+} from "src/types/GetPokemon";
 
-const Moves = () => {
+type MovesType = {
+  moves: GetPokemon_pokemon_moves[];
+  abilities: GetPokemon_pokemon_abilities[];
+};
+
+const Moves = ({ moves, abilities }: MovesType) => {
   return (
     <Box>
       <Card>
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
-          <VStack align="left" gap={6} width="6.25rem">
+          <VStack align="left" gap={6}>
             <Text
               fontFamily="Inter"
               fontStyle="normal"
@@ -36,12 +45,17 @@ const Moves = () => {
               bg="text.blue50"
               color="text.blue700"
             />
-            <SkillCard
-              name="Fire Spin"
-              borderColor="text.blue200"
-              bg="text.blue50"
-              color="text.blue700"
-            />
+            {abilities.map((ability, idx) => {
+              return (
+                <SkillCard
+                  key={idx}
+                  name={ability.ability?.name!}
+                  borderColor="text.blue200"
+                  bg="text.blue50"
+                  color="text.blue700"
+                />
+              );
+            })}
           </VStack>
           <Box>
             <Table
@@ -78,7 +92,7 @@ const Moves = () => {
 
       <Card mt={8}>
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
-          <VStack align="left" gap={6} width="6.25rem">
+          <VStack align="left" gap={6}>
             <Text
               fontFamily="Inter"
               fontStyle="normal"

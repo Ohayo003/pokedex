@@ -7,20 +7,20 @@
 // GraphQL query operation: GetPokemonDataList
 // ====================================================
 
-export interface GetPokemonDataList_pokemon_element_type {
+export interface GetPokemonDataList_pokemons_element_type {
   __typename: "pokemon_v2_type";
   name: string;
 }
 
-export interface GetPokemonDataList_pokemon_element {
+export interface GetPokemonDataList_pokemons_element {
   __typename: "pokemon_v2_pokemontype";
   /**
    * An object relationship
    */
-  type: GetPokemonDataList_pokemon_element_type | null;
+  type: GetPokemonDataList_pokemons_element_type | null;
 }
 
-export interface GetPokemonDataList_pokemon {
+export interface GetPokemonDataList_pokemons {
   __typename: "pokemon_v2_pokemon";
   id: number;
   name: string;
@@ -28,12 +28,12 @@ export interface GetPokemonDataList_pokemon {
   /**
    * An array relationship
    */
-  element: GetPokemonDataList_pokemon_element[];
+  element: GetPokemonDataList_pokemons_element[];
 }
 
 export interface GetPokemonDataList {
   /**
    * fetch data from the table: "pokemon_v2_pokemon"
    */
-  pokemon: GetPokemonDataList_pokemon[];
+  pokemons: GetPokemonDataList_pokemons[];
 }

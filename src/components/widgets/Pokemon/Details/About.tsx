@@ -1,9 +1,21 @@
 import { Box, VStack, Text, HStack, Divider } from "@chakra-ui/react";
 import React from "react";
 import "@fontsource/inter";
-import Card from "../../Card";
+import Card from "src/components/widgets/Card";
+import { GetPokemon } from "src/types/GetPokemon";
+import usePokemonHelper from "src/hooks/usePokemonHelper";
 
-const About = () => {
+type AboutType = {
+  pokemon: GetPokemon["pokemon"];
+};
+
+const About = ({ pokemon }: AboutType) => {
+  const { getGenderValue, getGenderPercentage } = usePokemonHelper({
+    gender_rate: pokemon?.pokemon_v2_pokemonspecy?.gender_rate!,
+  });
+
+  console.log(pokemon?.pokemon_v2_pokemonspecy?.eggroups);
+
   return (
     <Box>
       <Text
@@ -44,7 +56,7 @@ const About = () => {
                 lineHeight="26px"
                 color="text.light"
               >
-                220.0 KG
+                {pokemon?.weight} KG
               </Text>
             </VStack>
             <Divider orientation="vertical" borderColor="gray700" height={12} />
@@ -65,14 +77,14 @@ const About = () => {
                 lineHeight="26px"
                 color="text.light"
               >
-                220.0 KG
+                {pokemon?.height} KG
               </Text>
             </VStack>
           </HStack>
         </Card>
         <Box pt={8}>
           <Card
-            width="36.5rem"
+            width="37.5rem"
             height="7rem"
             border="1px solid #718096"
             display="flex"
@@ -107,7 +119,7 @@ const About = () => {
                     lineHeight="26px"
                     color="text.light"
                   >
-                    87.8% Male
+                    {getGenderPercentage()}% {getGenderValue()}
                   </Text>
                 </HStack>
                 <HStack gap={2}>
@@ -120,15 +132,25 @@ const About = () => {
                   >
                     Egg Group:
                   </Text>
-                  <Text
-                    fontFamily="Inter"
-                    fontStyle="normal"
-                    fontWeight="400"
-                    lineHeight="26px"
-                    color="text.light"
-                  >
-                    Monster
-                  </Text>
+                  <Box>
+                    {pokemon?.pokemon_v2_pokemonspecy?.eggroups.length! &&
+                      pokemon.pokemon_v2_pokemonspecy?.eggroups.map(
+                        (group, idx) => {
+                          return (
+                            <Text
+                              key={idx}
+                              fontFamily="Inter"
+                              fontStyle="normal"
+                              fontWeight="400"
+                              lineHeight="26px"
+                              color="text.light"
+                            >
+                              {group.names?.name}
+                            </Text>
+                          );
+                        }
+                      )}
+                  </Box>
                 </HStack>
                 <HStack gap={2}>
                   <Text
@@ -147,7 +169,7 @@ const About = () => {
                     lineHeight="26px"
                     color="text.light"
                   >
-                    Grass
+                    {pokemon?.pokemon_v2_pokemonspecy?.hatch_counter!}
                   </Text>
                 </HStack>
               </HStack>

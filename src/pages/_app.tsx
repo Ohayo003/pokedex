@@ -1,10 +1,13 @@
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import { ApolloProvider } from "@apollo/client";
 import client from "src/apollo/apollo-client";
+import useStore from "src/hooks/useStore";
+import { Router } from "next/router";
+import Loading from "src/components/widgets/Loading";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -62,6 +65,7 @@ function MyApp({
   pageProps: { session, pageProps },
 }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
+  // const [loading, setLoading] = useState(false);
 
   return (
     <ApolloProvider client={client}>

@@ -10,7 +10,7 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 1 * 1 * 60 * 60,
+    maxAge: 60 * 60 * 60 * 60,
   },
 
   providers: [
@@ -18,8 +18,6 @@ export default NextAuth({
       name: "credentials",
       id: "credentials",
       async authorize(credentials) {
-        // let user: Partial<IUserData> = {};
-
         if (credentials?.firstName) {
           const { data, errors } = await client.mutate({
             mutation: SIGN_UP,
@@ -88,9 +86,6 @@ export default NextAuth({
     signOut: "/login",
   },
   callbacks: {
-    //   async createUser(emailAddress, firstname, lastname, password){
-
-    //   },
     async session({ session, token }) {
       if (token.user) {
         session.user = token.user as any;
@@ -98,11 +93,9 @@ export default NextAuth({
       if (token) {
         session.accessToken = token.accessToken;
       }
-      console.log(session);
       return session;
     },
     async jwt({ token, account, user }) {
-      console.log(user);
       if (user) {
         token.user = user;
       }

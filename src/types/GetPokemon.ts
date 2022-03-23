@@ -9,6 +9,7 @@
 
 export interface GetPokemon_pokemon_element_type {
   __typename: "pokemon_v2_type";
+  id: number;
   name: string;
 }
 
@@ -79,6 +80,67 @@ export interface GetPokemon_pokemon_moves {
   move: GetPokemon_pokemon_moves_move | null;
 }
 
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_description {
+  __typename: "pokemon_v2_pokemonspeciesflavortext";
+  flavor_text: string;
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_eggroups_names {
+  __typename: "pokemon_v2_egggroup";
+  name: string;
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_eggroups {
+  __typename: "pokemon_v2_pokemonegggroup";
+  /**
+   * An object relationship
+   */
+  names: GetPokemon_pokemon_pokemon_v2_pokemonspecy_eggroups_names | null;
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain_evolutions_evolveTrigger {
+  __typename: "pokemon_v2_pokemonevolution";
+  min_level: number | null;
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain_evolutions {
+  __typename: "pokemon_v2_pokemonspecies";
+  /**
+   * An array relationship
+   */
+  evolveTrigger: GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain_evolutions_evolveTrigger[];
+  id: number;
+  evolveFrom: number | null;
+  name: string;
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain {
+  __typename: "pokemon_v2_evolutionchain";
+  id: number;
+  /**
+   * An array relationship
+   */
+  evolutions: GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain_evolutions[];
+}
+
+export interface GetPokemon_pokemon_pokemon_v2_pokemonspecy {
+  __typename: "pokemon_v2_pokemonspecies";
+  /**
+   * An array relationship
+   */
+  description: GetPokemon_pokemon_pokemon_v2_pokemonspecy_description[];
+  /**
+   * An array relationship
+   */
+  eggroups: GetPokemon_pokemon_pokemon_v2_pokemonspecy_eggroups[];
+  hatch_counter: number | null;
+  gender_rate: number | null;
+  /**
+   * An object relationship
+   */
+  evolutionChain: GetPokemon_pokemon_pokemon_v2_pokemonspecy_evolutionChain | null;
+}
+
 export interface GetPokemon_pokemon {
   __typename: "pokemon_v2_pokemon";
   id: number;
@@ -101,6 +163,10 @@ export interface GetPokemon_pokemon {
    * An array relationship
    */
   moves: GetPokemon_pokemon_moves[];
+  /**
+   * An object relationship
+   */
+  pokemon_v2_pokemonspecy: GetPokemon_pokemon_pokemon_v2_pokemonspecy | null;
 }
 
 export interface GetPokemon {

@@ -27,39 +27,63 @@ import { GET_POKEMON_DATA_LIST } from "../../graphql/queries/pokemon/pokemonlist
 import { useQuery } from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
-import { GetPokemonDataList } from "../../types/GetPokemonDataList";
+import Router, { useRouter } from "next/router";
+import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 
 const HomePage = () => {
-  const { loading, data, error } = useQuery(GET_POKEMON_DATA_LIST, {
-    context: { clientName: "pokedexapi" },
-  });
-
-  let pokemon: GetPokemonDataList["pokemon"] = [];
-
-  if (data) {
-    pokemon = [...data.pokemon];
-  }
-
+  const { status } = useSession({ required: true });
+  const { loading, data, error } = useQuery<GetPokemonDataList>(
+    GET_POKEMON_DATA_LIST,
+    {
+      context: { clientName: "pokedexapi" },
+    }
+  );
+  const loadingRoute = useStore((state) => state.loading);
+  const setLoading = useStore((state) => state.setLoading);
   const list = useStore((state) => state.listView);
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
-  const { data: session } = useSession({ required: true });
+  let datas: GetPokemonDataList["pokemons"] = [];
+
+  if (data?.pokemons) {
+    datas = [...data.pokemons!];
+  }
+
+  const router = useRouter();
+
   const {
     currentPage,
     numberOfPages,
-    setCurrentPage,
     nextPage,
     previousPage,
     selectedPage,
     currentData,
-  } = usePagination(10, { pokemon });
+  } = usePagination(10, { datas });
 
   useEffect(() => {
     setlistView(list);
+
+    const handelChangeRoute = () => {
+      console.log("changing route...");
+      setLoading(true);
+    };
+    const handleChangeRouteComplete = () => {
+      console.log("changing route Complete...");
+      setLoading(false);
+    };
+    Router.events.on("routeChangeStart", handelChangeRoute);
+    Router.events.on("routeChangeComplete", handleChangeRouteComplete);
+
+    return () => {
+      Router.events.off("routeChangeStart", handelChangeRoute);
+      Router.events.off("routeChangeComplete", handleChangeRouteComplete);
+    };
   }, [list]);
 
-  
+  if (loadingRoute) {
+    return <Loading />;
+  }
 
   return (
     <Box
@@ -130,8 +154,8 @@ const HomePage = () => {
             color="text.light"
           >
             Showing{" "}
-            {currentPage * currentData().length - currentData().length + 1}-
-            {currentPage * currentData().length} of {pokemon?.length}
+            {currentPage! * currentData().length - currentData().length + 1}-
+            {currentPage! * currentData().length} of {datas?.length}
           </Text>
         </HStack>
 
@@ -156,7 +180,12 @@ const HomePage = () => {
                   fontFamily="Inter"
                   fontStyle="normal"
                   fontWeight="500"
-                  onClick={() => selectedPage(idx)}
+                  onClick={() => {
+                    selectedPage(idx);
+                    router.push("/home", {
+                      query: `page=${idx}&total=${currentData().length}`,
+                    });
+                  }}
                   lineHeight="lg"
                   background={currentPage === idx ? "primary" : "gray100"}
                   _hover={{ background: "primary" }}
@@ -174,6 +203,7 @@ const HomePage = () => {
             fill="#718096"
             _hover={{
               cursor: "pointer",
+              fill: "primary",
             }}
           />
         </Flex>
