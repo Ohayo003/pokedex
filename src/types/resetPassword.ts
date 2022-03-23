@@ -20,6 +20,6 @@ export interface resetPassword {
 }
 
 export interface resetPasswordVariables {
-  resetCode: string;
+  passwordResetCode: string;
   newPassword: string;
 }

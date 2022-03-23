@@ -4,15 +4,15 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: singIn
+// GraphQL mutation operation: signIn
 // ====================================================
 
-export interface singIn_authenticate {
+export interface signIn_authenticate {
   __typename: "Authentication";
   token: string;
 }
 
-export interface singIn {
+export interface signIn {
   /**
    * ### Description
    * Authenticate a user to get an access token if credentials are valid.
@@ -20,10 +20,10 @@ export interface singIn {
    * ### Error Codes
    * `BAD_USER_INPUT` - Invalid credentials.
    */
-  authenticate: singIn_authenticate;
+  authenticate: signIn_authenticate;
 }
 
-export interface singInVariables {
+export interface signInVariables {
   emailAddress: any;
   password: string;
 }

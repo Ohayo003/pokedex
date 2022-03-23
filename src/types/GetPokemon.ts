@@ -65,6 +65,7 @@ export interface GetPokemon_pokemon_moves_move {
   __typename: "pokemon_v2_move";
   accuracy: number | null;
   name: string;
+  pp: number | null;
   power: number | null;
   /**
    * An object relationship

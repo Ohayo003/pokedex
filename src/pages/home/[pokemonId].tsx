@@ -27,8 +27,6 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 
 const PokemonId = () => {
   const router = useRouter();
-  const loadingRoute = useStore((state) => state.loading);
-  const setLoading = useStore((state) => state.setLoading);
   const datas = useStore((state) => state.carousel);
   const { data, loading } = useQuery<GetPokemon>(GET_POKEMON, {
     variables: {
@@ -36,15 +34,11 @@ const PokemonId = () => {
     },
     context: { clientName: "pokedexapi" },
   });
-  const [getRecent, { data: recentData, loading: recentLoading }] =
-    useLazyQuery<GetPokemon>(GET_POKEMON, {
-      fetchPolicy: "network-only",
-    });
 
   const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
     usePagination(6, { datas });
 
-  if (loading || recentLoading) {
+  if (loading) {
     return <Loading />;
   }
   return (
@@ -84,21 +78,21 @@ const PokemonId = () => {
             <Box
               width="20.313rem"
               height="24.313rem"
-              background={colorTypes(
-                recentData
-                  ? recentData.pokemon?.element[0].type?.name!
-                  : data?.pokemon?.element[0].type?.name!
-              )}
+              // background={colorTypes(
+              //   recentData
+              //     ? recentData.pokemon?.element[0].type?.name!
+              //     : data?.pokemon?.element[0].type?.name!
+              // )}
               borderRadius="4px"
               position="relative"
               overflow="hidden"
             >
               <Image
-                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
-                  recentData ? recentData.pokemon?.id : data?.pokemon?.id
-                }.png`}
+                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${data?.pokemon?.id}.png`}
                 alt="dragaon"
-                layout="fill"
+                layout="responsive"
+                width={10}
+                height={10}
                 objectFit="cover"
               />
             </Box>
@@ -178,9 +172,7 @@ const PokemonId = () => {
           </VStack>
 
           {/** Pokemon Details Section */}
-          <PokemonDetails
-            pokemon={recentData ? recentData?.pokemon! : data?.pokemon!}
-          />
+          <PokemonDetails pokemon={data?.pokemon!} />
         </Flex>
       </Box>
     </Box>

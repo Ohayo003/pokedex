@@ -20,6 +20,8 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
   const addCarousel = useStore((state) => state.addCarousel);
   const carousel = useStore((state) => state.carousel);
 
+
+  ///adds the current Pokemon to Recent Visit
   const handleAddRecent = (id: number, image: string, bg: string) => {
     const idx = carousel.findIndex((object) => object.id === id);
     if (idx === -1) {

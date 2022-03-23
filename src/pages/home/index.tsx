@@ -12,7 +12,7 @@ import {
   MenuList,
   Button,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
 import "@fontsource/inter";
@@ -23,21 +23,36 @@ import PokemonListView from "src/components/widgets/Pokemon/PokemonListView";
 import PokemonGridView from "src/components/widgets/Pokemon/PokemonGridView";
 import useStore from "src/hooks/useStore";
 import { useSession } from "next-auth/react";
-import { GET_POKEMON_DATA_LIST } from "../../graphql/queries/pokemon/pokemonlist";
-import { useQuery } from "@apollo/client";
+import {
+  FILTER_POKEMON_BY_ELEMENT,
+  GET_POKEMON_DATA_LIST,
+} from "src/graphql/queries/pokemon/pokemonlist";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
 import Router, { useRouter } from "next/router";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
+import {
+  FilterPokemonByElementVariables,
+  FilterPokemonByElement,
+} from "src/types/FilterPokemonByElement";
 
 const HomePage = () => {
   const { status } = useSession({ required: true });
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [filteredData, setFilteredData] = useState<
+    GetPokemonDataList | undefined
+  >(null);
+  const router = useRouter();
+
+  ///useQuery to display list of pokemon
   const { loading, data, error } = useQuery<GetPokemonDataList>(
     GET_POKEMON_DATA_LIST,
     {
       context: { clientName: "pokedexapi" },
     }
   );
+
   const loadingRoute = useStore((state) => state.loading);
   const setLoading = useStore((state) => state.setLoading);
   const list = useStore((state) => state.listView);
@@ -49,9 +64,9 @@ const HomePage = () => {
   if (data?.pokemons) {
     datas = [...data.pokemons!];
   }
+  console.log(router.query.page);
 
-  const router = useRouter();
-
+  ///usePagination custom hook
   const {
     currentPage,
     numberOfPages,
@@ -63,7 +78,6 @@ const HomePage = () => {
 
   useEffect(() => {
     setlistView(list);
-
     const handelChangeRoute = () => {
       console.log("changing route...");
       setLoading(true);
@@ -88,11 +102,12 @@ const HomePage = () => {
   return (
     <Box
       minH={{ lg: "100vh", base: "fit-content" }}
-      w={{ base: "full" }}
+      // w={{ base: "full" }}
+      minW={{ base: "482px" }}
       mt={9}
       mb={14}
     >
-      <Flex flexDirection="column" mx="auto" maxW="70%">
+      <Flex flexDirection="column" mx="auto" maxW={{ lg: "70%", base: "90%" }}>
         <Flex justifyContent="space-between">
           <Text
             fontFamily="Inter"
@@ -105,7 +120,10 @@ const HomePage = () => {
             Choose a Pokemon
           </Text>
           <HStack gap={8}>
-            <Filters />
+            <Filters
+              setIsFiltered={setIsFiltered}
+              setFilteredData={setFilteredData!}
+            />
             <Icon
               zIndex={1}
               _hover={{ cursor: "pointer" }}
@@ -214,8 +232,28 @@ const HomePage = () => {
 
 export default HomePage;
 
+interface IFilters {
+  setIsFiltered: Dispatch<React.SetStateAction<boolean>>;
+  setFilteredData: Dispatch<SetStateAction<GetPokemonDataList[] | undefined>>;
+}
+
 ///Filter Selection
-const Filters = () => {
+const Filters = ({ setIsFiltered, setFilteredData }: IFilters) => {
+  ///useLazyQuery for filtering list of pokemon based on types
+  const [
+    filterPokemons,
+    { data: filterData, loading: filterLoading, error: filterError },
+  ] = useLazyQuery<FilterPokemonByElement, FilterPokemonByElementVariables>(
+    FILTER_POKEMON_BY_ELEMENT,
+    {
+      fetchPolicy: "network-only",
+    }
+  );
+
+  if (filterData?.pokemon_v2_pokemon!) {
+    setFilteredData(filterData.pokemon_v2_pokemon);
+  }
+
   const filters = ["Normal", "Fire", "Water", "Grass", "Flying", "Fighting"];
   return (
     <Stack direction={"row"} spacing={7}>
@@ -230,7 +268,7 @@ const Filters = () => {
           <Icon as={HiOutlineFilter} fill="white" w={5} h={5} />
         </MenuButton>
         <MenuList ml={-10} width={44} zIndex={2}>
-          {filters.map((item, idx) => {
+          {filters.map((type, idx) => {
             return (
               <MenuItem key={idx}>
                 <Flex minW="full" justifyContent="space-between">
@@ -241,11 +279,23 @@ const Filters = () => {
                     fontSize="sm"
                     lineHeight="xl"
                   >
-                    {item}
+                    {type}
                   </Text>
                   <Checkbox
                     iconColor="primaryDark"
                     borderRadius="lg"
+                    value={type}
+                    // isChecked={}
+                    onChange={(value) => {
+                      console.log(type);
+                      setIsFiltered((value) => !value);
+                      filterPokemons({
+                        variables: {
+                          type: type,
+                        },
+                        context: { clientName: "pokedexapi" },
+                      });
+                    }}
                     size="lg"
                     colorScheme="background.amber"
                   />

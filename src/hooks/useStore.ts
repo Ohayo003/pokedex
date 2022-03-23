@@ -35,9 +35,9 @@ const useStore = create<IStore>(
         return set({ currentPage: value });
       },
       carousel: [],
-      addCarousel: (id: number, image: string, bg: string) => {
+      addCarousel: (id, image, bg) => {
         return set((state) => ({
-          ...state.carousel,
+          // ...state.carousel,
           carousel: [
             ...state.carousel,
             {

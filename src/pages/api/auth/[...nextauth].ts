@@ -5,6 +5,8 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import client from "src/apollo/apollo-client";
 import { SIGN_IN, SIGN_UP } from "src/graphql/mutations/auth";
+import { signInVariables, signIn } from "src/types/signIn";
+import { signUP, signUPVariables } from "src/types/signUP";
 
 export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -19,31 +21,33 @@ export default NextAuth({
       id: "credentials",
       async authorize(credentials) {
         if (credentials?.firstName) {
-          const { data, errors } = await client.mutate({
-            mutation: SIGN_UP,
-            variables: {
-              emailAddress: credentials?.emailAddress,
-              firstName: credentials?.firstName,
-              lastName: credentials?.lastName,
-              password: credentials?.password,
-            },
-          });
-          if (data.signUp.token) {
-            console.log(data);
+          const { data, errors } = await client.mutate<signUP, signUPVariables>(
+            {
+              mutation: SIGN_UP,
+              variables: {
+                emailAddress: credentials?.emailAddress!,
+                firstName: credentials?.firstName!,
+                lastName: credentials?.lastName!,
+                password: credentials?.password!,
+              },
+            }
+          );
+          if (data?.signUp.token) {
+            // console.log(data);
             return data.signUp.token;
           }
           console.log(errors);
           return null;
         }
-        const { data } = await client.mutate({
+        const { data } = await client.mutate<signIn, signInVariables>({
           mutation: SIGN_IN,
           variables: {
-            emailAddress: credentials?.emailAddress,
-            password: credentials?.password,
+            emailAddress: credentials?.emailAddress!,
+            password: credentials?.password!,
           },
         });
 
-        if (data.authenticate.token) {
+        if (data?.authenticate.token) {
           return data.authenticate.token;
         }
         return null;

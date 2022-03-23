@@ -3,6 +3,7 @@ import {
   HStack,
   VStack,
   Text,
+  Grid,
   Table,
   Tr,
   Tbody,
@@ -25,6 +26,8 @@ type MovesType = {
 };
 
 const Moves = ({ moves, abilities }: MovesType) => {
+  console.log(moves);
+
   return (
     <Box>
       <Card>
@@ -87,9 +90,9 @@ const Moves = ({ moves, abilities }: MovesType) => {
         </Flex>
       </Card>
 
-      <Card mt={8} overflowY="scroll" height="341px">
+      <Card mt={8} overflowY="scroll" scrollBehavior="smooth" height="341px">
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
-          <VStack align="left" gap={6}>
+          <VStack align="left" gap="18px">
             <Text
               fontFamily="Inter"
               fontStyle="normal"
@@ -112,7 +115,62 @@ const Moves = ({ moves, abilities }: MovesType) => {
             })}
           </VStack>
           <Box>
-            <Table
+            <Grid
+              width="18.563rem"
+              fontFamily="Inter"
+              fontStyle="normal"
+              fontWeight="600"
+              fontSize="14px"
+              lineHeight="17px"
+              justifyContent="center"
+              borderBottom="1px solid white"
+              color="text.gray100"
+              templateColumns="repeat(3, 1fr)"
+              py="12px"
+              px="23px"
+            >
+              <Box width="99px">
+                <Text textAlign="center">Damage</Text>
+              </Box>
+              <Box width="99px">
+                <Text textAlign="center">DPS</Text>
+              </Box>
+              <Box width="99px">
+                <Text textAlign="center">EPS</Text>
+              </Box>
+            </Grid>
+            {moves.map((m, idx) => {
+              return (
+                <Grid
+                  templateColumns="repeat(3, 1fr)"
+                  key={idx}
+                  borderBottom="1px solid white"
+                  justifyContent="right"
+                  alignItems="center"
+                  justifyItems="right"
+                  width="18.563rem"
+                  fontFamily="Inter"
+                  fontStyle="normal"
+                  fontWeight="600"
+                  height="52px"
+                  fontSize="14px"
+                  pr={6}
+                  lineHeight="17px"
+                  color="text.gray100"
+                >
+                  <Text textAlign="right" height="19px" width="74px">
+                    {m.move?.power}
+                  </Text>
+                  <Text textAlign="right" height="19px" width="74px">
+                    {m.move?.pp}
+                  </Text>
+                  <Text textAlign="right" height="19px" width="74px">
+                    {m.move?.pp}
+                  </Text>
+                </Grid>
+              );
+            })}
+            {/* <Table
               width="18.563rem"
               fontFamily="Inter"
               fontStyle="normal"
@@ -131,13 +189,13 @@ const Moves = ({ moves, abilities }: MovesType) => {
                   return (
                     <Tr key={idx}>
                       <Td>{item.move?.power}</Td>
-                      <Td>10</Td>
+                      <Td>{item.move?.pp}</Td>
                       <Td>10</Td>
                     </Tr>
                   );
                 })}
               </Tbody>
-            </Table>
+            </Table> */}
           </Box>
         </Flex>
       </Card>

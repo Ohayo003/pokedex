@@ -32,6 +32,7 @@ export const GET_POKEMON = gql`
         move: pokemon_v2_move {
           accuracy
           name
+          pp
           power
           effects: pokemon_v2_moveeffect {
             effect: pokemon_v2_moveeffecteffecttexts {

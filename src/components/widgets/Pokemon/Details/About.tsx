@@ -76,7 +76,7 @@ const About = ({ pokemon }: AboutType) => {
                 lineHeight="26px"
                 color="text.light"
               >
-                {pokemon?.height} KG
+                {pokemon?.height} M
               </Text>
             </VStack>
           </HStack>
