@@ -5,10 +5,11 @@ export interface IStore {
   listView?: boolean;
   toggleView: (value?: boolean) => void;
   currentPage: number;
-  loading: boolean;
+  isFiltered: boolean;
   filterTypes: string[];
+  removeFilterTpyes: (value: string) => void;
   setFilterTypes: (value: string) => void;
-  setLoading: (value: boolean) => void;
+  setIsFiltered: (value: boolean) => void;
   setCurrentPage: (value: number) => void;
   carousel: {
     id: number;
@@ -28,9 +29,9 @@ const useStore = create<IStore>(
           listView: typeof value === "boolean" ? value : !state.listView,
         }));
       },
-      loading: false,
-      setLoading: (value: boolean) => {
-        return set({ loading: value });
+      isFiltered: false,
+      setIsFiltered: (value: boolean) => {
+        return set({ isFiltered: value });
       },
       currentPage: 1,
       setCurrentPage: (value) => {
@@ -39,6 +40,7 @@ const useStore = create<IStore>(
       carousel: [],
       addCarousel: (id, image, bg) => {
         return set((state) => ({
+          ...state,
           carousel: [
             {
               id,
@@ -57,7 +59,14 @@ const useStore = create<IStore>(
       filterTypes: [],
       setFilterTypes: (value) => {
         return set((state) => ({
+          ...state,
           filterTypes: [value, ...state.filterTypes],
+        }));
+      },
+      removeFilterTpyes: (value) => {
+        return set((state) => ({
+          ...state,
+          filterTypes: state.filterTypes.filter((item) => item !== value),
         }));
       },
     })),
