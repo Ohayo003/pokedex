@@ -6,6 +6,8 @@ export interface IStore {
   toggleView: (value?: boolean) => void;
   currentPage: number;
   loading: boolean;
+  filterTypes: string[];
+  setFilterTypes: (value: string) => void;
   setLoading: (value: boolean) => void;
   setCurrentPage: (value: number) => void;
   carousel: {
@@ -37,19 +39,26 @@ const useStore = create<IStore>(
       carousel: [],
       addCarousel: (id, image, bg) => {
         return set((state) => ({
-          // ...state.carousel,
           carousel: [
-            ...state.carousel,
             {
               id,
               image,
               bg,
             },
+            ...state.carousel.filter((object) => {
+              return object.id !== id;
+            }),
           ],
         }));
       },
       removeCarouseItem: () => {
         return set({ carousel: [] });
+      },
+      filterTypes: [],
+      setFilterTypes: (value) => {
+        return set((state) => ({
+          filterTypes: [value, ...state.filterTypes],
+        }));
       },
     })),
     { name: "useStore" }
