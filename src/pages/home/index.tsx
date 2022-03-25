@@ -104,16 +104,6 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    setlistView(list);
-    setCurrentPage(currentIndx + 1);
-
-    console.log(isFiltered);
-    if (types.length > 0) {
-      setIsFiltered(true);
-    } else {
-      setIsFiltered(false);
-    }
-
     if (isFiltered) {
       (async function () {
         await filterDataQuery({
@@ -131,16 +121,18 @@ const HomePage = () => {
         });
       })();
     }
-  }, [
-    currentIndx,
-    fetchAllPokemons,
-    filterDataQuery,
-    // types.length,
-    isFiltered,
-    list,
-    setCurrentPage,
-    types,
-  ]);
+  }, [fetchAllPokemons, filterDataQuery, isFiltered, types]);
+
+  useEffect(() => {
+    if (types.length > 0) {
+      setIsFiltered(true);
+    } else setIsFiltered(false);
+  }, [types.length]);
+
+  useEffect(() => {
+    setlistView(list);
+    setCurrentPage(currentIndx + 1);
+  }, [currentIndx, list, setCurrentPage]);
 
   if (loadingRoute) {
     return <Loading />;
