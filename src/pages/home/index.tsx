@@ -27,7 +27,14 @@ import {
   FILTER_POKEMON_BY_ELEMENT,
   GET_POKEMON_DATA_LIST,
 } from "src/graphql/queries/pokemon/pokemonlist";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import {
+  LazyQueryResult,
+  OperationVariables,
+  QueryLazyOptions,
+  useLazyQuery,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
 import Router, { useRouter } from "next/router";
@@ -43,30 +50,34 @@ const HomePage = () => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [currentIndx, setCurrentIndx] = useState(0);
   const [currentLastIdx, setCurrentLastIdx] = useState(10);
-  const [filteredData, setFilteredData] = useState<GetPokemonDataList | any>();
+  const numberPerPage = 10;
   const router = useRouter();
-
+  const types = useStore((state) => state.filterTypes);
+  const setTypes = useStore((state) => state.setFilterTypes);
   const loadingRoute = useStore((state) => state.loading);
-  const setLoading = useStore((state) => state.setLoading);
+  const setCurrentPage = useStore((state) => state.setCurrentPage);
   const list = useStore((state) => state.listView);
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
   ///useQuery to display list of pokemon
-  const { loading, data, error, fetchMore, refetch } = useQuery<
+  const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
     GetPokemonDataList,
     GetPokemonDataListVariables
   >(GET_POKEMON_DATA_LIST, {
-    variables: {
-      limit: 100,
-      offset: 0,
-    },
     notifyOnNetworkStatusChange: true,
     context: { clientName: "pokedexapi" },
   });
 
-  console.log(isFiltered);
-  console.log(filteredData);
+  ///useLazyQuery for filtering pokemon by pokemon element Type
+  const [
+    filterDataQuery,
+    { data: filterData, error: filterError, loading: filterLoading },
+  ] = useLazyQuery<GetPokemonDataList>(FILTER_POKEMON_BY_ELEMENT, {
+    notifyOnNetworkStatusChange: true,
+    context: { clientName: "pokedexapi" },
+  });
+  console.log(data);
   ///usePagination custom hook
   const {
     currentPage,
@@ -75,7 +86,9 @@ const HomePage = () => {
     previousPage,
     selectedPage,
     currentData,
-  } = usePagination(10, { data: data?.pokemons! });
+  } = usePagination(10, {
+    data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
+  });
 
   const handleFetchMore = async () => {
     await fetchMore({
@@ -92,7 +105,42 @@ const HomePage = () => {
 
   useEffect(() => {
     setlistView(list);
-  }, [list]);
+    setCurrentPage(currentIndx + 1);
+
+    console.log(isFiltered);
+    if (types.length > 0) {
+      setIsFiltered(true);
+    } else {
+      setIsFiltered(false);
+    }
+
+    if (isFiltered) {
+      (async function () {
+        await filterDataQuery({
+          variables: { type: types },
+        });
+      })();
+      // router.push("/home", { query: `types=${types}` });
+    } else {
+      (async function () {
+        await fetchAllPokemons({
+          variables: {
+            limit: 100,
+            offset: 0,
+          },
+        });
+      })();
+    }
+  }, [
+    currentIndx,
+    fetchAllPokemons,
+    filterDataQuery,
+    // types.length,
+    isFiltered,
+    list,
+    setCurrentPage,
+    types,
+  ]);
 
   if (loadingRoute) {
     return <Loading />;
@@ -118,11 +166,8 @@ const HomePage = () => {
           >
             Choose a Pokemon
           </Text>
-          <HStack gap={8}>
-            <Filters
-              setIsFiltered={setIsFiltered}
-              setFilteredData={setFilteredData!}
-            />
+          <Flex gridColumnGap={5} px={4} py={3}>
+            <Filters types={types} setTypes={setTypes} />
             <Icon
               zIndex={1}
               _hover={{ cursor: "pointer" }}
@@ -144,17 +189,17 @@ const HomePage = () => {
               w={5}
               h={5}
             />
-          </HStack>
+          </Flex>
         </Flex>
 
         <Box mt={10} zIndex={1}>
           {listView ? (
-            loading ? (
+            loading || filterLoading ? (
               <Loading />
             ) : (
               <PokemonListView pokemon={currentData()} />
             )
-          ) : loading ? (
+          ) : loading || filterLoading ? (
             <Loading />
           ) : (
             <PokemonGridView pokemons={currentData()} />
@@ -181,11 +226,10 @@ const HomePage = () => {
         <Flex justifyContent="center" gap={6} align="center" zIndex={1}>
           <Icon
             onClick={() => {
-              if (currentPage <= currentIndx && currentIndx > 1) {
-                setCurrentLastIdx(currentLastIdx - 10);
-                setCurrentIndx(currentIndx - 10);
+              if (currentIndx > 1) {
+                setCurrentLastIdx((prev) => prev - numberPerPage);
+                setCurrentIndx((prev) => prev - numberPerPage);
               }
-              previousPage();
             }}
             as={BiChevronLeft}
             w={6}
@@ -221,14 +265,14 @@ const HomePage = () => {
           </HStack>
           <Icon
             onClick={() => {
-              if (currentPage >= numberOfPages.length) {
+              if (data?.pokemons.length! < 1126) {
                 handleFetchMore();
+                setCurrentIndx((prev) => prev + numberPerPage);
+                setCurrentLastIdx((prev) => prev + numberPerPage);
+              } else {
+                setCurrentIndx((prev) => prev + numberPerPage);
+                setCurrentLastIdx((prev) => prev + numberPerPage);
               }
-              if (currentPage >= currentLastIdx) {
-                setCurrentIndx(currentIndx + currentLastIdx);
-                setCurrentLastIdx(currentLastIdx + currentPage);
-              }
-              nextPage();
             }}
             as={BiChevronRight}
             w={6}
@@ -248,14 +292,12 @@ const HomePage = () => {
 export default HomePage;
 
 interface IFilters {
-  setIsFiltered: Dispatch<React.SetStateAction<boolean>>;
-  setFilteredData?: Dispatch<SetStateAction<GetPokemonDataList | any>>;
+  types: string[];
+  setTypes: (value: string) => void;
 }
 
 ///Filter Selection
-const Filters = ({ setIsFiltered, setFilteredData }: IFilters) => {
-  const [currentIndex, setCurrentIndex] = useState<number | null>();
-  const [types, setTypes] = useState<string[]>([]);
+const Filters = ({ types, setTypes }: IFilters) => {
   const { data: typeData } = useQuery<GetPokemonTypes>(GET_POKEMON_TYPES, {
     context: { clientName: "pokedexapi" },
   });
@@ -266,92 +308,53 @@ const Filters = ({ setIsFiltered, setFilteredData }: IFilters) => {
     filters = [...typeData.types];
   }
 
-  const [filterData, { data, loading, error }] = useLazyQuery(
-    FILTER_POKEMON_BY_ELEMENT,
-    {
-      fetchPolicy: "network-only",
-      notifyOnNetworkStatusChange: true,
-      context: { clientName: "pokedexapi" },
-    }
-  );
-
   const handleAddFilter = (type: string) => {
     const idx = types.indexOf(type);
     console.log(idx);
     if (idx === -1) {
-      setTypes((prev) => [...prev, type]);
+      setTypes(type);
     }
 
-    handleFilterPokemon(types);
     console.log(types);
   };
-  function getChecked() {
-    // console.log(getChex);
-  }
 
-  const handleFilterPokemon = async (type: string[]) => {
-    console.log("this is types : ", type);
-    const newType =
-      type &&
-      type.map((type) => {
-        return type.toLocaleLowerCase();
-      });
-    await filterData({
-      variables: {
-        type: newType,
-      },
-    });
-  };
-  if (error) {
-    console.log(error.message);
-  }
-  if (data?.pokemons) {
-    console.log(data);
-    setFilteredData(data!);
-  }
-
-  // const filters = ["Normal", "Fire", "Water", "Grass", "Flying", "Fighting"];
   return (
-    <Stack direction={"row"} spacing={7}>
-      <Menu closeOnSelect={false}>
-        <MenuButton
-          as={Button}
-          rounded={"full"}
-          variant={"link"}
-          cursor={"pointer"}
-          minW={0}
-        >
-          <Icon as={HiOutlineFilter} fill="white" w={5} h={5} />
-        </MenuButton>
-        <MenuList
-          overflow="hidden"
-          overflowY="auto"
-          sx={{
-            "&::-webkit-scrollbar": {
-              width: "4px",
-              borderRadius: "12px",
-              backgroundColor: `rgba(0, 0, 0, 0.05)`,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "primary",
-            },
-          }}
-          height="230px"
-          ml={-10}
-          width={44}
-          zIndex={2}
-        >
-          {filters &&
-            filters.map((type, idx) => {
+    <Menu closeOnSelect={false} placement="bottom-start" gutter={10}>
+      <MenuButton
+        as={Button}
+        rounded={"full"}
+        variant={"link"}
+        cursor={"pointer"}
+        minW={0}
+      >
+        <Icon as={HiOutlineFilter} fill="white" w={5} h={5} />
+      </MenuButton>
+      <MenuList
+        overflow="hidden"
+        overflowY="auto"
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "4px",
+            borderRadius: "12px",
+            backgroundColor: `rgba(0, 0, 0, 0.05)`,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "primary",
+          },
+        }}
+        height="230px"
+        ml={-10}
+        width={44}
+        zIndex={2}
+      >
+        {filters &&
+          filters
+            .filter((obj) => {
+              return obj.name !== "unknown";
+            })
+            .map((type, idx) => {
               return (
-                <MenuItem
-                  onClick={() => {
-                    setCurrentIndex(idx);
-                    handleAddFilter(type.name);
-                    // handleFilterPokemon(types);
-                  }}
-                  key={idx}
-                >
+                <MenuItem key={idx}>
                   <Flex minW="full" justifyContent="space-between">
                     <Text
                       fontFamily="Inter"
@@ -366,23 +369,23 @@ const Filters = ({ setIsFiltered, setFilteredData }: IFilters) => {
                       iconColor="primaryDark"
                       borderRadius="lg"
                       value={type.name}
-                      // isChecked={}
+                      checked={types[idx] === type.name}
+                      isChecked={types[idx] === type.name ? true : false}
                       onChange={(value) => {
+                        if (value.target.checked) {
+                          handleAddFilter(value.target.value);
+                        }
                         types.splice(types.indexOf(value.target.value), 1);
-                        console.log(types);
-                        handleAddFilter(value.target.value);
                       }}
                       size="lg"
                       colorScheme="background.amber"
                     />
                   </Flex>
                 </MenuItem>
-                //   </Box>
               );
             })}
-        </MenuList>
-      </Menu>
-    </Stack>
+      </MenuList>
+    </Menu>
   );
 };
 
