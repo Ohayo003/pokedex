@@ -1,0 +1,146 @@
+import { useQuery } from "@apollo/client";
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Flex,
+  Icon,
+  Menu,
+  MenuButton,
+  Image,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
+import { HiOutlineFilter } from "react-icons/hi";
+import { GET_POKEMON_TYPES } from "src/graphql/queries/pokemon/pokemonlist";
+import useStore from "src/hooks/useStore";
+import { GetPokemonTypes } from "src/types/GetPokemonTypes";
+import { elementIcons } from "src/utils/elementIcons";
+
+const FilterType = () => {
+  const types = useStore((state) => state.filterTypes);
+  const setTypes = useStore((state) => state.setFilterTypes);
+  const removeFilterType = useStore((state) => state.removeFilterTpyes);
+  let filters: GetPokemonTypes["types"] = [];
+
+  ///Fetch all the types
+  const { data: typeData } = useQuery<GetPokemonTypes>(GET_POKEMON_TYPES, {
+    context: { clientName: "pokedexapi" },
+  });
+
+  if (typeData?.types) {
+    filters = [...typeData.types];
+  }
+
+  ///handles adding the selected filter types in the array of types
+  ///That will be used in the fetching of pokemon by Types
+  const handleAddFilter = (type: string) => {
+    const idx = types.indexOf(type);
+    const findType = types.find((item) => item === type);
+    console.log(idx);
+    if (!findType) {
+      setTypes(type);
+    }
+
+    console.log(types);
+  };
+
+  return (
+    <Menu closeOnSelect={false} placement="bottom-start" gutter={10}>
+      <MenuButton
+        as={Button}
+        rounded={"full"}
+        variant={"link"}
+        cursor={"pointer"}
+        minW={0}
+      >
+        <Icon
+          as={HiOutlineFilter}
+          fill="white"
+          w={{ lg: 5, base: 10 }}
+          h={{ lg: 5, base: 10 }}
+        />
+      </MenuButton>
+      <MenuList
+        background="background.container"
+        overflow="hidden"
+        overflowY="auto"
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "4px",
+            borderRadius: "12px",
+            backgroundColor: `rgba(0, 0, 0, 0.05)`,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "gray700",
+          },
+        }}
+        color="text.light"
+        height="230px"
+        ml={-24}
+        width={44}
+        zIndex={2}
+      >
+        <CheckboxGroup
+          defaultValue={
+            types &&
+            types.map((item) => {
+              return item;
+            })
+          }
+        >
+          {filters &&
+            filters
+              .filter((obj) => {
+                return obj.name !== "unknown";
+              })
+              .sort((a, b) => {
+                return a.name > b.name ? 1 : -1;
+              })
+              .map((type, idx) => {
+                return (
+                  <MenuItem
+                    _focus={{ background: "gray800" }}
+                    _hover={{ color: "gray500", background: "gray800" }}
+                    key={idx}
+                  >
+                    <Flex minW="full" justifyContent="space-between">
+                      <Image
+                        src={`${elementIcons[type.name.toLocaleLowerCase()]}`}
+                        alt={type.name}
+                      />
+                      <Text
+                        fontFamily="Inter"
+                        fontStyle="normal"
+                        fontWeight="400"
+                        fontSize="sm"
+                        lineHeight="xl"
+                      >
+                        {type.name.toUpperCase()}
+                      </Text>
+                      <Checkbox
+                        iconColor="primaryDark"
+                        borderRadius="lg"
+                        value={type.name}
+                        onChange={(value) => {
+                          if (value.target.checked) {
+                            handleAddFilter(value.target.value);
+                          } else {
+                            removeFilterType(value.target.value);
+                          }
+                        }}
+                        size="lg"
+                        colorScheme="background.amber"
+                      />
+                    </Flex>
+                  </MenuItem>
+                );
+              })}
+        </CheckboxGroup>
+      </MenuList>
+    </Menu>
+  );
+};
+
+export default FilterType;

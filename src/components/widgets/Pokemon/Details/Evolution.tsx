@@ -2,14 +2,12 @@ import { Box, HStack, Icon, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 import "@fontsource/inter";
-import pikatchu from "public/assets/background/login-image.png";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import Card from "src/components/widgets/Card";
-import { GetPokemon_pokemon_element } from "../../../../types/GetPokemon";
+import { GetPokemon_pokemon_element } from "src/types/GetPokemon";
 import { GetPokemon_pokemon_pokemon_v2_pokemonspecy } from "src/types/GetPokemon";
 import colorTypes from "src/utils/colorTypes";
-import { object } from "yup";
-import usePokemonHelper from "src/hooks/usePokemonHelper";
+import { usePokemonHelper } from "src/hooks/usePokemonHelper";
 
 type EvolutionType = {
   evolution: GetPokemon_pokemon_pokemon_v2_pokemonspecy;
@@ -23,16 +21,18 @@ const Evolution = ({ evolution, element, name }: EvolutionType) => {
     name: name,
   });
 
-
   return (
-    <Box>
-      <Box width="25.188rem">
+    <Box
+      mx={{ base: "20px", lg: "auto" }}
+      width={{ base: "35rem", lg: "49.938rem" }}
+    >
+      <Box width={{ lg: "30rem", base: "35rem" }}>
         <Text
           fontFamily="Inter"
           fontStyle="normal"
           fontWeight="400"
-          fontSize="sm"
           color="text.default"
+          fontSize="sm"
           lineHeight="21px"
         >
           There are currently a total of{" "}
@@ -41,35 +41,42 @@ const Evolution = ({ evolution, element, name }: EvolutionType) => {
           {evovleFromData?.name!} which costs 25 Candy.
         </Text>
       </Box>
-      <Card mt={4} p={8}>
+      <Card mt={4} p={8} width="">
         <VStack gap={6}>
           {evolution?.evolutionChain?.evolutions.map((item, idx) => {
             return (
-              <HStack gap="11.5rem" key={idx}>
+              <HStack gap={{ lg: "11.5rem", base: "7rem" }} key={idx}>
                 <VStack gap={2}>
                   <Box
-                    width="5.5rem"
-                    height="5.5rem"
+                    width={{ lg: "5.5rem", base: "7rem" }}
+                    height={{ lg: "5.5rem", base: "7rem" }}
+                    p={1}
                     overflow="hidden"
                     borderRadius="md"
                     background={colorTypes(element[0].type?.name!)}
                   >
-                    <Image
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
-                        item.evolveFrom !== null ? item.evolveFrom : item.id
-                      }.png`}
-                      alt="pikatchu"
-                      layout="responsive"
-                      width={10}
-                      height={9}
-                    />
+                    <Box
+                      alignSelf="center"
+                      background="whiteAlpha.800"
+                      borderRadius={100}
+                      borderWidth="2px 2px 6px 2px"
+                    >
+                      <Image
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
+                          item.evolveFrom !== null ? item.evolveFrom : item.id
+                        }.png`}
+                        alt="pikatchu"
+                        layout="responsive"
+                        width={10}
+                        height={9}
+                      />
+                    </Box>
                   </Box>
 
                   <Text
                     fontFamily="Inter"
                     fontStyle="normal"
                     fontWeight="400"
-                    fontSize="sm"
                     color="text.default"
                     lineHeight="21px"
                   >
@@ -94,7 +101,6 @@ const Evolution = ({ evolution, element, name }: EvolutionType) => {
                     fontFamily="Inter"
                     fontStyle="normal"
                     fontWeight="600"
-                    fontSize="16px"
                     lineHeight="26px"
                     color="text.default"
                   >
@@ -102,24 +108,32 @@ const Evolution = ({ evolution, element, name }: EvolutionType) => {
                       ? item.evolveTrigger[0].min_level === null
                         ? "?"
                         : item.evolveTrigger[0].min_level
-                      : 0}
+                      : 1}
                   </Text>
                 </VStack>
                 <VStack gap={2}>
                   <Box
-                    width="5.5rem"
-                    height="5.5rem"
+                    width={{ lg: "5.5rem", base: "7rem" }}
+                    height={{ lg: "5.5rem", base: "7rem" }}
+                    p={1}
                     overflow="hidden"
                     background={colorTypes(element[0].type?.name!)}
                     borderRadius="md"
                   >
-                    <Image
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${item.id}.png`}
-                      alt="pikatchu"
-                      layout="responsive"
-                      width={10}
-                      height={9}
-                    />
+                    <Box
+                      alignSelf="center"
+                      background="whiteAlpha.800"
+                      borderRadius={100}
+                      borderWidth="2px 2px 6px 2px"
+                    >
+                      <Image
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${item.id}.png`}
+                        alt="pikatchu"
+                        layout="responsive"
+                        width={10}
+                        height={9}
+                      />
+                    </Box>
                   </Box>
 
                   <Text

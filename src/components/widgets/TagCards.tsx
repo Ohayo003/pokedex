@@ -2,13 +2,13 @@ import { Box, Tag, Text } from "@chakra-ui/react";
 import React from "react";
 import "@fontsource/public-sans";
 
-interface ISkillCard {
+interface ITagCards {
   name: string;
   borderColor: string;
   bg: string;
   color: string;
 }
-const SkillCard = ({ name, borderColor, bg, color }: ISkillCard) => {
+const TagCards = ({ name, borderColor, bg, color }: ITagCards) => {
   return (
     <Tag
       border="1px solid "
@@ -32,4 +32,4 @@ const SkillCard = ({ name, borderColor, bg, color }: ISkillCard) => {
   );
 };
 
-export default SkillCard;
+export default TagCards;

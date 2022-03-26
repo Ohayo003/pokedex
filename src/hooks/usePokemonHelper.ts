@@ -6,7 +6,7 @@ type PokemonHelperType = {
   gender_rate?: number;
 };
 
-const usePokemonHelper = ({
+export const usePokemonHelper = ({
   evolution,
   name,
   gender_rate,
@@ -14,6 +14,7 @@ const usePokemonHelper = ({
   const nameCopy = name;
   const capitalizedName =
     nameCopy?.charAt(0).toUpperCase()! + nameCopy?.slice(1)!;
+
 
   ///get Gender (male, female, genderless) using gender_rate
   function getGenderValue() {
@@ -47,6 +48,8 @@ const usePokemonHelper = ({
     (object) => object.id === currentEvovleForm?.evolveFrom
   );
 
+
+  
   return {
     capitalizedName,
     evovleFromData,
@@ -55,5 +58,3 @@ const usePokemonHelper = ({
     currentEvovleForm,
   };
 };
-
-export default usePokemonHelper;

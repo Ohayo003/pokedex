@@ -1,9 +1,10 @@
-import { Box, VStack, Text, HStack, Divider } from "@chakra-ui/react";
+import { Box, VStack, Text, HStack, Divider, Flex } from "@chakra-ui/react";
 import React from "react";
 import "@fontsource/inter";
 import Card from "src/components/widgets/Card";
 import { GetPokemon } from "src/types/GetPokemon";
-import usePokemonHelper from "src/hooks/usePokemonHelper";
+import { usePokemonHelper } from "src/hooks/usePokemonHelper";
+import TagCards from "src/components/widgets/TagCards";
 
 type AboutType = {
   pokemon: GetPokemon["pokemon"];
@@ -22,7 +23,7 @@ const About = ({ pokemon }: AboutType) => {
         fontFamily="Inter"
         fontStyle="normal"
         fontWeight="400"
-        fontSize="16px"
+        fontSize={{ lg: "md", base: "2xl" }}
         lineHeight="26px"
         color="text.default"
       >
@@ -100,7 +101,7 @@ const About = ({ pokemon }: AboutType) => {
               >
                 Height
               </Text>
-              <HStack gap={9}>
+              <HStack gap={4}>
                 <HStack gap={2}>
                   <Text
                     fontFamily="Inter"
@@ -131,25 +132,32 @@ const About = ({ pokemon }: AboutType) => {
                   >
                     Egg Group:
                   </Text>
-                  <Box>
+                  <Flex flexDirection="column" gap={2}>
                     {pokemon?.pokemon_v2_pokemonspecy?.eggroups.length! &&
                       pokemon.pokemon_v2_pokemonspecy?.eggroups.map(
                         (group, idx) => {
                           return (
-                            <Text
+                            <TagCards
                               key={idx}
-                              fontFamily="Inter"
-                              fontStyle="normal"
-                              fontWeight="400"
-                              lineHeight="26px"
+                              name={group.names?.name!}
+                              borderColor="white"
+                              bg="gray500"
                               color="text.light"
-                            >
-                              {group.names?.name}
-                            </Text>
+                            />
+                            // <Text
+                            //   key={idx}
+                            //   fontFamily="Inter"
+                            //   fontStyle="normal"
+                            //   fontWeight="400"
+                            //   lineHeight="26px"
+                            //   color="text.light"
+                            // >
+                            //   {}
+                            // </Text>
                           );
                         }
                       )}
-                  </Box>
+                  </Flex>
                 </HStack>
                 <HStack gap={2}>
                   <Text

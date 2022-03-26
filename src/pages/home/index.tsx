@@ -1,23 +1,9 @@
-import {
-  Box,
-  Checkbox,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-  Stack,
-  Menu,
-  CheckboxGroup,
-  MenuItem,
-  MenuButton,
-  MenuList,
-  Button,
-} from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Box, Flex, HStack, Icon, Text, Button } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
 import "@fontsource/inter";
-import { HiViewList, HiOutlineFilter } from "react-icons/hi";
+import { HiViewList } from "react-icons/hi";
 import { BsGridFill } from "react-icons/bs";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import PokemonListView from "src/components/widgets/Pokemon/PokemonListView";
@@ -28,35 +14,38 @@ import {
   FILTER_POKEMON_BY_ELEMENT,
   GET_POKEMON_DATA_LIST,
 } from "src/graphql/queries/pokemon/pokemonlist";
-import {
-  useLazyQuery,
-  useQuery,
-} from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
 import { useRouter } from "next/router";
-import { GET_POKEMON_TYPES } from "../../graphql/queries/pokemon/pokemonlist";
-import { GetPokemonTypes } from "../../types/GetPokemonTypes";
 import {
   GetPokemonDataList,
   GetPokemonDataListVariables,
 } from "src/types/GetPokemonDataList";
+import useSound from "use-sound";
+// import themesong from "public/assets/music/pokemon_themesong.mp3";
+import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 
 const HomePage = () => {
+  const bgMusic =
+    // themesong;
+    "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
   const { status } = useSession({ required: true });
+  const router = useRouter();
   const isFiltered = useStore((state) => state.isFiltered);
   const setIsFiltered = useStore((state) => state.setIsFiltered);
-  const [currentIndx, setCurrentIndx] = useState(0);
-  const [currentLastIdx, setCurrentLastIdx] = useState(10);
-  const numberPerPage = 10;
-  const router = useRouter();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentLastIndex, setCurrentLastIndex] = useState(10);
   const types = useStore((state) => state.filterTypes);
-  const setTypes = useStore((state) => state.setFilterTypes);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   const list = useStore((state) => state.listView);
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
+  const [play, isPlaying] = useSound(bgMusic, {
+    volume: 0.1,
+    interrupt: true,
+  });
   ///useQuery to display list of pokemon
   const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
     GetPokemonDataList,
@@ -66,6 +55,12 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
+  useEffect(() => {
+    if (!isPlaying) {
+      play();
+    }
+  }, [isPlaying, play]);
+
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
     filterDataQuery,
@@ -73,18 +68,6 @@ const HomePage = () => {
   ] = useLazyQuery<GetPokemonDataList>(FILTER_POKEMON_BY_ELEMENT, {
     notifyOnNetworkStatusChange: true,
     context: { clientName: "pokedexapi" },
-  });
-
-  ///usePagination custom hook
-  const {
-    currentPage,
-    numberOfPages,
-    nextPage,
-    previousPage,
-    selectedPage,
-    currentData,
-  } = usePagination(10, {
-    data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
   });
 
   ///Handle the fetchmore data for list of pokemon
@@ -100,6 +83,25 @@ const HomePage = () => {
       },
     });
   };
+
+  ///usePagination custom hook
+  const {
+    currentPage,
+    numberOfPages,
+    nextPage,
+    previousPage,
+    selectedPage,
+    currentData,
+  } = usePagination(list ? 10 : 8, {
+    data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
+    isRecent: false,
+    currentIndex,
+    currentLastIndex,
+    filtered: isFiltered,
+    handleFetchMore,
+    setCurrentIndex,
+    setCurrentLastIndex,
+  });
 
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
@@ -132,39 +134,46 @@ const HomePage = () => {
   ///Set the current page to the first page on load
   useEffect(() => {
     setlistView(list);
-    setCurrentPage(currentIndx + 1);
-  }, [currentIndx, list, setCurrentPage]);
+    setCurrentPage(currentIndex + 1);
+  }, [currentIndex, list, setCurrentPage]);
 
   return (
     <Box
-      minH={{ lg: "100vh", base: "fit-content" }}
+      minH="100vh"
       // w={{ base: "full" }}
-      minW={{ base: "482px" }}
+      // minW={{ base: "482px" }}
       mt={9}
       mb={14}
     >
-      <Flex flexDirection="column" mx="auto" maxW="70%">
+      <Flex
+        flexDirection="column"
+        mx={{ lg: "auto", base: "20px" }}
+        maxW={{ lg: "70%", base: "100%" }}
+      >
         <Flex justifyContent="space-between">
           <Text
             fontFamily="Inter"
             fontStyle="normal"
+            display={{ base: "flex", lg: "block" }}
+            alignItems={{ base: "center", lg: "start" }}
+            justifyItems="center"
             fontWeight="600"
-            fontSize="xl"
+            fontSize={{ lg: "xl", base: "2xl" }}
             lineHeight="32px"
             color="light"
           >
             Choose a Pokemon
           </Text>
           <Flex gridColumnGap={5} px={4} py={3}>
-            <Filters />
+            <FilterType />
             <Icon
               zIndex={1}
               _hover={{ cursor: "pointer" }}
               onClick={() => toggleView(true)}
               as={HiViewList}
               fill="white"
-              w={5}
-              h={5}
+              w={{ lg: 5, base: 10 }}
+              h={{ lg: 5, base: 10 }}
             />
 
             <Icon
@@ -175,8 +184,8 @@ const HomePage = () => {
               as={BsGridFill}
               fill="white"
               aria-label="grid"
-              w={5}
-              h={5}
+              w={{ lg: 5, base: 10 }}
+              h={{ lg: 5, base: 10 }}
             />
           </Flex>
         </Flex>
@@ -214,14 +223,9 @@ const HomePage = () => {
         </HStack>
 
         {/** Pagination Section */}
-        <Flex justifyContent="center" gap={6} align="center" zIndex={1}>
+        <Flex justifyContent="center" mt={2} gap={6} align="center" zIndex={1}>
           <Icon
-            onClick={() => {
-              if (currentIndx > 1) {
-                setCurrentLastIdx((prev) => prev - numberPerPage);
-                setCurrentIndx((prev) => prev - numberPerPage);
-              }
-            }}
+            onClick={previousPage}
             as={BiChevronLeft}
             w={6}
             h={6}
@@ -232,7 +236,7 @@ const HomePage = () => {
             fill="#718096"
           />
           <HStack>
-            {numberOfPages.slice(currentIndx, currentLastIdx).map((idx) => {
+            {numberOfPages.slice(currentIndex, currentLastIndex).map((idx) => {
               return (
                 <Button
                   key={idx}
@@ -255,16 +259,7 @@ const HomePage = () => {
             })}
           </HStack>
           <Icon
-            onClick={() => {
-              if (data?.pokemons.length! < 1126) {
-                handleFetchMore();
-                setCurrentIndx((prev) => prev + numberPerPage);
-                setCurrentLastIdx((prev) => prev + numberPerPage);
-              } else {
-                setCurrentIndx((prev) => prev + numberPerPage);
-                setCurrentLastIdx((prev) => prev + numberPerPage);
-              }
-            }}
+            onClick={nextPage}
             as={BiChevronRight}
             w={6}
             h={6}
@@ -281,121 +276,6 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-// interface IFilters {
-//   types: string[];
-//   setTypes: (value: string) => void;
-// }
-
-///Filter Selection
-const Filters = () => {
-  const types = useStore((state) => state.filterTypes);
-  const setTypes = useStore((state) => state.setFilterTypes);
-  const removeFilterType = useStore((state) => state.removeFilterTpyes);
-
-  const { data: typeData } = useQuery<GetPokemonTypes>(GET_POKEMON_TYPES, {
-    context: { clientName: "pokedexapi" },
-  });
-
-  let filters: GetPokemonTypes["types"] = [];
-
-  if (typeData?.types) {
-    filters = [...typeData.types];
-  }
-
-  const handleAddFilter = (type: string) => {
-    const idx = types.indexOf(type);
-    const findType = types.find((item) => item === type);
-    console.log(idx);
-    if (!findType) {
-      setTypes(type);
-    }
-
-    console.log(types);
-  };
-
-  return (
-    <Menu closeOnSelect={false} placement="bottom-start" gutter={10}>
-      <MenuButton
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-        minW={0}
-      >
-        <Icon as={HiOutlineFilter} fill="white" w={5} h={5} />
-      </MenuButton>
-      <MenuList
-        overflow="hidden"
-        overflowY="auto"
-        sx={{
-          "&::-webkit-scrollbar": {
-            width: "4px",
-            borderRadius: "12px",
-            backgroundColor: `rgba(0, 0, 0, 0.05)`,
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "primary",
-          },
-        }}
-        height="230px"
-        ml={-10}
-        width={44}
-        zIndex={2}
-      >
-        <CheckboxGroup
-          defaultValue={
-            types &&
-            types.map((item) => {
-              return item;
-            })
-          }
-        >
-          {filters &&
-            filters
-              .filter((obj) => {
-                return obj.name !== "unknown";
-              })
-              .map((type, idx) => {
-                return (
-                  <MenuItem key={idx}>
-                    <Flex minW="full" justifyContent="space-between">
-                      <Text
-                        fontFamily="Inter"
-                        fontStyle="normal"
-                        fontWeight="400"
-                        fontSize="sm"
-                        lineHeight="xl"
-                      >
-                        {type.name}
-                      </Text>
-                      <Checkbox
-                        iconColor="primaryDark"
-                        borderRadius="lg"
-                        value={type.name}
-                        // checked={types[idx] === type.name}
-                        // isChecked={types[idx] === type.name ? true : false}
-                        // isChecked={}
-                        onChange={(value) => {
-                          if (value.target.checked) {
-                            handleAddFilter(value.target.value);
-                          } else {
-                            removeFilterType(value.target.value);
-                          }
-                          // types.splice(types.indexOf(value.target.value), 1);
-                        }}
-                        size="lg"
-                        colorScheme="background.amber"
-                      />
-                    </Flex>
-                  </MenuItem>
-                );
-              })}
-        </CheckboxGroup>
-      </MenuList>
-    </Menu>
-  );
-};
 
 HomePage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

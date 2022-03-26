@@ -1,20 +1,9 @@
-import {
-  Box,
-  HStack,
-  VStack,
-  Text,
-  Grid,
-  Table,
-  Tr,
-  Tbody,
-  Th,
-  Td,
-} from "@chakra-ui/react";
+import { Box, HStack, VStack, Text, Grid } from "@chakra-ui/react";
 import React from "react";
 import "@fontsource/inter";
 import { Flex } from "@chakra-ui/react";
 import Card from "src/components/widgets/Card";
-import SkillCard from "src/components/widgets/SkillCard";
+import TagCards from "src/components/widgets/TagCards";
 import {
   GetPokemon_pokemon_moves,
   GetPokemon_pokemon_abilities,
@@ -26,10 +15,8 @@ type MovesType = {
 };
 
 const Moves = ({ moves, abilities }: MovesType) => {
-  console.log(moves);
-
   return (
-    <Box>
+    <Box width={{ base: "35rem", lg: "49.938rem" }}>
       <Card>
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
           <VStack align="left" gap={6}>
@@ -45,7 +32,7 @@ const Moves = ({ moves, abilities }: MovesType) => {
             <HStack gap={10}>
               {abilities.map((ability, idx) => {
                 return (
-                  <SkillCard
+                  <TagCards
                     key={idx}
                     name={ability.ability?.name!}
                     borderColor="text.blue200"
@@ -56,41 +43,24 @@ const Moves = ({ moves, abilities }: MovesType) => {
               })}
             </HStack>
           </VStack>
-
-          {/* <Box>
-            <Table
-              width="18.563rem"
-              fontFamily="Inter"
-              fontStyle="normal"
-              fontWeight="600"
-              fontSize="14px"
-              lineHeight="17px"
-              color="text.gray100"
-            >
-              <Tr>
-                <Td>Damage</Td>
-                <Td>DPS</Td>
-                <Td>EPS</Td>
-              </Tr>
-              <Tbody>
-                {Array(2)
-                  .fill(null)
-                  .map((item, idx) => {
-                    return (
-                      <Tr key={idx}>
-                        <Td>10</Td>
-                        <Td>10</Td>
-                        <Td>10</Td>
-                      </Tr>
-                    );
-                  })}
-              </Tbody>
-            </Table>
-          </Box> */}
         </Flex>
       </Card>
 
-      <Card mt={8} overflowY="scroll" scrollBehavior="smooth" height="341px">
+      <Card
+        mt={8}
+        overflowY="auto"
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "4px",
+            borderRadius: "full",
+            backgroundColor: `rgba(0, 0, 0, 0.05)`,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "gray700",
+          },
+        }}
+        height="341px"
+      >
         <Flex pl={12} pr={12} pt={6} pb={6} justify="space-between">
           <VStack align="left" gap="18px">
             <Text
@@ -104,7 +74,7 @@ const Moves = ({ moves, abilities }: MovesType) => {
             </Text>
             {moves.map((item, idx) => {
               return (
-                <SkillCard
+                <TagCards
                   key={idx}
                   name={item.move?.name!}
                   borderColor="text.blue200"
@@ -170,32 +140,6 @@ const Moves = ({ moves, abilities }: MovesType) => {
                 </Grid>
               );
             })}
-            {/* <Table
-              width="18.563rem"
-              fontFamily="Inter"
-              fontStyle="normal"
-              fontWeight="600"
-              fontSize="14px"
-              lineHeight="17px"
-              color="text.gray100"
-            >
-              <Tr>
-                <Td>Damage</Td>
-                <Td>DPS</Td>
-                <Td>EPS</Td>
-              </Tr>
-              <Tbody>
-                {moves.map((item, idx) => {
-                  return (
-                    <Tr key={idx}>
-                      <Td>{item.move?.power}</Td>
-                      <Td>{item.move?.pp}</Td>
-                      <Td>10</Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table> */}
           </Box>
         </Flex>
       </Card>

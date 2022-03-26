@@ -16,7 +16,14 @@ import fairy from "public/assets/elements/fairy.svg";
 
 const Layout: React.FC<{}> = ({ children }) => {
   return (
-    <Grid minW="925px" minH="full" bg="background.container">
+    <Grid
+      minW={{ base: "fit-content" }}
+      // minW="200%"
+      // minW="925px"
+      minH="100vh"
+      h="full"
+      bg="background.container"
+    >
       <Header />
 
       <Box position="relative" height="auto">

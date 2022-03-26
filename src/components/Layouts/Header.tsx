@@ -38,7 +38,11 @@ const Header = () => {
 
   return (
     <Box h="7.25rem" background="background.gray500">
-      <Flex justifyContent="space-between" ml={16} mr={32}>
+      <Flex
+        justifyContent="space-between"
+        ml={{ lg: 16, base: 10 }}
+        mr={{ lg: 32, base: 10 }}
+      >
         <Heading
           pt={8}
           pb={8}
@@ -72,6 +76,7 @@ const Header = () => {
             <Stack direction={"row"} spacing={7} zIndex={2}>
               <Menu>
                 <MenuButton
+                  _focus={{ borderColor: "transparent" }}
                   as={Button}
                   rounded={"full"}
                   variant={"link"}

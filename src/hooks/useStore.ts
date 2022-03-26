@@ -40,7 +40,6 @@ const useStore = create<IStore>(
       carousel: [],
       addCarousel: (id, image, bg) => {
         return set((state) => ({
-          ...state,
           carousel: [
             {
               id,
@@ -60,7 +59,7 @@ const useStore = create<IStore>(
       setFilterTypes: (value) => {
         return set((state) => ({
           ...state,
-          filterTypes: [value, ...state.filterTypes],
+          filterTypes: [value.toLocaleLowerCase(), ...state.filterTypes],
         }));
       },
       removeFilterTpyes: (value) => {

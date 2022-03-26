@@ -1,5 +1,14 @@
-import { Box, Divider, HStack, Text, VStack, Flex } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Box,
+  Divider,
+  HStack,
+  Stack,
+  Text,
+  VStack,
+  Flex,
+  type BoxProps,
+} from "@chakra-ui/react";
+import React, { useEffect, useMemo, useState } from "react";
 import "@fontsource/inter";
 import Statistics from "./Statistics";
 import About from "src/components/widgets/Pokemon/Details/About";
@@ -7,25 +16,44 @@ import Evolution from "src/components/widgets/Pokemon/Details/Evolution";
 import Moves from "src/components/widgets/Pokemon/Details/Moves";
 import { GetPokemon } from "src/types/GetPokemon";
 import colorTypes from "src/utils/colorTypes";
-import usePokemonHelper from "src/hooks/usePokemonHelper";
+import { usePokemonHelper } from "src/hooks/usePokemonHelper";
+import { useRouter } from "next/router";
 
 type PokemonDetailsType = {
   pokemon: GetPokemon["pokemon"];
 };
 
 const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
+  const router = useRouter();
   const [currentSelected, setCurrentSelected] = useState(0);
 
   const { capitalizedName } = usePokemonHelper({ name: pokemon?.name! });
 
-  const buttonName = ["About", "Statistics", "Evolutions", "Moves"];
+  const buttonName = useMemo(
+    () => ["About", "Statistics", "Evolutions", "Moves"],
+    []
+  );
+
+  useEffect(() => {
+    const idx = buttonName.indexOf(router.query.tab as string);
+    if (idx > -1) {
+      setCurrentSelected(idx);
+    }
+  }, [buttonName, router.query]);
+
   return (
-    <VStack align="left" zIndex={1} width="49.938rem" pb={20}>
+    <VStack
+      mx={{ base: "20px", lg: "auto" }}
+      align={{ lg: "start", base: "center" }}
+      zIndex={1}
+      width={{ lg: "49.938rem", base: "35rem" }}
+      pb={20}
+    >
       <Text
         fontFamily="Inter"
         fontStyle="normal"
         fontWeight="700"
-        fontSize="32px"
+        fontSize={{ lg: "32px", base: "6xl" }}
         color="text.default"
         lineHeight="130%"
         letterSpacing="widest"
@@ -37,8 +65,8 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
           return (
             <Box
               key={idx}
-              width="102px"
-              height="35px"
+              width={{ lg: "6.375rem", base: "10rem" }}
+              height={{ lg: "2.188rem", base: "3rem" }}
               background={colorTypes(name.type?.name!)}
               textAlign="center"
               alignItems="center"
@@ -52,6 +80,7 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
                 fontStyle="normal"
                 fontWeight="400"
                 lineHeight="19px"
+                fontSize={{ base: "3xl", lg: "md" }}
                 color="#F7FAFC"
               >
                 {name.type?.name}
@@ -62,16 +91,25 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
       </Flex>
 
       {/** Buttons Section */}
-      <HStack gap={4} pt={14}>
+      <Stack
+        wrap={{ base: "wrap", lg: "nowrap" }}
+        justify="center"
+        direction="row"
+        gap={4}
+        pt={14}
+      >
         {buttonName.map((item, idx) => {
           return (
             <Box
               key={idx}
-              width="11.688rem"
-              height="3rem"
+              width={{ lg: "11.3rem", base: "16rem" }}
+              height={{ lg: "3rem", base: "4rem" }}
               display="flex"
               justifyContent="center"
-              onClick={() => setCurrentSelected(idx)}
+              onClick={() => {
+                setCurrentSelected(idx);
+                router.push(`/home/${pokemon?.id}` + `?tab=${item}`);
+              }}
               alignItems="center"
               background={currentSelected === idx ? "primary" : "#1F2937"}
               borderRadius="md"
@@ -83,7 +121,8 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
               <Text
                 fontFamily="Inter"
                 fontStyle="normal"
-                fontWeight="500"
+                fontSize={{ base: "2xl", lg: "md" }}
+                fontWeight={{ lg: "500", base: "bold" }}
                 lineHeight="19px"
                 color={currentSelected === idx ? "text.gray800" : "text.light"}
               >
@@ -92,8 +131,8 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
             </Box>
           );
         })}
-      </HStack>
-      <Box pt={14}>
+      </Stack>
+      <Box pt={10}>
         {currentSelected === 1 ? (
           <Statistics pokemon={pokemon!} />
         ) : currentSelected === 2 ? (

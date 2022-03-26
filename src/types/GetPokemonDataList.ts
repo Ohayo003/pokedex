@@ -24,7 +24,6 @@ export interface GetPokemonDataList_pokemons {
   __typename: "pokemon_v2_pokemon";
   id: number;
   name: string;
-  base_experience: number | null;
   /**
    * An array relationship
    */
@@ -36,4 +35,9 @@ export interface GetPokemonDataList {
    * fetch data from the table: "pokemon_v2_pokemon"
    */
   pokemons: GetPokemonDataList_pokemons[];
+}
+
+export interface GetPokemonDataListVariables {
+  limit: number;
+  offset: number;
 }
