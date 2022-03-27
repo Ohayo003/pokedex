@@ -1,7 +1,7 @@
 import create from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
-export interface IStore {
+interface IStore {
   listView?: boolean;
   toggleView: (value?: boolean) => void;
   currentPage: number;
@@ -20,7 +20,18 @@ export interface IStore {
   removeCarouseItem: () => void;
 }
 
-const useStore = create<IStore>(
+interface IUserAccount {
+  points: number;
+  setPoints: (value: number, operation: "+" | "-") => void;
+  collections: {
+    id: number;
+    image: string;
+    bg: string;
+  }[];
+  addCollections: (id: number, image: string, bg: string) => void;
+}
+
+const useStore = create<IStore & IUserAccount>(
   persist(
     devtools((set) => ({
       listView: false,
@@ -66,6 +77,26 @@ const useStore = create<IStore>(
         return set((state) => ({
           ...state,
           filterTypes: state.filterTypes.filter((item) => item !== value),
+        }));
+      },
+      collections: [],
+      addCollections: (id, image, bg) => {
+        return set((state) => ({
+          collections: [
+            ...state.collections.filter((obj) => obj.id !== id),
+            {
+              id,
+              image,
+              bg,
+            },
+          ],
+        }));
+      },
+      points: 0,
+      setPoints: (value, operation) => {
+        return set((state) => ({
+          points:
+            operation === "+" ? state.points + value : state.points - value,
         }));
       },
     })),

@@ -1,4 +1,12 @@
-import { Avatar, Box, type BoxProps, Flex } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  type BoxProps,
+  Flex,
+  Icon,
+  HStack,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
 import { Grid } from "@chakra-ui/react";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
@@ -6,7 +14,9 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import useStore from "src/hooks/useStore";
 import colorTypes from "src/utils/colorTypes";
+import { SiZcash } from "react-icons/si";
 import { usePokemonHelper } from "src/hooks/usePokemonHelper";
+import pokemonImage from "src/utils/image";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -17,7 +27,7 @@ type PokemonListViewType = {
 const PokemonListView = ({ pokemon }: PokemonListViewType) => {
   const router = useRouter();
   const addCarousel = useStore((state) => state.addCarousel);
-
+  const points = 30;
   ///adds the current Pokemon to Recent Visit
   const handleAddRecent = (id: number, image: string, bg: string) => {
     addCarousel(id, image, bg);
@@ -30,7 +40,7 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
         py={3}
         templateColumns={{
           base: "50px 80px 1fr 1fr",
-          lg: "50px 80px 1fr 1fr 1fr",
+          lg: "50px 80px 1fr 1fr 1fr 1fr",
         }}
         borderBottom="1px solid white"
         gap={0}
@@ -63,14 +73,22 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
           pl={4}
           fontWeight="600"
           text="Type"
-          display={{ base: "fles", lg: "block" }}
+          display={{ base: "flex", lg: "block" }}
           justifyContent={{ base: "center", lg: "left" }}
         />
         <TData
           display={{ base: "none", lg: "flex" }}
           pl={4}
           fontWeight="600"
+          justifyContent="center"
           text="Level"
+        />
+        <TData
+          display={{ base: "none", lg: "flex" }}
+          pl={4}
+          fontWeight="600"
+          justifyContent="center"
+          text="Points"
         />
       </Grid>
       {pokemon &&
@@ -85,7 +103,7 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                 router.push(`/home/${pokemon.id}` + "?tab=About");
                 handleAddRecent(
                   pokemon.id,
-                  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon?.id}.png`,
+                  pokemonImage(pokemon.id),
                   colorTypes(pokemon?.element[0]?.type?.name!)
                 );
               }}
@@ -95,7 +113,7 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                 py={3}
                 templateColumns={{
                   base: "50px 80px 1fr 1fr",
-                  lg: "50px 80px 1fr 1fr 1fr",
+                  lg: "50px 80px 1fr 1fr 1fr 1fr",
                 }}
                 gap={0}
                 background="#374151"
@@ -119,11 +137,12 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                   height="2.5rem"
                 >
                   <Avatar
-                    border="2px"
-                    borderColor={colorTypes(pokemon.element[0].type?.name!)}
-                    w={8}
-                    h={8}
-                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon?.id}.png`}
+                    border={`2px solid ${colorTypes(
+                      pokemon.element[0].type?.name!
+                    )}`}
+                    w={{ lg: 8, base: 12 }}
+                    h={{ lg: 8, base: 12 }}
+                    src={pokemonImage(pokemon?.id!)}
                   />
                 </Box>
                 <TData
@@ -139,12 +158,14 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                   key={idx}
                   flexDirection={{ base: "column", lg: "row" }}
                   align={{ base: "center", lg: "start" }}
+                  justify={{ lg: "start" }}
+                  gap={2}
                 >
                   {pokemon.element.map((types, idx) => {
                     return (
                       <TData
                         key={idx}
-                        pl={4}
+                        // pl={4}
                         text={
                           <Box
                             border="1px"
@@ -164,9 +185,25 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                 </Flex>
                 <TData
                   display={{ base: "none", lg: "flex" }}
-                  // width="18rem"
+                  justifyContent="center"
                   pl={4}
-                  text="Lvl 1"
+                  text={"1"}
+                />
+                <TData
+                  justifyContent="center"
+                  pl={4}
+                  text={
+                    <HStack>
+                      <Text
+                        color="text.light"
+                        fontWeight="bold"
+                        fontStyle="italic"
+                      >
+                        {points * pokemon.id}
+                      </Text>
+                      <Icon as={SiZcash} />
+                    </HStack>
+                  }
                 />
               </Grid>
             </MotionBox>

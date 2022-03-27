@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 import { useRouter } from "next/router";
 import useStore from "src/hooks/useStore";
+import pokemonImage from "src/utils/image";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -50,7 +51,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   router.push(`/home/${pokemon.id}` + `?tab=About`);
                   handleAddRecent(
                     pokemon.id,
-                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon?.id}.png`,
+                    pokemonImage(pokemon.id),
                     colorTypes(pokemon?.element[0]?.type?.name!)
                   );
                 }}
@@ -69,7 +70,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   position="relative"
                 >
                   <Image
-                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon?.id}.png`}
+                    src={pokemonImage(pokemon?.id!)}
                     alt={`${pokemon.name}`}
                     layout="fill"
                     // width={18}

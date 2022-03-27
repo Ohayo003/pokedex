@@ -1,4 +1,12 @@
-import { Box, Flex, HStack, Icon, Text, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  Icon,
+  Text,
+  Button,
+  Tooltip,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
@@ -23,12 +31,10 @@ import {
   GetPokemonDataListVariables,
 } from "src/types/GetPokemonDataList";
 import useSound from "use-sound";
-// import themesong from "public/assets/music/pokemon_themesong.mp3";
 import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 
 const HomePage = () => {
   const bgMusic =
-    // themesong;
     "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
   const { status } = useSession({ required: true });
   const router = useRouter();
@@ -46,6 +52,7 @@ const HomePage = () => {
     volume: 0.1,
     interrupt: true,
   });
+
   ///useQuery to display list of pokemon
   const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
     GetPokemonDataList,
@@ -55,11 +62,11 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
-  useEffect(() => {
-    if (!isPlaying) {
-      play();
-    }
-  }, [isPlaying, play]);
+  // useEffect(() => {
+  //   if (!isPlaying) {
+  //     play();
+  //   }
+  // }, [isPlaying, play]);
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
@@ -110,8 +117,8 @@ const HomePage = () => {
         await filterDataQuery({
           variables: { type: types },
         });
+        setCurrentPage(1);
       })();
-      // router.push("/home", { query: `types=${types}` });
     } else {
       (async function () {
         await fetchAllPokemons({
@@ -120,9 +127,10 @@ const HomePage = () => {
             offset: 0,
           },
         });
+        setCurrentPage(1);
       })();
     }
-  }, [fetchAllPokemons, filterDataQuery, isFiltered, types]);
+  }, [fetchAllPokemons, filterDataQuery, isFiltered, setCurrentPage, types]);
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
@@ -138,13 +146,7 @@ const HomePage = () => {
   }, [currentIndex, list, setCurrentPage]);
 
   return (
-    <Box
-      minH="100vh"
-      // w={{ base: "full" }}
-      // minW={{ base: "482px" }}
-      mt={9}
-      mb={14}
-    >
+    <Box minH="100vh" mt={9} mb={14}>
       <Flex
         flexDirection="column"
         mx={{ lg: "auto", base: "20px" }}
@@ -204,12 +206,12 @@ const HomePage = () => {
           )}
         </Box>
 
-        <HStack justify="end" mt={4}>
+        <HStack justify="end" mt={5} mb={5} zIndex={1}>
           <Text
             fontFamily="Inter"
             fontStyle="normal"
             fontWeight="400"
-            fontSize="md"
+            fontSize={{ lg: "md", base: "xl" }}
             lineHeight="md"
             color="text.light"
           >
@@ -227,8 +229,8 @@ const HomePage = () => {
           <Icon
             onClick={previousPage}
             as={BiChevronLeft}
-            w={6}
-            h={6}
+            w={{ lg: 6, base: 10 }}
+            h={{ lg: 6, base: 10 }}
             _hover={{
               cursor: "pointer",
               fill: "primary",
@@ -261,8 +263,8 @@ const HomePage = () => {
           <Icon
             onClick={nextPage}
             as={BiChevronRight}
-            w={6}
-            h={6}
+            w={{ lg: 6, base: 10 }}
+            h={{ lg: 6, base: 10 }}
             fill="#718096"
             _hover={{
               cursor: "pointer",

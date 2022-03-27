@@ -6,19 +6,19 @@ export const GET_POKEMON_DATA_LIST = gql`
       id
       name
 
-      # specy: pokemon_v2_pokemonspecy {
-      #   evolutionChain: pokemon_v2_evolutionchain {
-      #     id
-      #     evolutions: pokemon_v2_pokemonspecies {
-      #       evolveTrigger: pokemon_v2_pokemonevolutions {
-      #         min_level
-      #       }
-      #       id
-      #       evolveFrom: evolves_from_species_id
-      #       name
-      #     }
-      #   }
-      # }
+      specy: pokemon_v2_pokemonspecy {
+        evolutionChain: pokemon_v2_evolutionchain {
+          id
+          evolutions: pokemon_v2_pokemonspecies {
+            evolveTrigger: pokemon_v2_pokemonevolutions {
+              min_level
+            }
+            id
+            evolveFrom: evolves_from_species_id
+            name
+          }
+        }
+      }
       element: pokemon_v2_pokemontypes {
         type: pokemon_v2_type {
           name

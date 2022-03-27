@@ -1,15 +1,14 @@
 import { useQuery } from "@apollo/client";
 import {
-  Button,
   Checkbox,
   CheckboxGroup,
   Flex,
   Icon,
   Menu,
   MenuButton,
-  Image,
   MenuItem,
   MenuList,
+  Button,
   Text,
 } from "@chakra-ui/react";
 import { HiOutlineFilter } from "react-icons/hi";
@@ -66,6 +65,7 @@ const FilterType = () => {
         background="background.container"
         overflow="hidden"
         overflowY="auto"
+        _focus={{ borderColor: "transparent" }}
         sx={{
           "&::-webkit-scrollbar": {
             width: "4px",
@@ -77,9 +77,10 @@ const FilterType = () => {
           },
         }}
         color="text.light"
-        height="230px"
-        ml={-24}
-        width={44}
+        height={{ lg: "14.375rem" }}
+        ml={{ lg: -24 }}
+        mr={{ base: -36, lg: 0 }}
+        width={{ lg: 44, base: "25rem" }}
         zIndex={2}
       >
         <CheckboxGroup
@@ -106,15 +107,11 @@ const FilterType = () => {
                     key={idx}
                   >
                     <Flex minW="full" justifyContent="space-between">
-                      <Image
-                        src={`${elementIcons[type.name.toLocaleLowerCase()]}`}
-                        alt={type.name}
-                      />
                       <Text
                         fontFamily="Inter"
                         fontStyle="normal"
                         fontWeight="400"
-                        fontSize="sm"
+                        fontSize={{ lg: "sm", base: "xl" }}
                         lineHeight="xl"
                       >
                         {type.name.toUpperCase()}

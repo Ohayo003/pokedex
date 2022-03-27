@@ -18,8 +18,6 @@ const Layout: React.FC<{}> = ({ children }) => {
   return (
     <Grid
       minW={{ base: "fit-content" }}
-      // minW="200%"
-      // minW="925px"
       minH="100vh"
       h="full"
       bg="background.container"

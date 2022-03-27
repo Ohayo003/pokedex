@@ -3,12 +3,14 @@ import {
   Flex,
   HStack,
   VStack,
+  Text,
   Icon,
   SimpleGrid,
   Breadcrumb,
   type BoxProps,
   BreadcrumbItem,
   BreadcrumbLink,
+  Button,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -24,7 +26,12 @@ import Loading from "src/components/widgets/Loading";
 import useStore from "src/hooks/useStore";
 import { usePagination } from "src/hooks/usePagination";
 import { ChevronRightIcon } from "@chakra-ui/icons";
+import Card from "src/components/widgets/Card";
 import { motion } from "framer-motion";
+import { SiZcash } from "react-icons/si";
+import { useCollection } from "../../hooks/useCollection";
+import colorTypes from "src/utils/colorTypes";
+import pokemonImage from "src/utils/image";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -34,6 +41,8 @@ const PokemonId = () => {
   const recentVisit = useStore((state) => state.carousel);
   const addCarousel = useStore((state) => state.addCarousel);
   const [activeBreadcrumb, setActiveBreadcrumb] = useState("About");
+
+  ///fetch pokemon details using pokemon id
   const { data, loading } = useQuery<GetPokemon>(GET_POKEMON, {
     variables: {
       id: router.query.pokemonId,
@@ -41,17 +50,27 @@ const PokemonId = () => {
     context: { clientName: "pokedexapi" },
   });
 
+  const PPointsValue = 30 * data?.pokemon?.id!;
   const handleAddRecent = (id: number, image: string, bg: string) => {
     addCarousel(id, image, bg);
   };
+
+  const image = ``;
+
+  const { ObtainPokemon } = useCollection({
+    p_pointsValue: PPointsValue,
+    pokemon: {
+      id: data?.pokemon?.id!,
+      image,
+      bg: colorTypes(data?.pokemon?.element[0].type?.name!),
+    },
+  });
 
   ///usePagination
   const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
     usePagination(6, { data: recentVisit, isRecent: true });
 
-  console.log(recentVisit);
-  console.log(numberOfPages);
-
+  ///set the currentPage to 1 on Load and set the activeBreadcrumb using the query tab
   useEffect(() => {
     setCurrentPage(1);
     if (router.query.tab) {
@@ -62,6 +81,7 @@ const PokemonId = () => {
   if (loading) {
     return <Loading />;
   }
+
   return (
     <Box mx={{ base: "20px", lg: "auto" }} minH="100vh">
       <Box w="fit-content" mx="auto">
@@ -102,7 +122,7 @@ const PokemonId = () => {
           align={{ base: "center", lg: "start" }}
           flexDirection={{ base: "column", lg: "row" }}
         >
-          <VStack gap={9} align="left" zIndex={1}>
+          <VStack gap={9} align="center" zIndex={1}>
             <Box
               width={{ lg: "20.313rem", base: "30rem" }}
               height={{ lg: "24.313rem", base: "30rem" }}
@@ -113,7 +133,7 @@ const PokemonId = () => {
               overflow="hidden"
             >
               <Image
-                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${data?.pokemon?.id}.png`}
+                src={pokemonImage(data?.pokemon?.id!)}
                 alt={data?.pokemon?.name}
                 layout="fill"
               />
@@ -200,6 +220,43 @@ const PokemonId = () => {
                 />
               </Box>
             </HStack>
+            <Flex justifyContent="space-between" width="15rem">
+              <HStack>
+                <Text
+                  fontFamily="Inter"
+                  fontWeight="semibold"
+                  color="text.light"
+                >
+                  Points:
+                </Text>
+                <HStack>
+                  <Text
+                    fontFamily="Inter"
+                    fontWeight="bold"
+                    fontStyle="italic"
+                    color="primary"
+                  >
+                    {PPointsValue}
+                  </Text>
+                  <Icon as={SiZcash} w={5} h={5} fill="primary" />
+                </HStack>
+              </HStack>
+              <Button
+                color="primary"
+                height="2rem"
+                background="transparent"
+                variant="outline"
+                borderColor="primary"
+                _pressed={{ background: "transparent" }}
+                _hover={{
+                  background: "transparent",
+                  borderColor: "white",
+                  color: "white",
+                }}
+              >
+                Obtain
+              </Button>
+            </Flex>
           </VStack>
 
           {/** Pokemon Details Section */}

@@ -11,7 +11,7 @@ import steel from "public/assets/elements/steel.svg";
 import water from "public/assets/elements/water.svg";
 import rock from "public/assets/elements/rock.svg";
 
-export const elementIcons: Record<string, any> = {
+export const elementIcons: Record<string, any> = [
   dark,
   electric,
   fairy,
@@ -24,4 +24,4 @@ export const elementIcons: Record<string, any> = {
   rock,
   steel,
   water,
-};
+];
