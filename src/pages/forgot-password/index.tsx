@@ -1,28 +1,29 @@
 import React from "react";
-import UIAccount from "src/components/Layouts/UIAccount";
+// import UIAccount from 'src/components/Layouts/UIAccount';
 import seadragon from "public/assets/background/forgot-password-image.png";
 import { Box, Stack, Button, VStack, Link } from "@chakra-ui/react";
 import Label from "src/components/widgets/Forms/Label";
 import TextField from "src/components/widgets/Forms/TextField";
 import * as yup from "yup";
-import { IForgotpassword } from "../interfaces/credentials";
+import { IForgotpassword } from "src/interfaces/credentials";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Links from "src/components/widgets/Forms/Links";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
+import UIAccount from "src/components/Layouts/UIAccount";
+import {
+  generatePasswordResetLink,
+  generatePasswordResetLinkVariables,
+} from "src/types/generatePasswordResetLink";
+import {
+  triggerResetPassword,
+  triggerResetPasswordVariables,
+} from "src/types/triggerResetPassword";
 import {
   GENERATE_PASSWORD_RESET_LINK,
   TRIGGER_RESET_PASSWORD,
 } from "src/graphql/mutations/auth";
-import {
-  generatePasswordResetLink,
-  generatePasswordResetLinkVariables,
-} from "../types/generatePasswordResetLink";
-import {
-  triggerResetPassword,
-  triggerResetPasswordVariables,
-} from "../types/triggerResetPassword";
 
 let schema = yup.object().shape({
   email: yup.string().email("The email is invalid").required(),
@@ -63,7 +64,7 @@ const ForgotPassword = () => {
       const callback = await generatePswResetLink({
         variables: {
           emailAddress: data.email,
-          baseURL: "/reset-password",
+          baseURL: "/forgot-password/reset-password",
         },
       });
       if (callback.data?.generatePasswordResetLink) {

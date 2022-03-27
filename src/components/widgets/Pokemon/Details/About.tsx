@@ -84,14 +84,14 @@ const About = ({ pokemon }: AboutType) => {
         </Card>
         <Box pt={8}>
           <Card
-            width="37.5rem"
+            // width="37.5rem
             height="7rem"
             border="1px solid #718096"
             display="flex"
             justifyContent="center"
             alignItems="center"
           >
-            <VStack align="left">
+            <VStack align="left" width={{ lg: "37rem" }}>
               <Text
                 fontFamily="Inter"
                 fontStyle="normal"

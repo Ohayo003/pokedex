@@ -11,6 +11,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -32,15 +33,18 @@ import { SiZcash } from "react-icons/si";
 import { useCollection } from "../../hooks/useCollection";
 import colorTypes from "src/utils/colorTypes";
 import pokemonImage from "src/utils/image";
+import ConfirmModal from "src/components/widgets/ConfirmModal";
 
 export const MotionBox = motion<BoxProps>(Box);
 
 const PokemonId = () => {
   const router = useRouter();
+  const { onClose, isOpen, onOpen } = useDisclosure();
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   const recentVisit = useStore((state) => state.carousel);
   const addCarousel = useStore((state) => state.addCarousel);
   const [activeBreadcrumb, setActiveBreadcrumb] = useState("About");
+  const collections = useStore((state) => state.collections);
 
   ///fetch pokemon details using pokemon id
   const { data, loading } = useQuery<GetPokemon>(GET_POKEMON, {
@@ -50,22 +54,25 @@ const PokemonId = () => {
     context: { clientName: "pokedexapi" },
   });
 
+  const image = pokemonImage(data?.pokemon?.id!);
+
+  ///value of each pokemon
   const PPointsValue = 30 * data?.pokemon?.id!;
+
   const handleAddRecent = (id: number, image: string, bg: string) => {
     addCarousel(id, image, bg);
   };
 
-  const image = ``;
-
-  const { ObtainPokemon } = useCollection({
-    p_pointsValue: PPointsValue,
-    pokemon: {
-      id: data?.pokemon?.id!,
-      image,
-      bg: colorTypes(data?.pokemon?.element[0].type?.name!),
-    },
-  });
-
+  const { checkPoints, ObtainPokemon, checkExistingPokemonCollection } =
+    useCollection({
+      p_pointsValue: PPointsValue,
+      pokemon: {
+        id: data?.pokemon?.id!,
+        image,
+        bg: colorTypes(data?.pokemon?.element[0].type?.name!),
+      },
+    });
+  console.log(checkExistingPokemonCollection());
   ///usePagination
   const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
     usePagination(6, { data: recentVisit, isRecent: true });
@@ -220,12 +227,15 @@ const PokemonId = () => {
                 />
               </Box>
             </HStack>
+
+            {/**Points section */}
             <Flex justifyContent="space-between" width="15rem">
               <HStack>
                 <Text
                   fontFamily="Inter"
                   fontWeight="semibold"
                   color="text.light"
+                  fontSize={{ base: "xl", lg: "md" }}
                 >
                   Points:
                 </Text>
@@ -235,6 +245,7 @@ const PokemonId = () => {
                     fontWeight="bold"
                     fontStyle="italic"
                     color="primary"
+                    fontSize={{ base: "xl", lg: "md" }}
                   >
                     {PPointsValue}
                   </Text>
@@ -243,9 +254,12 @@ const PokemonId = () => {
               </HStack>
               <Button
                 color="primary"
-                height="2rem"
+                height={{ lg: "2rem" }}
                 background="transparent"
+                _focus={{ borderColor: "transparent", color: "gray" }}
                 variant="outline"
+                _disabled={{ borderColor: "gray", color: "gray" }}
+                isDisabled={!checkPoints() || checkExistingPokemonCollection()}
                 borderColor="primary"
                 _pressed={{ background: "transparent" }}
                 _hover={{
@@ -253,8 +267,9 @@ const PokemonId = () => {
                   borderColor: "white",
                   color: "white",
                 }}
+                onClick={onOpen}
               >
-                Obtain
+                {checkExistingPokemonCollection() ? "Obtained" : "Obtain"}
               </Button>
             </Flex>
           </VStack>
@@ -263,6 +278,13 @@ const PokemonId = () => {
           <PokemonDetails pokemon={data?.pokemon!} />
         </Flex>
       </Box>
+
+      <ConfirmModal
+        isOpen={isOpen}
+        p_points_value={PPointsValue}
+        onClose={onClose}
+        obtainPokemon={ObtainPokemon}
+      />
     </Box>
   );
 };

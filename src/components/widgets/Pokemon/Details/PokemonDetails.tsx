@@ -47,7 +47,7 @@ const PokemonDetails = ({ pokemon }: PokemonDetailsType) => {
       align={{ lg: "start", base: "center" }}
       zIndex={1}
       width={{ lg: "49.938rem", base: "35rem" }}
-      pb={20}
+      pb={28}
     >
       <Text
         fontFamily="Inter"

@@ -22,7 +22,8 @@ interface IStore {
 
 interface IUserAccount {
   points: number;
-  setPoints: (value: number, operation: "+" | "-") => void;
+  addPoints: (value: number) => void;
+  deductPoints: (value: number) => void;
   collections: {
     id: number;
     image: string;
@@ -92,11 +93,15 @@ const useStore = create<IStore & IUserAccount>(
           ],
         }));
       },
-      points: 0,
-      setPoints: (value, operation) => {
+      points: 2000,
+      addPoints: (value) => {
         return set((state) => ({
-          points:
-            operation === "+" ? state.points + value : state.points - value,
+          points: state.points + value,
+        }));
+      },
+      deductPoints: (value) => {
+        return set((state) => ({
+          points: state.points - value,
         }));
       },
     })),

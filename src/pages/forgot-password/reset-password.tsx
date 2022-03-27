@@ -10,7 +10,7 @@ import seadragon from "public/assets/background/forgot-password-image.png";
 import UIAccount from "src/components/Layouts/UIAccount";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { IResetPassword } from "../interfaces/credentials";
+import { IResetPassword } from "../../interfaces/credentials";
 import { RESET_PASSWORD } from "src/graphql/mutations/auth";
 import { signIn, useSession } from "next-auth/react";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";

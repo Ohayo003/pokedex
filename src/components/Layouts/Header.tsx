@@ -36,8 +36,10 @@ const Header = () => {
   const router = useRouter();
   const removeCarouseItem = useStore((state) => state.removeCarouseItem);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
-
+  const user_points = useStore((state) => state.points);
   const { data } = useQuery<getMe>(GET_ME);
+
+  console.log(user_points);
 
   return (
     <Box h="7.25rem" background="background.gray500">
@@ -78,8 +80,9 @@ const Header = () => {
             pt={7}
             pb={7}
           >
-            <Stack direction={"row"} spacing={7} zIndex={2}>
-              <Menu>
+            {/* <Stack direction={"row"} spacing={7} zIndex={2}> */}
+            <Box zIndex={5}>
+              <Menu gutter={10}>
                 <MenuButton
                   _focus={{ borderColor: "transparent" }}
                   as={Button}
@@ -112,7 +115,7 @@ const Header = () => {
                       fontWeight="bold"
                       fontStyle="italic"
                     >
-                      0
+                      {user_points}
                     </Text>
                     <Icon as={SiZcash} w={4} h={4} />
                   </HStack>
@@ -161,7 +164,8 @@ const Header = () => {
                   </MenuItem>
                 </MenuList>
               </Menu>
-            </Stack>
+            </Box>
+            {/* </Stack> */}
           </Flex>
         </HStack>
       </Flex>
