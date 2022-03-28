@@ -18,6 +18,7 @@ interface IStore {
   }[];
   addCarousel: (id: number, image: string, bg: string) => void;
   removeCarouseItem: () => void;
+  clearStore: () => void;
 }
 
 interface IUserAccount {
@@ -115,6 +116,9 @@ const useStore = create<IStore & IUserAccount>(
         return set((state) => ({
           points: state.points - value,
         }));
+      },
+      clearStore: () => {
+        return set({}, true);
       },
     })),
     { name: "useStore" }
