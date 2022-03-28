@@ -27,8 +27,15 @@ export const usePagination = (
 ) => {
   const currentPage = useStore((state) => state.currentPage);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
+  ///calculate the range of items shown in the page
+  const shownFrom =
+    currentPage * currentData()?.length! - currentData()?.length! + 1;
+  ///calculate the total items shown in the page
+  const totalItems = currentPage * currentData()?.length!;
+
   let numberOfPages: number[] = [];
 
+  ///computes the total number of Pages from the pokemon length divided by items per page
   for (
     let index = 1;
     index <= Math.ceil(data?.length! / itemsPerPage);
@@ -46,10 +53,17 @@ export const usePagination = (
 
   ///handles changing next pages
   function nextPage() {
+    ///isRecent which means if it is the data from recent carousel view,
+    ///just set the currentpage + 1
     if (isRecent) {
       setCurrentPage(currentPage + 1);
     }
+
+    ///checking if the filter is triggered 
     if (!filtered) {
+      ///check 1st if the current last index < numberOfpages which is the range from 1st - last page
+      ///then just set the a new state for currentIndex and currentlastIndex
+      ///otherwise if not filtered then the fetchAll pokemons is triggered for pagination
       if (currentLastIndex! < numberOfPages.length) {
         setCurrentIndex!((prev) => prev + itemsPerPage);
         setCurrentLastIndex!((prev) => prev + itemsPerPage)!;
@@ -89,6 +103,8 @@ export const usePagination = (
     currentPage,
     nextPage,
     previousPage,
+    shownFrom,
+    totalItems,
     selectedPage,
     setCurrentPage,
     numberOfPages,

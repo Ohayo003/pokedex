@@ -65,13 +65,6 @@ const SignUp = () => {
 
   return (
     <UIAccount heading="Sign up" image={dragon} alt="dragon">
-      <Social />
-      <Flex align="center" gap={2} pt={2} pb={2}>
-        <Divider orientation="horizontal" borderColor="white" />
-        <Text color="text.light">OR</Text>
-        <Divider orientation="horizontal" borderColor="white" />
-      </Flex>
-
       {/**INPUT FORM SECTION */}
       <Box>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>

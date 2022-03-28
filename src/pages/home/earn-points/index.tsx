@@ -13,20 +13,22 @@ import React, { useState } from "react";
 import { ReactElement, useEffect } from "react";
 import Layout from "src/components/Layouts/Layout";
 import useCards from "src/hooks/useCards";
-// import Image from "next/image";
 import { motion } from "framer-motion";
 import { HStack } from "@chakra-ui/react";
 import { SiZcash } from "react-icons/si";
+import useStore from "src/hooks/useStore";
 // import pokemonCardBack from ;
 
 const MotionBox = motion<BoxProps>(Box);
 
 const EarnPoints = () => {
-  const [earnPoints, setEarnPoints] = useState(0);
+  const addPoints = useStore((state) => state.addPoints);
+  const [earnedPoints, setEarnedPoints] = useState(0);
   const [multiplier, setMultiplier] = useState(1);
   const [multiplierBroke, setMultiplierBroke] = useState(false);
   const [showMultplier, setShowMultplier] = useState(false);
-  const [resolve, setResolve] = useState(false);
+  const [matchedCount, setMatchedCount] = useState(0);
+  const [accumulatedMultiplier, setAccumulatedMultiplier] = useState(0)
 
   const {
     shuffleCards,
@@ -45,6 +47,7 @@ const EarnPoints = () => {
         setPokemonCards((prevCards) => {
           return prevCards.map((card) => {
             if (card.src === firstChoice.src) {
+              setMatchedCount((prev) => prev + 1);
               return { ...card, matched: true };
             } else {
               return card;
@@ -54,32 +57,32 @@ const EarnPoints = () => {
         setTimeout(() => resetSelection(true), 1000);
         setMultiplierBroke(false);
         setShowMultplier(true);
-        setEarnPoints((prev) => prev + 100);
+        setEarnedPoints((prev) => prev + 100);
       } else {
         console.log("do not matched");
         setTimeout(() => resetSelection(false), 1000);
 
         setShowMultplier(false);
-        setMultiplierBroke(false);
+        setMultiplierBroke(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstChoice, secondChoice]);
 
-  // useEffect(() => {
-  //   if (multiplierBroke) {
-  //     setMultiplier((prevMultiplier) => {
-  //       setEarnPoints((prev) => {
-  //         setResolve(true);
-  //         return prev * prevMultiplier;
-  //       });
-  //       if (resolve) {
-  //         return 1;
-  //       }
-  //     });
-  //   } else {
-  //     setMultiplier((prev) => prev + 1);
-  //   }
-  // }, [multiplierBroke, resolve]);
+  useEffect(()=>{
+    if(multiplierBroke){
+      setEarnedPoints(prev => prev * multiplier)
+      setMultiplier(1)
+    }
+  },[multiplier, multiplierBroke])
+
+  useEffect(() => {
+    if (matchedCount === pokemonCards.length) {
+      addPoints(earnedPoints);
+    } else {
+      console.log("there are still more to guess", matchedCount);
+    }
+  }, [addPoints, earnedPoints, matchedCount, pokemonCards]);
 
   const isFlipped = (card: { id: number; src: string; matched: boolean }) => {
     let flipped = false;
@@ -146,7 +149,7 @@ const EarnPoints = () => {
                 fontWeight="bold"
                 fontStyle="italic"
               >
-                {earnPoints}
+                {earnedPoints}
               </Text>
               <Icon as={SiZcash} size={25} fill="primary" />
             </HStack>

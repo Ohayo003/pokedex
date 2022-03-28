@@ -94,6 +94,8 @@ const HomePage = () => {
   ///usePagination custom hook
   const {
     currentPage,
+    shownFrom,
+    totalItems,
     numberOfPages,
     nextPage,
     previousPage,
@@ -216,8 +218,8 @@ const HomePage = () => {
             color="text.light"
           >
             Showing{" "}
-            {currentPage! * currentData()?.length! - currentData()?.length! + 1}
-            -{currentPage! * currentData()?.length!} of{" "}
+            {shownFrom}
+            -{totalItems} of{" "}
             {isFiltered
               ? filterData?.pokemons?.length!
               : data?.pokemons?.length!}

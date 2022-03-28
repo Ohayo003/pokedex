@@ -44,6 +44,7 @@ const ResetPassword = () => {
     resolver: yupResolver(schema),
   });
 
+  ///reset password onSubmit
   const onSubmit: SubmitHandler<IResetPassword> = async (data) => {
     const reset = await resetPassword({
       variables: {

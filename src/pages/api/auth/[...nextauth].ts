@@ -21,7 +21,7 @@ export default NextAuth({
       id: "credentials",
       async authorize(credentials) {
         if (credentials?.firstName) {
-          const { data, errors } = await client.mutate<signUP, signUPVariables>(
+          const { data, errors } = await client.mutate(
             {
               mutation: SIGN_UP,
               variables: {
@@ -34,10 +34,11 @@ export default NextAuth({
           );
           if (data?.signUp.token) {
             // console.log(data);
-            return data.signUp.token;
+            return data.signUp.token ;
+          } else {
+            return null;
           }
-          console.log(errors);
-          return null;
+          // console.log(errors);
         }
         const { data } = await client.mutate<signIn, signInVariables>({
           mutation: SIGN_IN,

@@ -36,10 +36,7 @@ const ForgotPassword = () => {
     triggerResetPasswordVariables
   >(TRIGGER_RESET_PASSWORD);
 
-  const [
-    generatePswResetLink,
-    { loading: generateLoading, data: generateData, error: generateError },
-  ] = useMutation<
+  const [generatePswResetLink, { loading: generateLoading }] = useMutation<
     generatePasswordResetLink,
     generatePasswordResetLinkVariables
   >(GENERATE_PASSWORD_RESET_LINK);
@@ -75,7 +72,6 @@ const ForgotPassword = () => {
 
   return (
     <UIAccount heading="Forgot password" image={seadragon} alt="sea dragon">
-      {/**INPUT COMPONENT */}
       <Box>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
@@ -96,6 +92,7 @@ const ForgotPassword = () => {
             <Button
               fontFamily="Inter"
               fontStyle="normal"
+              isLoading={generateLoading}
               fontWeight="600"
               fontSize="xs"
               lineHeight="md"

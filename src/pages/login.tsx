@@ -35,23 +35,22 @@ let schema = yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const callbackUrl = useCallbackUrl();
   ///Using useForm from react-hook-form
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors, touchedFields },
   } = useForm<ILogin>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });
 
+  ///login user onSubmit
   const onSubmit: SubmitHandler<ILogin> = async (data) => {
     await signIn("credentials", {
       ...data,
-      // redirect: false,
     });
   };
 
@@ -70,6 +69,7 @@ const Login = () => {
         <Text color="text.light">OR</Text>
         <Divider orientation="horizontal" borderColor="white" />
       </Flex>
+
       {/**INPUT COMPONENT */}
       <Box>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
