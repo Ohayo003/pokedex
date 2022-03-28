@@ -7,6 +7,7 @@ interface ICollection {
   p_pointsValue?: number;
   pokemon?: {
     id: number;
+    name: string;
     image: string;
     bg: string;
   };
@@ -44,7 +45,7 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
   function ObtainPokemon() {
     if (checkPoints()) {
       deductPoints(p_pointsValue!);
-      addCollection(pokemon?.id!, pokemon?.image!, pokemon?.bg!);
+      addCollection(pokemon?.id!, pokemon?.name!, pokemon?.image!, pokemon?.bg!);
     }
   }
 
