@@ -39,8 +39,6 @@ const Header = () => {
   const user_points = useStore((state) => state.points);
   const { data } = useQuery<getMe>(GET_ME);
 
-  console.log(user_points);
-
   return (
     <Box h="7.25rem" background="background.gray500">
       <Flex
@@ -72,7 +70,7 @@ const Header = () => {
             color="text.default"
             mr={5}
           >
-            Welcome, {data?.me.firstname}
+            Welcome, {data ? data?.me.firstname : session?.user?.name}
           </Text>
           <Flex
             alignItems={"center"}
@@ -102,7 +100,11 @@ const Header = () => {
                   <Avatar
                     w="3.5rem"
                     h="3.5rem"
-                    src={"https://avatars.dicebear.com/api/male/username.svg"}
+                    src={
+                      session
+                        ? `${session.user?.image}`
+                        : "https://avatars.dicebear.com/api/male/username.svg"
+                    }
                   />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
@@ -123,7 +125,11 @@ const Header = () => {
                     <Avatar
                       w="5rem"
                       h="5rem"
-                      src="https://avatars.dicebear.com/api/male/username.svg"
+                      src={
+                        session
+                          ? `${session.user?.image}`
+                          : "https://avatars.dicebear.com/api/male/username.svg"
+                      }
                     />
                   </Center>
                   <Center>
