@@ -10,7 +10,7 @@ const useCards = () => {
     }[]
   >([]);
   let isLimit = false;
-  const [moves, setMoves] = useState(10);
+  const [moves, setMoves] = useState(5);
 
   const [firstChoice, setFirstChoice] = useState<{
     id: number;
@@ -31,7 +31,7 @@ const useCards = () => {
         id: Math.random(),
       }));
     setPokemonCards(shuffle);
-    setMoves(10);
+    setMoves(5);
     setFirstChoice(null);
     setSecondChoice(null);
   }
