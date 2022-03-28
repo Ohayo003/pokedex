@@ -32,9 +32,11 @@ import {
 } from "src/types/GetPokemonDataList";
 import useSound from "use-sound";
 import FilterType from "src/components/widgets/Pokemon/FilterTypes";
+import Pagination from "src/components/widgets/Pokemon/Pagination";
 
 const HomePage = () => {
   const bgMusic =
+    // "/assets/music/pokemon_themesong.mp3";
     "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
   const { status } = useSession({ required: true });
   const router = useRouter();
@@ -62,11 +64,11 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
-  // useEffect(() => {
-  //   if (!isPlaying) {
-  //     play();
-  //   }
-  // }, [isPlaying, play]);
+  useEffect(() => {
+    if (!isPlaying) {
+      play();
+    }
+  }, [isPlaying, play]);
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
@@ -217,9 +219,7 @@ const HomePage = () => {
             lineHeight="md"
             color="text.light"
           >
-            Showing{" "}
-            {shownFrom}
-            -{totalItems} of{" "}
+            Showing {shownFrom}-{totalItems} of{" "}
             {isFiltered
               ? filterData?.pokemons?.length!
               : data?.pokemons?.length!}
@@ -227,53 +227,16 @@ const HomePage = () => {
         </HStack>
 
         {/** Pagination Section */}
-        <Flex justifyContent="center" mt={2} gap={6} align="center" zIndex={1}>
-          <Icon
-            onClick={previousPage}
-            as={BiChevronLeft}
-            w={{ lg: 6, base: 10 }}
-            h={{ lg: 6, base: 10 }}
-            _hover={{
-              cursor: "pointer",
-              fill: "primary",
-            }}
-            fill="#718096"
-          />
-          <HStack>
-            {numberOfPages.slice(currentIndex, currentLastIndex).map((idx) => {
-              return (
-                <Button
-                  key={idx}
-                  fontFamily="Inter"
-                  fontStyle="normal"
-                  fontWeight="500"
-                  onClick={() => {
-                    selectedPage(idx);
-                    router.push("/home", {
-                      query: `page=${idx}&total=${currentData()?.length!}`,
-                    });
-                  }}
-                  lineHeight="lg"
-                  background={currentPage === idx ? "primary" : "gray100"}
-                  _hover={{ background: "primary" }}
-                >
-                  {idx}
-                </Button>
-              );
-            })}
-          </HStack>
-          <Icon
-            onClick={nextPage}
-            as={BiChevronRight}
-            w={{ lg: 6, base: 10 }}
-            h={{ lg: 6, base: 10 }}
-            fill="#718096"
-            _hover={{
-              cursor: "pointer",
-              fill: "primary",
-            }}
-          />
-        </Flex>
+        <Pagination
+          previousPage={previousPage}
+          nextPage={nextPage}
+          currentIndex={currentIndex}
+          selectedPage={selectedPage}
+          currentLastIndex={currentLastIndex}
+          numberOfPages={numberOfPages}
+          currentPage={currentPage}
+          currentData={currentData}
+        />
       </Flex>
     </Box>
   );

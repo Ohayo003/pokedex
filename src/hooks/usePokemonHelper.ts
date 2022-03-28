@@ -48,8 +48,6 @@ export const usePokemonHelper = ({
     (object) => object.id === currentEvovleForm?.evolveFrom
   );
 
-
-  
   return {
     capitalizedName,
     evovleFromData,

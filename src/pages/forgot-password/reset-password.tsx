@@ -60,6 +60,7 @@ const ResetPassword = () => {
     }
   };
 
+
   if (status === "loading") {
     return <Loading />;
   }

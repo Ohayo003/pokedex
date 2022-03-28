@@ -1,7 +1,4 @@
-import { truncate } from "fs/promises";
-import React from "react";
-import { GetPokemon } from "src/types/GetPokemon";
-import useStore from "./useStore";
+import useStore from "src/hooks/useStore";
 
 interface ICollection {
   p_pointsValue?: number;
@@ -44,7 +41,7 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
 
   function ObtainPokemon() {
     if (checkPoints()) {
-      deductPoints(user_points!);
+      deductPoints(p_pointsValue!);
       addCollection(
         pokemon?.id!,
         pokemon?.name!,
