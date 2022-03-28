@@ -26,10 +26,11 @@ interface IUserAccount {
   deductPoints: (value: number) => void;
   collections: {
     id: number;
+    name: string;
     image: string;
     bg: string;
   }[];
-  addCollections: (id: number, image: string, bg: string) => void;
+  addCollections: (id: number, name: string, image: string, bg: string) => void;
   removeCollection: (id: number) => void;
 }
 
@@ -82,12 +83,13 @@ const useStore = create<IStore & IUserAccount>(
         }));
       },
       collections: [],
-      addCollections: (id, image, bg) => {
+      addCollections: (id, name, image, bg) => {
         return set((state) => ({
           collections: [
             ...state.collections.filter((obj) => obj.id !== id),
             {
               id,
+              name,
               image,
               bg,
             },
