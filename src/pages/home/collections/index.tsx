@@ -60,30 +60,40 @@ const Collection = () => {
                   borderColor="gray500"
                   height="15rem"
                   display="flex"
-                  background={item.bg}
+                  background="gray800"
                   justifyContent="center"
                   position="relative"
                   alignItems="center"
                 >
                   <Image layout="fill" src={item.image} alt="image" />
-
                   {isHovering && currentSelected === item.id ? (
-                    <MotionBox
-                      top="5"
-                      right="3"
-                      position="absolute"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <Icon
-                        onClick={() => remove(item.id)}
-                        as={FaTrash}
-                        w={6}
-                        h={6}
-                        fill="red.600"
-                        zIndex={1}
-                      />
-                    </MotionBox>
+                    <>
+                      <MotionBox
+                        top="5"
+                        right="3"
+                        position="absolute"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <Icon
+                          onClick={() => remove(item.id)}
+                          as={FaTrash}
+                          w={6}
+                          h={6}
+                          fill="red.300"
+                          zIndex={1}
+                        />
+                      </MotionBox>
+
+                      <Heading
+                        position="absolute"
+                        bottom="2"
+                        fontSize={item.name.length > 9 ? "2xl" : "4xl"}
+                        color="text.light"
+                      >
+                        {item.name}
+                      </Heading>
+                    </>
                   ) : null}
                 </Card>
               </MotionBox>
