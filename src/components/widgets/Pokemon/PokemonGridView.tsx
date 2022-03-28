@@ -8,6 +8,8 @@ import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 import { useRouter } from "next/router";
 import useStore from "src/hooks/useStore";
 import pokemonImage from "src/utils/image";
+import FallBackImage from "../FallBackImage";
+import Loading from "../Loading";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -55,7 +57,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                     colorTypes(pokemon?.element[0]?.type?.name!)
                   );
                 }}
-                display={{ base: "flex", lg: "block" }}
+                display="flex"
                 flexDirection={{ base: "column" }}
                 // position="relative"
               >
@@ -65,11 +67,20 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   background="whiteAlpha.800"
                   borderRadius={100}
                   height={{ base: "13rem", lg: "13rem" }}
-                  width={{ base: "13rem", lg: "inherit" }}
+                  width={{ base: "13rem", lg: "13rem" }}
                   borderWidth="2px 2px 6px 2px"
                   position="relative"
                 >
-                  <Image
+                  <FallBackImage
+                    src={pokemonImage(pokemon?.id!)}
+                    loader={
+                      <Box>
+                        <Loading />
+                      </Box>
+                    }
+                    fallback="/assets/background/whos_that_pokemon.jpg"
+                  />
+                  {/* <Image
                     src={pokemonImage(pokemon?.id!)}
                     alt={`${pokemon.name}`}
                     layout="fill"
@@ -77,7 +88,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                     // height={20}
                     // objectFit="cover"
                     // objectPosition="center"
-                  />
+                  /> */}
                 </Box>
                 <Box
                   pt={{ base: 3, lg: 1 }}
