@@ -44,8 +44,13 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
 
   function ObtainPokemon() {
     if (checkPoints()) {
-      deductPoints(p_pointsValue!);
-      addCollection(pokemon?.id!, pokemon?.name!, pokemon?.image!, pokemon?.bg!);
+      deductPoints(user_points!);
+      addCollection(
+        pokemon?.id!,
+        pokemon?.name!,
+        pokemon?.image!,
+        pokemon?.bg!
+      );
     }
   }
 

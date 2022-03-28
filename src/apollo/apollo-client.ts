@@ -36,7 +36,7 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         pokemon_v2_pokemon: {
-          // ...offsetLimitPagination(),
+          ...offsetLimitPagination(),
           keyArgs: false,
           merge(existing = [], incoming) {
             return [...existing, ...incoming];
