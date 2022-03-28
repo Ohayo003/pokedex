@@ -24,11 +24,7 @@ const MotionBox = motion<BoxProps>(Box);
 const EarnPoints = () => {
   const addPoints = useStore((state) => state.addPoints);
   const [earnedPoints, setEarnedPoints] = useState(0);
-  const [multiplier, setMultiplier] = useState(1);
-  const [multiplierBroke, setMultiplierBroke] = useState(false);
-  const [showMultplier, setShowMultplier] = useState(false);
   const [matchedCount, setMatchedCount] = useState(0);
-  const [accumulatedMultiplier, setAccumulatedMultiplier] = useState(0)
 
   const {
     shuffleCards,
@@ -47,7 +43,7 @@ const EarnPoints = () => {
         setPokemonCards((prevCards) => {
           return prevCards.map((card) => {
             if (card.src === firstChoice.src) {
-              setMatchedCount((prev) => prev + 1);
+              setMatchedCount(1);
               return { ...card, matched: true };
             } else {
               return card;
@@ -55,26 +51,15 @@ const EarnPoints = () => {
           });
         });
         setTimeout(() => resetSelection(true), 1000);
-        setMultiplierBroke(false);
-        setShowMultplier(true);
-        setEarnedPoints((prev) => prev + 100);
+        setEarnedPoints((prev) => prev + 1000);
+        setMatchedCount((prev) => prev + 1);
       } else {
         console.log("do not matched");
         setTimeout(() => resetSelection(false), 1000);
-
-        setShowMultplier(false);
-        setMultiplierBroke(true);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstChoice, secondChoice]);
-
-  useEffect(()=>{
-    if(multiplierBroke){
-      setEarnedPoints(prev => prev * multiplier)
-      setMultiplier(1)
-    }
-  },[multiplier, multiplierBroke])
 
   useEffect(() => {
     if (matchedCount === pokemonCards.length) {
@@ -82,7 +67,16 @@ const EarnPoints = () => {
     } else {
       console.log("there are still more to guess", matchedCount);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addPoints, earnedPoints, matchedCount, pokemonCards]);
+
+  useEffect(() => {
+    if (moves <= 0) {
+      if (earnedPoints > 0) {
+        addPoints(earnedPoints);
+      }
+    }
+  }, [addPoints, earnedPoints, moves]);
 
   const isFlipped = (card: { id: number; src: string; matched: boolean }) => {
     let flipped = false;
@@ -111,7 +105,15 @@ const EarnPoints = () => {
         <Heading color="text.light" fontFamily="Inter" fontWeight="bold">
           Pokemon Matching Game
         </Heading>
-        <Button width="7rem" height="2rem" onClick={shuffleCards}>
+        <Button
+          width="7rem"
+          height="2rem"
+          onClick={() => {
+            shuffleCards();
+            setEarnedPoints(0);
+            setMatchedCount(0);
+          }}
+        >
           New Game
         </Button>
 
@@ -133,15 +135,6 @@ const EarnPoints = () => {
             <HStack>
               <Text fontFamily="Inter" color="text.light" fontWeight="semibold">
                 Earned Points:
-              </Text>
-              <Text
-                fontFamily="Inter"
-                display={showMultplier ? "block" : "none"}
-                fontStyle="italic"
-                fontWeight="semibold"
-                color="green"
-              >
-                x{multiplier}
               </Text>
               <Text
                 fontFamily="Inter"
