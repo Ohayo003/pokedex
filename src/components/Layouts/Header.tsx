@@ -37,6 +37,7 @@ const Header = () => {
   const removeCarouseItem = useStore((state) => state.removeCarouseItem);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   const user_points = useStore((state) => state.points);
+  const resetStore = useStore((state) => state.clearStore);
   const { data } = useQuery<getMe>(GET_ME);
 
   return (
@@ -162,7 +163,7 @@ const Header = () => {
                     icon={<IoLogOut size={25} />}
                     onClick={() => {
                       signOut({ callbackUrl: "/" });
-                      removeCarouseItem();
+                      resetStore();
                       setCurrentPage(1);
                     }}
                   >
