@@ -68,6 +68,7 @@ const PokemonId = () => {
       p_pointsValue: PPointsValue,
       pokemon: {
         id: data?.pokemon?.id!,
+        name: data?.pokemon?.name!,
         image,
         bg: colorTypes(data?.pokemon?.element[0].type?.name!),
       },
