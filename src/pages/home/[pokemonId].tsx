@@ -55,7 +55,7 @@ const PokemonId = () => {
   });
 
   const image = pokemonImage(data?.pokemon?.id!);
-
+  console.log(image);
   ///value of each pokemon
   const PPointsValue = 30 * data?.pokemon?.id!;
 

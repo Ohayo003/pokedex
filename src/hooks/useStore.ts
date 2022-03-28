@@ -30,6 +30,7 @@ interface IUserAccount {
     bg: string;
   }[];
   addCollections: (id: number, image: string, bg: string) => void;
+  removeCollection: (id: number) => void;
 }
 
 const useStore = create<IStore & IUserAccount>(
@@ -90,6 +91,15 @@ const useStore = create<IStore & IUserAccount>(
               image,
               bg,
             },
+          ],
+        }));
+      },
+      removeCollection: (id) => {
+        return set((state) => ({
+          collections: [
+            ...state.collections.filter((obj) => {
+              return obj.id !== id;
+            }),
           ],
         }));
       },
