@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  HStack,
-  Icon,
-  Link,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Icon, Stack, useToast } from "@chakra-ui/react";
 import dragon from "public/assets/background/sign-up-image.png";
 import TextField from "src/components/widgets/Forms/TextField";
 import Label from "src/components/widgets/Forms/Label";
@@ -26,6 +16,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
+import { useEffect, useState } from "react";
 
 let schema = yup.object().shape({
   emailAddress: yup.string().email("The email is invalid").required(),
@@ -37,7 +28,8 @@ let schema = yup.object().shape({
 const SignUp = () => {
   const router = useRouter();
   const callbackUrl = useCallbackUrl();
-
+  const [error, setError] = useState(false);
+  const toast = useToast();
   const { status } = useSession();
 
   const {
@@ -46,12 +38,31 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<ISignup>({ mode: "onChange", resolver: yupResolver(schema) });
 
+  useEffect(() => {
+    if (router.query.error) {
+      console.log(router.query.error);
+      toast({
+        title: "Error Sign UP.",
+        description: `${router.query.error}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query]);
+
   const onSubmit: SubmitHandler<ISignup> = (data) => {
     console.log(data);
     signIn("credentials", {
       ...data,
-      callbackUrl: "/home",
-      // redirect: false,
+    });
+    toast({
+      title: "Account Created",
+      description: "Your Account Created Successfully",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
     });
   };
 
@@ -159,35 +170,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-///Provider Buttons
-const Social = () => {
-  return (
-    <HStack justify="center" gap={4}>
-      <ProviderButtons
-        provider="facebook"
-        icon={<Icon as={BsFacebook} fill="white" w={10} h={10} />}
-        aria-label="facebook"
-        _hover={{
-          bg: "transparent",
-        }}
-      />
-      <ProviderButtons
-        provider="github"
-        aria-label="github"
-        icon={<Icon as={BsGithub} fill="white" w={10} h={10} />}
-        _hover={{
-          bg: "transparent",
-        }}
-      />
-      <ProviderButtons
-        provider="google"
-        icon={<Icon as={BsGoogle} fill="white" w={10} h={10} />}
-        aria-label="google"
-        _hover={{
-          bg: "transparent",
-        }}
-      />
-    </HStack>
-  );
-};
