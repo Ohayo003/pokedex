@@ -21,10 +21,10 @@ import pokemonImage from "src/utils/image";
 export const MotionBox = motion<BoxProps>(Box);
 
 type PokemonListViewType = {
-  pokemon: GetPokemonDataList["pokemons"];
+  pokemons: GetPokemonDataList["pokemons"];
 };
 
-const PokemonListView = ({ pokemon }: PokemonListViewType) => {
+const PokemonListView = ({ pokemons }: PokemonListViewType) => {
   const router = useRouter();
   const addCarousel = useStore((state) => state.addCarousel);
   const points = 30;
@@ -91,8 +91,8 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
           text="Points"
         />
       </Grid>
-      {pokemon &&
-        pokemon.map((pokemon, idx) => {
+      {pokemons &&
+        pokemons.map((pokemon, idx) => {
           return (
             <MotionBox
               key={idx}
@@ -126,7 +126,7 @@ const PokemonListView = ({ pokemon }: PokemonListViewType) => {
                   alignItems="center"
                   height="2.5rem"
                   width="3rem"
-                  text={idx + 1}
+                  text={pokemon.id}
                 />
                 <Box
                   display="flex"
