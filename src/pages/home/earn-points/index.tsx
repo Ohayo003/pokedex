@@ -107,7 +107,18 @@ const EarnPoints = () => {
         </Heading>
         <Button
           width="7rem"
+          borderColor="primary"
+          _hover={{
+            cursor: "pointer",
+            background: "primary",
+            color: "white",
+            borderColor: "primary",
+          }}
+          border="1px"
+          background="transparent"
           height="2rem"
+          fontWeight="bold"
+          color="primary"
           onClick={() => {
             shuffleCards();
             setEarnedPoints(0);
