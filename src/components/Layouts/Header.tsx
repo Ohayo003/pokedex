@@ -79,7 +79,6 @@ const Header = () => {
             pt={7}
             pb={7}
           >
-            {/* <Stack direction={"row"} spacing={7} zIndex={2}> */}
             <Box zIndex={5}>
               <Menu gutter={10}>
                 <MenuButton
@@ -135,7 +134,7 @@ const Header = () => {
                   </Center>
                   <Center>
                     <Text fontWeight="600" fontFamily="Inter">
-                      username
+                      {data ? data?.me.firstname : session?.user?.name}
                     </Text>
                   </Center>
                   <MenuDivider />
@@ -172,7 +171,6 @@ const Header = () => {
                 </MenuList>
               </Menu>
             </Box>
-            {/* </Stack> */}
           </Flex>
         </HStack>
       </Flex>
