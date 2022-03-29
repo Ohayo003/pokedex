@@ -33,27 +33,29 @@ import {
 import useSound from "use-sound";
 import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 import Pagination from "src/components/widgets/Pokemon/Pagination";
+import { GetServerSideProps } from "next";
+import { newLimit } from "src/utils/limit";
 
 const HomePage = () => {
-  const bgMusic =
-    // "/assets/music/pokemon_themesong.mp3";
-    "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
+  // const bgMusic =
+  //   // "/assets/music/pokemon_themesong.mp3";
+  //   "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
   const { status } = useSession({ required: true });
   const router = useRouter();
+  const currentLastIndex = useStore((state) => state.currentLastIndex);
   const isFiltered = useStore((state) => state.isFiltered);
   const setIsFiltered = useStore((state) => state.setIsFiltered);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentLastIndex, setCurrentLastIndex] = useState(10);
+  const currentIndex = useStore((state) => state.currentIndex);
   const types = useStore((state) => state.filterTypes);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   const list = useStore((state) => state.listView);
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
-  const [play, isPlaying] = useSound(bgMusic, {
-    volume: 0.1,
-    interrupt: true,
-  });
+  // const [play, isPlaying] = useSound(bgMusic, {
+  //   volume: 0.1,
+  //   interrupt: true,
+  // });
 
   ///useQuery to display list of pokemon
   const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
@@ -64,11 +66,11 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
-  useEffect(() => {
-    if (!isPlaying) {
-      play();
-    }
-  }, [isPlaying, play]);
+  // useEffect(() => {
+  //   if (!isPlaying) {
+  //     play();
+  //   }
+  // }, [isPlaying, play]);
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
@@ -106,35 +108,43 @@ const HomePage = () => {
   } = usePagination(list ? 10 : 8, {
     data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
     isRecent: false,
-    currentIndex,
-    currentLastIndex,
     filtered: isFiltered,
     handleFetchMore,
-    setCurrentIndex,
-    setCurrentLastIndex,
   });
 
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
+    const offset = currentIndex * 10;
     if (isFiltered) {
       (async function () {
         await filterDataQuery({
           variables: { type: types },
         });
-        setCurrentPage(1);
       })();
     } else {
       (async function () {
         await fetchAllPokemons({
           variables: {
-            limit: 100,
-            offset: 0,
+            limit: 100 * newLimit(currentIndex),
+            offset: offset,
           },
         });
-        setCurrentPage(1);
       })();
     }
-  }, [fetchAllPokemons, filterDataQuery, isFiltered, setCurrentPage, types]);
+  }, [
+    currentIndex,
+    fetchAllPokemons,
+    filterDataQuery,
+    isFiltered,
+    setCurrentPage,
+    types,
+  ]);
+
+  useEffect(() => {
+    console.log("currentpage:", currentPage);
+    console.log("current index", currentIndex);
+    console.log("current last index", currentLastIndex);
+  }, [currentIndex, currentLastIndex, currentPage]);
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
@@ -146,8 +156,7 @@ const HomePage = () => {
   ///Set the current page to the first page on load
   useEffect(() => {
     setlistView(list);
-    setCurrentPage(currentIndex + 1);
-  }, [currentIndex, list, setCurrentPage]);
+  }, [currentIndex, list]);
 
   return (
     <Box minH="100vh" mt={9} mb={14}>
@@ -201,7 +210,7 @@ const HomePage = () => {
             loading || filterLoading ? (
               <Loading />
             ) : (
-              <PokemonListView pokemon={currentData()} />
+              <PokemonListView pokemons={currentData()} />
             )
           ) : loading || filterLoading ? (
             <Loading />
@@ -230,9 +239,7 @@ const HomePage = () => {
         <Pagination
           previousPage={previousPage}
           nextPage={nextPage}
-          currentIndex={currentIndex}
           selectedPage={selectedPage}
-          currentLastIndex={currentLastIndex}
           numberOfPages={numberOfPages}
           currentPage={currentPage}
           currentData={currentData}
