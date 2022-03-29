@@ -22,7 +22,7 @@ const useCards = () => {
     src: string;
   } | null>(null);
 
-  ///Shuffle cards
+  ///Shuffle cards and duplicates the existing cards
   function shuffleCards() {
     const shuffle = [...cardImages, ...cardImages]
       .sort(() => Math.random() - 0.5)
@@ -47,6 +47,7 @@ const useCards = () => {
     }
   }
 
+  ///resets the selection and updates the move counts
   function resetSelection(matched: boolean) {
     setFirstChoice(null);
     setSecondChoice(null);
