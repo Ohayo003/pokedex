@@ -107,7 +107,7 @@ const HomePage = () => {
     previousPage,
     selectedPage,
     currentData,
-  } = usePagination(list ? 10 : 8, {
+  } = usePagination(10, {
     data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
     isRecent: false,
     filtered: isFiltered,
