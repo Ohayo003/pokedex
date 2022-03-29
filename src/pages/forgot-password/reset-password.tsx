@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, Stack, Button, VStack } from "@chakra-ui/react";
+import React from "react";
+import { Box, Stack, Button, VStack, useToast } from "@chakra-ui/react";
 import Label from "src/components/widgets/Forms/Label";
 import TextField from "src/components/widgets/Forms/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -29,6 +29,7 @@ let schema = yup.object().shape({
 const ResetPassword = () => {
   const router = useRouter();
   const passwordResetCode = router.query.code;
+  const toast = useToast();
   const callbackUrl = useCallbackUrl();
   const emailAddress = router.query.email;
   const [resetPassword, { loading, data, error }] = useMutation(RESET_PASSWORD);
@@ -57,9 +58,16 @@ const ResetPassword = () => {
         emailAddress: emailAddress,
         password: data.newPassword,
       });
+      toast({
+        title: "Success.",
+        description: "Reset Password Successful",
+        status: "success",
+        duration: 3000,
+
+        isClosable: true,
+      });
     }
   };
-
 
   if (status === "loading") {
     return <Loading />;

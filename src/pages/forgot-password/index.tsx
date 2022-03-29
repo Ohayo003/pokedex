@@ -1,7 +1,7 @@
 import React from "react";
 // import UIAccount from 'src/components/Layouts/UIAccount';
 import seadragon from "public/assets/background/forgot-password-image.png";
-import { Box, Stack, Button, VStack, Link } from "@chakra-ui/react";
+import { Box, Stack, Button, VStack, Link, useToast } from "@chakra-ui/react";
 import Label from "src/components/widgets/Forms/Label";
 import TextField from "src/components/widgets/Forms/TextField";
 import * as yup from "yup";
@@ -31,6 +31,7 @@ let schema = yup.object().shape({
 
 const ForgotPassword = () => {
   const router = useRouter();
+  const toast = useToast();
   const [triggerResetPassword, { loading, data, error }] = useMutation<
     triggerResetPassword,
     triggerResetPasswordVariables
@@ -65,6 +66,13 @@ const ForgotPassword = () => {
         },
       });
       if (callback.data?.generatePasswordResetLink) {
+        toast({
+          title: "Success.",
+          description: "Generating Reset Password Link Successful.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
         router.push(callback.data.generatePasswordResetLink);
       }
     }
