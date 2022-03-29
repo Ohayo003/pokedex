@@ -8,6 +8,7 @@ import {
   Image,
   type BoxProps,
   Icon,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { ReactElement, useEffect } from "react";
@@ -17,6 +18,7 @@ import { motion } from "framer-motion";
 import { HStack } from "@chakra-ui/react";
 import { SiZcash } from "react-icons/si";
 import useStore from "src/hooks/useStore";
+import Loading from "src/components/widgets/Loading";
 // import pokemonCardBack from ;
 
 const MotionBox = motion<BoxProps>(Box);
@@ -25,6 +27,8 @@ const EarnPoints = () => {
   const udpatePoints = useStore((state) => state.updatePoints);
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
+  const [loadingCard, setLoadingCards] = useState(false);
+  const toast = useToast();
 
   const {
     shuffleCards,
@@ -36,7 +40,6 @@ const EarnPoints = () => {
     handleClick,
     resetSelection,
   } = useCards();
-
 
   ///checks if first and second choice already have data
   ///then check if they are equal, if eqaul updates the pokemonCards matched property
@@ -70,6 +73,13 @@ const EarnPoints = () => {
   ///of the cards and then updates the user points
   useEffect(() => {
     if (matchedCount === pokemonCards.length) {
+      toast({
+        title: "Victory",
+        description: `You guessed all cards. You win ${earnedPoints}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       udpatePoints(earnedPoints, "increament");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,10 +92,19 @@ const EarnPoints = () => {
       if (earnedPoints > 0) {
         udpatePoints(earnedPoints, "increament");
       }
+      toast({
+        title: "Game Over",
+        description: `You already consumed your moves. You only have earned ${earnedPoints} Points`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [udpatePoints, earnedPoints, moves]);
 
   ///swaps back card to front card if they matches the condition
+  ///but if the cards are matched they will remains open or show the images of matched cards
   const isFlipped = (card: { id: number; src: string; matched: boolean }) => {
     let flipped = false;
     if (card === firstChoice) {
@@ -98,6 +117,13 @@ const EarnPoints = () => {
     return flipped;
   };
 
+  ///sets back the loading the false after 1 sec
+  useEffect(() => {
+    if (loadingCard) {
+      setTimeout(() => setLoadingCards(false), 1000);
+    }
+  }, [loadingCard]);
+
   return (
     <Box minH="100vh">
       <Flex
@@ -106,8 +132,8 @@ const EarnPoints = () => {
         flexDirection="column"
         align="center"
         gap={4}
-        mx="auto"
-        maxW="70%"
+        mx={{ lg: "auto", base: "20px" }}
+        maxW={{ lg: "70%", base: "100%" }}
         justify="center"
       >
         <Heading color="text.light" fontFamily="Inter" fontWeight="bold">
@@ -131,6 +157,7 @@ const EarnPoints = () => {
             shuffleCards();
             setEarnedPoints(0);
             setMatchedCount(0);
+            setLoadingCards(true);
           }}
         >
           New Game
@@ -167,52 +194,57 @@ const EarnPoints = () => {
             </HStack>
           </Flex>
         </Box>
-
-        <Grid templateColumns="repeat(4,1fr)" gap={4}>
-          {pokemonCards &&
-            pokemonCards.map((card) => (
-              <MotionBox
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                borderRadius=".5rem"
-                overflow="hidden"
-                position="relative"
-                width="11rem"
-                height="14rem"
-                _hover={{ cursor: "pointer" }}
-                key={card.id}
-              >
-                <Box position="relative">
-                  <Image
-                    src={card.src}
-                    position={"absolute"}
-                    height="14rem"
-                    transform={
-                      isFlipped(card) ? "rotateY(0deg)" : "rotateY(90deg)"
-                    }
-                    transitionDelay={isFlipped(card) ? "0.1s" : "0.2s"}
-                    transition={"all ease-in 0.2s"}
-                    // transitionDuration=".1s"
-                    alt={card.id.toString()}
-                  />
-                  <Image
-                    display="block"
-                    src={"/assets/cards/PokemonCardBack.png"}
-                    position={"absolute"}
-                    transform={
-                      isFlipped(card) ? "rotateY(90deg)" : "rotateY(0deg)"
-                    }
-                    width="14rem"
-                    transition={isFlipped(card) ? "none" : "all ease-in 0.2s"}
-                    transitionDelay={isFlipped(card) ? "0s" : "0.2s"}
-                    height="14.1rem"
-                    onClick={() => handleClick(card)}
-                    alt={card.id.toString()}
-                  />
-                </Box>
-              </MotionBox>
-            ))}
-        </Grid>
+        {loadingCard ? (
+          <Loading />
+        ) : (
+          <Grid
+            templateColumns={{ lg: "repeat(4,1fr)", base: "repeat(3,1fr)" }}
+            gap={4}
+          >
+            {pokemonCards &&
+              pokemonCards.map((card) => (
+                <MotionBox
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  borderRadius=".5rem"
+                  overflow="hidden"
+                  position="relative"
+                  width="11rem"
+                  height="14rem"
+                  _hover={{ cursor: "pointer" }}
+                  key={card.id}
+                >
+                  <Box position="relative">
+                    <Image
+                      src={card.src}
+                      position={"absolute"}
+                      height="14rem"
+                      transform={
+                        isFlipped(card) ? "rotateY(0deg)" : "rotateY(90deg)"
+                      }
+                      transitionDelay={isFlipped(card) ? "0.1s" : "0.2s"}
+                      transition={"all ease-in 0.2s"}
+                      alt={card.id.toString()}
+                    />
+                    <Image
+                      display="block"
+                      src={"/assets/cards/PokemonCardBack.png"}
+                      position={"absolute"}
+                      transform={
+                        isFlipped(card) ? "rotateY(90deg)" : "rotateY(0deg)"
+                      }
+                      width="14rem"
+                      transition={isFlipped(card) ? "none" : "all ease-in 0.2s"}
+                      transitionDelay={isFlipped(card) ? "0s" : "0.2s"}
+                      height="14.1rem"
+                      onClick={() => handleClick(card)}
+                      alt={card.id.toString()}
+                    />
+                  </Box>
+                </MotionBox>
+              ))}
+          </Grid>
+        )}
       </Flex>
     </Box>
   );
