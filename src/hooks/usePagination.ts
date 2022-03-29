@@ -62,6 +62,7 @@ export const usePagination = (
     }
   }, [currentIndex, prevPageTriggered, setCurrentPage]);
 
+  
   ///current data is being sliced
   function currentData() {
     const lastIndexOfPokemonList = currentPage * itemsPerPage;
