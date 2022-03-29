@@ -84,14 +84,13 @@ const About = ({ pokemon }: AboutType) => {
         </Card>
         <Box pt={8}>
           <Card
-            // width="37.5rem
             height="7rem"
             border="1px solid #718096"
             display="flex"
             justifyContent="center"
             alignItems="center"
           >
-            <VStack align="left" width={{ lg: "37rem" }}>
+            <VStack align="left" width={{ lg: "40rem" }}>
               <Text
                 fontFamily="Inter"
                 fontStyle="normal"
@@ -144,16 +143,6 @@ const About = ({ pokemon }: AboutType) => {
                               bg="gray500"
                               color="text.light"
                             />
-                            // <Text
-                            //   key={idx}
-                            //   fontFamily="Inter"
-                            //   fontStyle="normal"
-                            //   fontWeight="400"
-                            //   lineHeight="26px"
-                            //   color="text.light"
-                            // >
-                            //   {}
-                            // </Text>
                           );
                         }
                       )}
