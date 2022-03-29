@@ -43,6 +43,8 @@ const HomePage = () => {
   const { status } = useSession({ required: true });
   const router = useRouter();
   const currentLastIndex = useStore((state) => state.currentLastIndex);
+  const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
+  const setCurrentIndex = useStore((state) => state.setCurrentIndex);
   const isFiltered = useStore((state) => state.isFiltered);
   const setIsFiltered = useStore((state) => state.setIsFiltered);
   const currentIndex = useStore((state) => state.currentIndex);
@@ -112,6 +114,26 @@ const HomePage = () => {
     handleFetchMore,
   });
 
+  ///check first the currentIndex is > numberOfpages.length then if >
+  ///sets the currentIndex to - by subtracting the currentindex to both
+  ///then setst the currentPage to 1
+  useEffect(() => {
+    if (isFiltered) {
+      if (currentIndex > numberOfPages.length) {
+        setCurrentIndex(currentIndex, "decreament");
+        setCurrentLastIndex(currentIndex, "decreament");
+        setCurrentPage(1);
+      }
+    }
+  }, [
+    currentIndex,
+    isFiltered,
+    numberOfPages.length,
+    setCurrentIndex,
+    setCurrentLastIndex,
+    setCurrentPage,
+  ]);
+
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
     const offset = currentIndex * 10;
@@ -120,6 +142,7 @@ const HomePage = () => {
         await filterDataQuery({
           variables: { type: types },
         });
+        setCurrentPage(1);
       })();
     } else {
       (async function () {
@@ -140,12 +163,6 @@ const HomePage = () => {
     types,
   ]);
 
-  useEffect(() => {
-    console.log("currentpage:", currentPage);
-    console.log("current index", currentIndex);
-    console.log("current last index", currentLastIndex);
-  }, [currentIndex, currentLastIndex, currentPage]);
-
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
     if (types.length > 0) {
@@ -156,7 +173,11 @@ const HomePage = () => {
   ///Set the current page to the first page on load
   useEffect(() => {
     setlistView(list);
-  }, [currentIndex, list]);
+  }, [list]);
+
+  if (loading || filterLoading) {
+    return <Loading />;
+  }
 
   return (
     <Box minH="100vh" mt={9} mb={14}>
