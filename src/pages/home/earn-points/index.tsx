@@ -37,6 +37,11 @@ const EarnPoints = () => {
     resetSelection,
   } = useCards();
 
+
+  ///checks if first and second choice already have data
+  ///then check if they are equal, if eqaul updates the pokemonCards matched property
+  ///to true then reset again the selection
+  ///otherwise just reset the selection and decrease moves
   useEffect(() => {
     if (firstChoice && secondChoice) {
       if (firstChoice?.src === secondChoice?.src) {
@@ -61,15 +66,17 @@ const EarnPoints = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstChoice, secondChoice]);
 
+  ///check if the matched count is equal to the total length
+  ///of the cards and then updates the user points
   useEffect(() => {
     if (matchedCount === pokemonCards.length) {
       udpatePoints(earnedPoints, "increament");
-    } else {
-      console.log("there are still more to guess", matchedCount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [udpatePoints, earnedPoints, matchedCount, pokemonCards]);
 
+  ///checks if the moves <= to 0 and then updates the points based on
+  ///what the user earned after consuming the moves
   useEffect(() => {
     if (moves <= 0) {
       if (earnedPoints > 0) {
@@ -78,6 +85,7 @@ const EarnPoints = () => {
     }
   }, [udpatePoints, earnedPoints, moves]);
 
+  ///swaps back card to front card if they matches the condition
   const isFlipped = (card: { id: number; src: string; matched: boolean }) => {
     let flipped = false;
     if (card === firstChoice) {
