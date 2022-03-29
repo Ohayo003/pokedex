@@ -40,17 +40,15 @@ export const usePagination = (
     numberOfPages.push(index);
   }
 
-
   ///check if the next button is triggered then
   ///sets the currentpage with the updated current index + 1
   ///then sets back the nextPageTriggered to false to not cause infinite render
   useEffect(() => {
     if (nextPageTriggered) {
       setCurrentPage(currentIndex + 1);
-      setTimeout(() => setNextPageTriggered(false), 500);
+      setTimeout(() => setNextPageTriggered(false), 100);
     }
   }, [currentIndex, nextPageTriggered, setCurrentPage]);
-
 
   ///check if the prev button is triggered then
   ///sets the currentpage with the updated current index + 1
@@ -58,11 +56,10 @@ export const usePagination = (
   useEffect(() => {
     if (prevPageTriggered) {
       setCurrentPage(currentIndex + 1);
-      setTimeout(() => setPrevPageTriggered(false), 500);
+      setTimeout(() => setPrevPageTriggered(false), 100);
     }
   }, [currentIndex, prevPageTriggered, setCurrentPage]);
 
-  
   ///current data is being sliced
   function currentData() {
     const lastIndexOfPokemonList = currentPage * itemsPerPage;
@@ -90,10 +87,10 @@ export const usePagination = (
           data?.length! < 1126 &&
           currentPage >= numberOfPages.length
         ) {
+          setNextPageTriggered(true);
           handleFetchMore!();
           setCurrentIndex(itemsPerPage, "increament");
           setCurrentLastIndex(itemsPerPage, "increament");
-          setNextPageTriggered(true);
         }
       } else {
         if (currentLastIndex! <= numberOfPages.length) {
@@ -109,9 +106,9 @@ export const usePagination = (
       if (currentPage > 1) setCurrentPage(currentPage - 1);
     } else {
       if (currentIndex > 1) {
-        setCurrentLastIndex(itemsPerPage, "decreament");
-        setCurrentIndex(itemsPerPage, "decreament");
         setPrevPageTriggered(true);
+        setCurrentIndex(itemsPerPage, "decreament");
+        setCurrentLastIndex(itemsPerPage, "decreament");
       }
     }
   }
