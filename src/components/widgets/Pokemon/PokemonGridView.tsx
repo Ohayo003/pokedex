@@ -31,7 +31,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
       <Grid
         templateColumns={{
           base: "repeat(2, 1fr) ",
-          lg: "repeat(4, 1fr)",
+          lg: "repeat(5, 1fr)",
         }}
         gap={6}
       >
@@ -40,7 +40,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
             return (
               <MotionBox
                 key={idx}
-                height={{ lg: "20rem", base: "22rem" }}
+                height={{ lg: "18rem", base: "22rem" }}
                 p={2}
                 _hover={{ cursor: "pointer" }}
                 borderRadius="2xl"
@@ -66,8 +66,8 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   alignSelf="center"
                   background="whiteAlpha.800"
                   borderRadius={100}
-                  height={{ base: "13rem", lg: "13rem" }}
-                  width={{ base: "13rem", lg: "13rem" }}
+                  height={{ base: "13rem", lg: "11rem" }}
+                  width={{ base: "13rem", lg: "11rem" }}
                   borderWidth="2px 2px 6px 2px"
                   position="relative"
                 >
