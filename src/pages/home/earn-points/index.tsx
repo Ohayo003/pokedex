@@ -22,7 +22,7 @@ import useStore from "src/hooks/useStore";
 const MotionBox = motion<BoxProps>(Box);
 
 const EarnPoints = () => {
-  const addPoints = useStore((state) => state.addPoints);
+  const udpatePoints = useStore((state) => state.updatePoints);
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
 
@@ -63,20 +63,20 @@ const EarnPoints = () => {
 
   useEffect(() => {
     if (matchedCount === pokemonCards.length) {
-      addPoints(earnedPoints);
+      udpatePoints(earnedPoints, "increament");
     } else {
       console.log("there are still more to guess", matchedCount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addPoints, earnedPoints, matchedCount, pokemonCards]);
+  }, [udpatePoints, earnedPoints, matchedCount, pokemonCards]);
 
   useEffect(() => {
     if (moves <= 0) {
       if (earnedPoints > 0) {
-        addPoints(earnedPoints);
+        udpatePoints(earnedPoints, "increament");
       }
     }
-  }, [addPoints, earnedPoints, moves]);
+  }, [udpatePoints, earnedPoints, moves]);
 
   const isFlipped = (card: { id: number; src: string; matched: boolean }) => {
     let flipped = false;
