@@ -5,6 +5,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import { ApolloProvider } from "@apollo/client";
 import client from "src/apollo/apollo-client";
+import "@fontsource/inter";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -15,6 +16,19 @@ type AppPropsWithLayout = AppProps & {
 };
 
 const theme = extendTheme({
+  fonts: {
+    body: "'Inter', sans-serif",
+    heading: "'Inter', sans-serif",
+  },
+  styles: {
+    global() {
+      return {
+        body: "background.container",
+        minH: "100vh",
+      };
+    },
+  },
+
   colors: {
     primary: "#FFC107",
     secondary: "#1E40AF",
