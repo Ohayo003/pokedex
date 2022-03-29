@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 import useStore from "./useStore";
 
@@ -6,27 +8,21 @@ type PaginationType = {
   isRecent: boolean;
   filtered?: boolean;
   handleFetchMore?: () => void;
-  setCurrentLastIndex?: (value: React.SetStateAction<number>) => void;
-  setCurrentIndex?: (value: React.SetStateAction<number>) => void;
-  currentLastIndex?: number;
-  currentIndex?: number;
 };
 
 export const usePagination = (
   itemsPerPage: number,
-  {
-    data,
-    filtered,
-    isRecent,
-    handleFetchMore,
-    setCurrentIndex,
-    setCurrentLastIndex,
-    currentIndex,
-    currentLastIndex,
-  }: PaginationType
+  { data, filtered, isRecent, handleFetchMore }: PaginationType
 ) => {
   const currentPage = useStore((state) => state.currentPage);
+  const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
+  const setCurrentIndex = useStore((state) => state.setCurrentIndex);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
+  const currentLastIndex = useStore((state) => state.currentLastIndex);
+  const currentIndex = useStore((state) => state.currentIndex);
+  const [nextPageTriggered, setNextPageTriggered] = useState(false);
+  const [prevPageTriggered, setPrevPageTriggered] = useState(false);
+
   ///calculate the range of items shown in the page
   const shownFrom =
     currentPage * currentData()?.length! - currentData()?.length! + 1;
@@ -44,6 +40,28 @@ export const usePagination = (
     numberOfPages.push(index);
   }
 
+
+  ///check if the next button is triggered then
+  ///sets the currentpage with the updated current index + 1
+  ///then sets back the nextPageTriggered to false to not cause infinite render
+  useEffect(() => {
+    if (nextPageTriggered) {
+      setCurrentPage(currentIndex + 1);
+      setTimeout(() => setNextPageTriggered(false), 500);
+    }
+  }, [currentIndex, nextPageTriggered, setCurrentPage]);
+
+
+  ///check if the prev button is triggered then
+  ///sets the currentpage with the updated current index + 1
+  ///then sets back the prevPageTriggered to false to not cause infinite render
+  useEffect(() => {
+    if (prevPageTriggered) {
+      setCurrentPage(currentIndex + 1);
+      setTimeout(() => setPrevPageTriggered(false), 500);
+    }
+  }, [currentIndex, prevPageTriggered, setCurrentPage]);
+
   ///current data is being sliced
   function currentData() {
     const lastIndexOfPokemonList = currentPage * itemsPerPage;
@@ -57,28 +75,30 @@ export const usePagination = (
     ///just set the currentpage + 1
     if (isRecent) {
       setCurrentPage(currentPage + 1);
-    }
-
-    ///checking if the filter is triggered 
-    if (!filtered) {
-      ///check 1st if the current last index < numberOfpages which is the range from 1st - last page
-      ///then just set the a new state for currentIndex and currentlastIndex
-      ///otherwise if not filtered then the fetchAll pokemons is triggered for pagination
-      if (currentLastIndex! < numberOfPages.length) {
-        setCurrentIndex!((prev) => prev + itemsPerPage);
-        setCurrentLastIndex!((prev) => prev + itemsPerPage)!;
-      } else if (
-        data?.length! < 1126 &&
-        currentLastIndex! >= numberOfPages.length
-      ) {
-        handleFetchMore!();
-        setCurrentIndex!((prev) => prev + itemsPerPage);
-        setCurrentLastIndex!((prev) => prev + itemsPerPage);
-      }
     } else {
-      if (currentLastIndex! <= numberOfPages.length) {
-        setCurrentIndex!((prev) => prev + itemsPerPage);
-        setCurrentLastIndex!((prev) => prev + itemsPerPage);
+      ///checking if the filter is not triggered
+      if (!filtered) {
+        ///check 1st if the current last index < numberOfpages which is the range from 1st - last page
+        ///then just set the a new state for currentIndex and currentlastIndex
+        ///otherwise if not filtered then the fetchAll pokemons is triggered for pagination
+        if (currentPage < numberOfPages.length) {
+          setNextPageTriggered(true);
+          setCurrentIndex(itemsPerPage, "increament");
+          setCurrentLastIndex(itemsPerPage, "increament");
+        } else if (
+          data?.length! < 1126 &&
+          currentPage >= numberOfPages.length
+        ) {
+          handleFetchMore!();
+          setCurrentIndex(itemsPerPage, "increament");
+          setCurrentLastIndex(itemsPerPage, "increament");
+          setNextPageTriggered(true);
+        }
+      } else {
+        if (currentLastIndex! <= numberOfPages.length) {
+          setCurrentIndex(itemsPerPage, "increament");
+          setCurrentLastIndex(itemsPerPage, "increament");
+        }
       }
     }
   }
@@ -87,9 +107,10 @@ export const usePagination = (
     if (isRecent) {
       if (currentPage > 1) setCurrentPage(currentPage - 1);
     } else {
-      if (currentIndex! > 1) {
-        setCurrentLastIndex!((prev) => prev - itemsPerPage);
-        setCurrentIndex!((prev) => prev - itemsPerPage);
+      if (currentIndex > 1) {
+        setCurrentLastIndex(itemsPerPage, "decreament");
+        setCurrentIndex(itemsPerPage, "decreament");
+        setPrevPageTriggered(true);
       }
     }
   }
