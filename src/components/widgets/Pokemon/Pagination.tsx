@@ -9,7 +9,6 @@ interface IPagination {
   nextPage: () => void;
   selectedPage: (idx: number) => void;
   numberOfPages: number[];
-  currentPage: number;
   currentData: () => any[];
 }
 
@@ -19,9 +18,9 @@ const Pagination = ({
   numberOfPages,
   selectedPage,
   currentData,
-  currentPage,
 }: IPagination) => {
   const router = useRouter();
+  const currentPage = useStore(state=>state.currentPage)
   const currentIndex = useStore((state) => state.currentIndex);
   const currentLastIndex = useStore((state) => state.currentLastIndex);
   return (
