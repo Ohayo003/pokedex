@@ -11,9 +11,8 @@ interface ICollection {
 }
 
 export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
-  const deductPoints = useStore((state) => state.deductPoints);
   const user_points = useStore((state) => state.points);
-  const addPoints = useStore((state) => state.addPoints);
+  const updatePoints = useStore((state) => state.updatePoints);
   const collection = useStore((state) => state.collections);
   const addCollection = useStore((state) => state.addCollections);
 
@@ -41,7 +40,7 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
 
   function ObtainPokemon() {
     if (checkPoints()) {
-      deductPoints(p_pointsValue!);
+      updatePoints(p_pointsValue!, "decreament");
       addCollection(
         pokemon?.id!,
         pokemon?.name!,

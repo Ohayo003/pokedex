@@ -4,13 +4,11 @@ import { persist, devtools } from "zustand/middleware";
 interface IStore {
   listView?: boolean;
   toggleView: (value?: boolean) => void;
-  currentPage: number;
   isFiltered: boolean;
   filterTypes: string[];
   removeFilterTpyes: (value: string) => void;
   setFilterTypes: (value: string) => void;
   setIsFiltered: (value: boolean) => void;
-  setCurrentPage: (value: number) => void;
   carousel: {
     id: number;
     image: string;
@@ -21,10 +19,27 @@ interface IStore {
   clearStore: () => void;
 }
 
+///interface for pagination
+interface IPagination {
+  currentPage: number;
+  currentIndex: number;
+  currentLastIndex: number;
+  selectedIdx: number;
+  setSelectedIdx: (value: number) => void;
+  setCurrentIndex: (
+    value: number,
+    operation: "increament" | "decreament"
+  ) => void;
+  setCurrentLastIndex: (
+    value: number,
+    operation: "increament" | "decreament"
+  ) => void;
+  setCurrentPage: (value: number) => void;
+}
+
 interface IUserAccount {
   points: number;
-  addPoints: (value: number) => void;
-  deductPoints: (value: number) => void;
+  updatePoints: (value: number, operation: "increament" | "decreament") => void;
   collections: {
     id: number;
     name: string;
@@ -35,7 +50,7 @@ interface IUserAccount {
   removeCollection: (id: number) => void;
 }
 
-const useStore = create<IStore & IUserAccount>(
+const useStore = create<IStore & IUserAccount & IPagination>(
   persist(
     devtools((set) => ({
       listView: false,
@@ -77,6 +92,28 @@ const useStore = create<IStore & IUserAccount>(
           filterTypes: [value.toLocaleLowerCase(), ...state.filterTypes],
         }));
       },
+      selectedIdx: 0,
+      currentIndex: 0,
+      currentLastIndex: 10,
+      setCurrentIndex: (value, operation) => {
+        return set((state) => ({
+          currentIndex:
+            operation === "increament"
+              ? state.currentIndex + value
+              : state.currentIndex - value,
+        }));
+      },
+      setCurrentLastIndex: (value, operation) => {
+        return set((state) => ({
+          currentLastIndex:
+            operation === "increament"
+              ? state.currentLastIndex + value
+              : state.currentLastIndex - value,
+        }));
+      },
+      setSelectedIdx: (value) => {
+        return set({ selectedIdx: value });
+      },
       removeFilterTpyes: (value) => {
         return set((state) => ({
           ...state,
@@ -106,15 +143,13 @@ const useStore = create<IStore & IUserAccount>(
           ],
         }));
       },
-      points: 2000,
-      addPoints: (value) => {
+      points: 0,
+      updatePoints: (value, operation) => {
         return set((state) => ({
-          points: state.points + value,
-        }));
-      },
-      deductPoints: (value) => {
-        return set((state) => ({
-          points: state.points - value,
+          points:
+            operation === "increament"
+              ? state.points + value
+              : state.points - value,
         }));
       },
       clearStore: () => {
