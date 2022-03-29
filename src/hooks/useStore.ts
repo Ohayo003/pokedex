@@ -24,8 +24,6 @@ interface IPagination {
   currentPage: number;
   currentIndex: number;
   currentLastIndex: number;
-  selectedIdx: number;
-  setSelectedIdx: (value: number) => void;
   setCurrentIndex: (
     value: number,
     operation: "increament" | "decreament"
@@ -92,7 +90,6 @@ const useStore = create<IStore & IUserAccount & IPagination>(
           filterTypes: [value.toLocaleLowerCase(), ...state.filterTypes],
         }));
       },
-      selectedIdx: 0,
       currentIndex: 0,
       currentLastIndex: 10,
       setCurrentIndex: (value, operation) => {
@@ -110,9 +107,6 @@ const useStore = create<IStore & IUserAccount & IPagination>(
               ? state.currentLastIndex + value
               : state.currentLastIndex - value,
         }));
-      },
-      setSelectedIdx: (value) => {
-        return set({ selectedIdx: value });
       },
       removeFilterTpyes: (value) => {
         return set((state) => ({

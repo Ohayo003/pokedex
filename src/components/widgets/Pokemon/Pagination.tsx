@@ -2,13 +2,12 @@ import { Button, Flex, HStack, Icon } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import useStore from "src/hooks/useStore";
 
 interface IPagination {
   previousPage: () => void;
   nextPage: () => void;
-  currentIndex: number;
   selectedPage: (idx: number) => void;
-  currentLastIndex: number;
   numberOfPages: number[];
   currentPage: number;
   currentData: () => any[];
@@ -18,13 +17,13 @@ const Pagination = ({
   previousPage,
   nextPage,
   numberOfPages,
-  currentIndex,
-  currentLastIndex,
   selectedPage,
   currentData,
   currentPage,
 }: IPagination) => {
   const router = useRouter();
+  const currentIndex = useStore((state) => state.currentIndex);
+  const currentLastIndex = useStore((state) => state.currentLastIndex);
   return (
     <Flex justifyContent="center" mt={2} gap={6} align="center" zIndex={1}>
       <Icon
