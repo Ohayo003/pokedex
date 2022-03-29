@@ -55,7 +55,7 @@ const PokemonId = () => {
   });
 
   const image = pokemonImage(data?.pokemon?.id!);
-  console.log(image);
+
   ///value of each pokemon
   const PPointsValue = 30 * data?.pokemon?.id!;
 
@@ -74,6 +74,7 @@ const PokemonId = () => {
       },
     });
   console.log(checkExistingPokemonCollection());
+  
   ///usePagination
   const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
     usePagination(6, { data: recentVisit, isRecent: true });
