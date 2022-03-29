@@ -21,22 +21,21 @@ export default NextAuth({
       id: "credentials",
       async authorize(credentials) {
         if (credentials?.firstName) {
-          const { data, errors } = await client.mutate(
-            {
-              mutation: SIGN_UP,
-              variables: {
-                emailAddress: credentials?.emailAddress!,
-                firstName: credentials?.firstName!,
-                lastName: credentials?.lastName!,
-                password: credentials?.password!,
-              },
-            }
-          );
+          const { data, errors } = await client.mutate({
+            mutation: SIGN_UP,
+            variables: {
+              emailAddress: credentials?.emailAddress!,
+              firstName: credentials?.firstName!,
+              lastName: credentials?.lastName!,
+              password: credentials?.password!,
+            },
+          });
           if (data?.signUp.token) {
             // console.log(data);
-            return data.signUp.token ;
-          } else {
-            return null;
+            return data.signUp.token;
+          }
+          if (errors) {
+            return errors;
           }
           // console.log(errors);
         }
@@ -89,6 +88,7 @@ export default NextAuth({
   pages: {
     signIn: "/login",
     signOut: "/login",
+    error: "/signup",
   },
   callbacks: {
     async session({ session, token }) {
