@@ -71,7 +71,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   borderWidth="2px 2px 6px 2px"
                   position="relative"
                 >
-                  <FallBackImage
+                  {/* <FallBackImage
                     src={pokemonImage(pokemon?.id!)}
                     loader={
                       <Box>
@@ -79,8 +79,8 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                       </Box>
                     }
                     fallback="/assets/background/whos_that_pokemon.jpg"
-                  />
-                  {/* <Image
+                  /> */}
+                  <Image
                     src={pokemonImage(pokemon?.id!)}
                     alt={`${pokemon.name}`}
                     layout="fill"
@@ -88,7 +88,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                     // height={20}
                     // objectFit="cover"
                     // objectPosition="center"
-                  /> */}
+                  />
                 </Box>
                 <Box
                   pt={{ base: 3, lg: 1 }}
