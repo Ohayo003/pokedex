@@ -98,9 +98,9 @@ const About = ({ pokemon }: AboutType) => {
                 lineHeight="26px"
                 color="text.blue400"
               >
-                Height
+                Breed
               </Text>
-              <HStack gap={4}>
+              <HStack gap={8}>
                 <HStack gap={2}>
                   <Text
                     fontFamily="Inter"
