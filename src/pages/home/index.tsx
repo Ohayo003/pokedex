@@ -1,19 +1,10 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-  Button,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
 import "@fontsource/inter";
 import { HiViewList } from "react-icons/hi";
 import { BsGridFill } from "react-icons/bs";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import PokemonListView from "src/components/widgets/Pokemon/PokemonListView";
 import PokemonGridView from "src/components/widgets/Pokemon/PokemonGridView";
 import useStore from "src/hooks/useStore";
@@ -40,16 +31,26 @@ const HomePage = () => {
   // const bgMusic =
   //   // "/assets/music/pokemon_themesong.mp3";
   //   "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
-  const { status } = useSession({ required: true });
   const router = useRouter();
-  const currentLastIndex = useStore((state) => state.currentLastIndex);
-  const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
+
+  ///sets the current index and the last index for limiting the page number to 10
   const setCurrentIndex = useStore((state) => state.setCurrentIndex);
+  const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
+
+  ///toggles when the app fetch using the types of pokemons
   const isFiltered = useStore((state) => state.isFiltered);
   const setIsFiltered = useStore((state) => state.setIsFiltered);
+
+  ///set and get the current page
   const currentIndex = useStore((state) => state.currentIndex);
-  const types = useStore((state) => state.filterTypes);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
+
+  ///elements types stored here are used for filtering
+  const types = useStore((state) => state.filterTypes);
+
+  const [routeLoading, setRouteLoading] = useState(false);
+
+  ///used for triggering list view
   const list = useStore((state) => state.listView);
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
@@ -165,17 +166,35 @@ const HomePage = () => {
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
-    if (types.length > 0) {
+    if (types?.length > 0) {
       setIsFiltered(true);
     } else setIsFiltered(false);
-  }, [setIsFiltered, types.length]);
+  }, [setIsFiltered, types?.length]);
 
   ///Set the current page to the first page on load
   useEffect(() => {
     setlistView(list);
   }, [list]);
 
-  if (loading || filterLoading) {
+  useEffect(() => {
+    const handelChangeRoute = () => {
+      console.log("changing route...");
+      setRouteLoading(true);
+    };
+    const handleChangeRouteComplete = () => {
+      console.log("changing route Complete...");
+      setRouteLoading(false);
+    };
+    router.events.on("routeChangeStart", handelChangeRoute);
+    router.events.on("routeChangeComplete", handleChangeRouteComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handelChangeRoute);
+      router.events.off("routeChangeComplete", handleChangeRouteComplete);
+    };
+  }, [router.events]);
+
+  if (routeLoading) {
     return <Loading />;
   }
 
@@ -262,7 +281,6 @@ const HomePage = () => {
           nextPage={nextPage}
           selectedPage={selectedPage}
           numberOfPages={numberOfPages}
-          currentPage={currentPage}
           currentData={currentData}
         />
       </Flex>
