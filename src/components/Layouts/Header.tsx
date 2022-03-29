@@ -34,9 +34,10 @@ import { useRouter } from "next/router";
 const Header = () => {
   const { data: session } = useSession({ required: true });
   const router = useRouter();
-  const removeCarouseItem = useStore((state) => state.removeCarouseItem);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
+  ///get the current user points
   const user_points = useStore((state) => state.points);
+  ///resetStore on logout
   const resetStore = useStore((state) => state.clearStore);
   const { data } = useQuery<getMe>(GET_ME);
 
