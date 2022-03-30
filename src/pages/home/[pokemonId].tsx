@@ -93,197 +93,202 @@ const PokemonId = () => {
   }
 
   return (
-    <Box mx={{ base: "20px", lg: "auto" }} minH="100vh">
-      <Box w="fit-content" mx="auto">
-        <Breadcrumb mt={5} separator={<ChevronRightIcon color="gray.500" />}>
-          <BreadcrumbItem
-            fontFamily="Inter"
-            fontStyle="normal"
-            fontWeight="400"
-            lineHeight="17px"
-            color="gray500"
-          >
-            <Link passHref href="/home">
-              <BreadcrumbLink>Home</BreadcrumbLink>
-            </Link>
-          </BreadcrumbItem>
-
-          <BreadcrumbItem
-            fontFamily="Inter"
-            fontStyle="normal"
-            fontWeight="400"
-            lineHeight="17px"
-            color="white"
-          >
-            <BreadcrumbLink>Pokemon details</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem
-            fontFamily="Inter"
-            fontStyle="normal"
-            fontWeight="400"
-            lineHeight="17px"
-            color="white"
-          >
-            <BreadcrumbLink>{activeBreadcrumb}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
-        <Flex
-          mt={10}
-          gap={16}
-          w="fit-content"
-          align={{ base: "center", lg: "start" }}
-          flexDirection={{ base: "column", lg: "row" }}
-        >
-          <VStack gap={9} align="center" zIndex={1}>
-            <Box
-              width={{ lg: "20.313rem", base: "30rem" }}
-              height={{ lg: "24.313rem", base: "30rem" }}
-              background="gray800"
-              borderRadius="4px"
-              position="relative"
-              p={2}
-              overflow="hidden"
+    <>
+      <Box mx={{ base: "20px", lg: "auto" }} minH="100vh">
+        <Box w="fit-content" mx="auto">
+          <Breadcrumb mt={5} separator={<ChevronRightIcon color="gray.500" />}>
+            <BreadcrumbItem
+              fontFamily="Inter"
+              fontStyle="normal"
+              fontWeight="400"
+              lineHeight="17px"
+              color="gray500"
             >
-              <Image
-                src={pokemonImage(data?.pokemon?.id!)}
-                alt={data?.pokemon?.name}
-                layout="fill"
-              />
-            </Box>
+              <Link passHref href="/home">
+                <BreadcrumbLink>Home</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
 
-            {/**Carousel Container Section */}
-            <HStack gap={5} justify="center" zIndex={1}>
+            <BreadcrumbItem
+              fontFamily="Inter"
+              fontStyle="normal"
+              fontWeight="400"
+              lineHeight="17px"
+              color="white"
+            >
+              <BreadcrumbLink>Pokemon details</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem
+              fontFamily="Inter"
+              fontStyle="normal"
+              fontWeight="400"
+              lineHeight="17px"
+              color="white"
+            >
+              <BreadcrumbLink>{activeBreadcrumb}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+          <Flex
+            mt={10}
+            gap={16}
+            w="fit-content"
+            align={{ base: "center", lg: "start" }}
+            flexDirection={{ base: "column", lg: "row" }}
+          >
+            <VStack gap={9} align="center" zIndex={1}>
               <Box
-                width={{ lg: "2rem", base: "4rem" }}
-                height={{ lg: "2rem", base: "4rem" }}
-                border="1px solid"
-                borderColor={currentPage <= 1 ? "gray500" : "primary"}
-                borderRadius="full"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+                width={{ lg: "20.313rem", base: "30rem" }}
+                height={{ lg: "24.313rem", base: "30rem" }}
+                background="gray800"
+                borderRadius="4px"
+                position="relative"
+                p={2}
+                overflow="hidden"
               >
-                <Icon
-                  onClick={() => (currentPage > 1 ? previousPage() : null)}
-                  as={BiChevronLeft}
-                  _hover={{ cursor: "pointer" }}
-                  w={{ lg: 6, base: 12 }}
-                  h={{ lg: 6, base: 12 }}
-                  fill={currentPage <= 1 ? "gray500" : "primary"}
+                <Image
+                  src={pokemonImage(data?.pokemon?.id!)}
+                  alt={data?.pokemon?.name}
+                  layout="fill"
                 />
               </Box>
-              <SimpleGrid columns={3} gap={2} animation="running">
-                {currentData().length! &&
-                  currentData().map((item, idx) => {
-                    return (
-                      <MotionBox
-                        key={idx}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Box
-                          width={{ lg: "3.563rem", base: "6rem" }}
-                          height={{ lg: "3.563rem", base: "6rem" }}
-                          overflow="hidden"
-                          borderRadius="4px"
-                          background={item.bg}
-                          _hover={{ cursor: "pointer" }}
-                          onClick={() => {
-                            router.push(`/home/${item.id}`);
-                            handleAddRecent(item.id, item.image, item.bg);
-                          }}
-                          position="relative"
+
+              {/**Carousel Container Section */}
+              <HStack gap={5} justify="center" zIndex={1}>
+                <Box
+                  width={{ lg: "2rem", base: "4rem" }}
+                  height={{ lg: "2rem", base: "4rem" }}
+                  border="1px solid"
+                  borderColor={currentPage <= 1 ? "gray500" : "primary"}
+                  borderRadius="full"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Icon
+                    onClick={() => (currentPage > 1 ? previousPage() : null)}
+                    as={BiChevronLeft}
+                    _hover={{ cursor: "pointer" }}
+                    w={{ lg: 6, base: 12 }}
+                    h={{ lg: 6, base: 12 }}
+                    fill={currentPage <= 1 ? "gray500" : "primary"}
+                  />
+                </Box>
+                <SimpleGrid columns={3} gap={2} animation="running">
+                  {currentData().length! &&
+                    currentData().map((item, idx) => {
+                      return (
+                        <MotionBox
+                          key={idx}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
                         >
-                          <Image
-                            src={item.image || "null"}
-                            alt="dragon"
-                            // width="57px"
-                            // height="57px"
-                            layout="fill"
-                          />
-                        </Box>
-                      </MotionBox>
-                    );
-                  })}
-              </SimpleGrid>
-              <Box
-                width={{ lg: "2rem", base: "4rem" }}
-                height={{ lg: "2rem", base: "4rem" }}
-                border="1px solid"
-                borderColor={
-                  currentPage >= numberOfPages.length ? "gray500" : "primary"
-                }
-                borderRadius="full"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Icon
-                  onClick={() =>
-                    currentPage >= numberOfPages.length ? null : nextPage()
-                  }
-                  _hover={{ cursor: "pointer" }}
-                  as={BiChevronRight}
-                  w={{ lg: 6, base: 12 }}
-                  h={{ lg: 6, base: 12 }}
-                  fill={
+                          <Box
+                            width={{ lg: "3.563rem", base: "6rem" }}
+                            height={{ lg: "3.563rem", base: "6rem" }}
+                            overflow="hidden"
+                            borderRadius="4px"
+                            background={item.bg}
+                            _hover={{ cursor: "pointer" }}
+                            onClick={() => {
+                              router.push(`/home/${item.id}`);
+                              handleAddRecent(item.id, item.image, item.bg);
+                            }}
+                            position="relative"
+                          >
+                            <Image
+                              src={item.image || "null"}
+                              alt="dragon"
+                              // width="57px"
+                              // height="57px"
+                              layout="fill"
+                            />
+                          </Box>
+                        </MotionBox>
+                      );
+                    })}
+                </SimpleGrid>
+                <Box
+                  width={{ lg: "2rem", base: "4rem" }}
+                  height={{ lg: "2rem", base: "4rem" }}
+                  border="1px solid"
+                  borderColor={
                     currentPage >= numberOfPages.length ? "gray500" : "primary"
                   }
-                />
-              </Box>
-            </HStack>
-
-            {/**Points section */}
-            <Flex justifyContent="space-between" width="15rem">
-              <HStack>
-                <Text
-                  fontFamily="Inter"
-                  fontWeight="semibold"
-                  color="text.light"
-                  fontSize={{ base: "xl", lg: "md" }}
+                  borderRadius="full"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                 >
-                  Points:
-                </Text>
+                  <Icon
+                    onClick={() =>
+                      currentPage >= numberOfPages.length ? null : nextPage()
+                    }
+                    _hover={{ cursor: "pointer" }}
+                    as={BiChevronRight}
+                    w={{ lg: 6, base: 12 }}
+                    h={{ lg: 6, base: 12 }}
+                    fill={
+                      currentPage >= numberOfPages.length
+                        ? "gray500"
+                        : "primary"
+                    }
+                  />
+                </Box>
+              </HStack>
+
+              {/**Points section */}
+              <Flex justifyContent="space-between" width="15rem">
                 <HStack>
                   <Text
                     fontFamily="Inter"
-                    fontWeight="bold"
-                    fontStyle="italic"
-                    color="primary"
+                    fontWeight="semibold"
+                    color="text.light"
                     fontSize={{ base: "xl", lg: "md" }}
                   >
-                    {PPointsValue}
+                    Points:
                   </Text>
-                  <Icon as={SiZcash} w={5} h={5} fill="primary" />
+                  <HStack>
+                    <Text
+                      fontFamily="Inter"
+                      fontWeight="bold"
+                      fontStyle="italic"
+                      color="primary"
+                      fontSize={{ base: "xl", lg: "md" }}
+                    >
+                      {PPointsValue}
+                    </Text>
+                    <Icon as={SiZcash} w={5} h={5} fill="primary" />
+                  </HStack>
                 </HStack>
-              </HStack>
-              <Button
-                color="primary"
-                height={{ lg: "2rem" }}
-                background="transparent"
-                _focus={{ borderColor: "transparent", color: "gray" }}
-                variant="outline"
-                _disabled={{ borderColor: "gray", color: "gray" }}
-                isDisabled={!checkPoints() || checkExistingPokemonCollection()}
-                borderColor="primary"
-                _pressed={{ background: "transparent" }}
-                _hover={{
-                  background: "transparent",
-                  borderColor: "white",
-                  color: "white",
-                }}
-                onClick={onOpen}
-              >
-                {checkExistingPokemonCollection() ? "Obtained" : "Obtain"}
-              </Button>
-            </Flex>
-          </VStack>
+                <Button
+                  color="primary"
+                  height={{ lg: "2rem" }}
+                  background="transparent"
+                  _focus={{ borderColor: "transparent", color: "gray" }}
+                  variant="outline"
+                  _disabled={{ borderColor: "gray", color: "gray" }}
+                  isDisabled={
+                    !checkPoints() || checkExistingPokemonCollection()
+                  }
+                  borderColor="primary"
+                  _pressed={{ background: "transparent" }}
+                  _hover={{
+                    background: "transparent",
+                    borderColor: "white",
+                    color: "white",
+                  }}
+                  onClick={onOpen}
+                >
+                  {checkExistingPokemonCollection() ? "Obtained" : "Obtain"}
+                </Button>
+              </Flex>
+            </VStack>
 
-          {/** Pokemon Details Section */}
-          <PokemonDetails pokemon={data?.pokemon!} />
-        </Flex>
+            {/** Pokemon Details Section */}
+            <PokemonDetails pokemon={data?.pokemon!} />
+          </Flex>
+        </Box>
       </Box>
-
       {isOpen && (
         <ConfirmModal
           isOpen={isOpen}
@@ -292,7 +297,7 @@ const PokemonId = () => {
           obtainPokemon={ObtainPokemon}
         />
       )}
-    </Box>
+    </>
   );
 };
 
