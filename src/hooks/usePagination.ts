@@ -93,7 +93,10 @@ export const usePagination = (
           setCurrentLastIndex(itemsPerPage, "increament");
         }
       } else {
-        if (currentLastIndex! <= numberOfPages.length) {
+        ///if the data is filtered check only if the current last index of the page < the total number of pages
+        ///then just increament the current index and last index
+        if (currentLastIndex <= numberOfPages.length) {
+          setNextPageTriggered(true);
           setCurrentIndex(itemsPerPage, "increament");
           setCurrentLastIndex(itemsPerPage, "increament");
         }
