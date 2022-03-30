@@ -39,7 +39,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
         px={4}
         py={3}
         templateColumns={{
-          base: "50px 80px 1fr 1fr",
+          base: "50px 80px 1fr 1fr 1fr",
           lg: "50px 80px 1fr 1fr 1fr 1fr",
         }}
         borderBottom="1px solid white"
@@ -64,7 +64,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
         />
         <TData
           pl={4}
-          display={{ base: "flex", lg: "block" }}
+          display="flex"
           justifyContent={{ base: "center", lg: "left" }}
           fontWeight="600"
           text="Pokemon"
@@ -73,7 +73,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
           pl={4}
           fontWeight="600"
           text="Type"
-          display={{ base: "flex", lg: "block" }}
+          display="flex"
           justifyContent={{ base: "center", lg: "left" }}
         />
         <TData
@@ -84,7 +84,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
           text="Level"
         />
         <TData
-          display={{ base: "none", lg: "flex" }}
+          display="flex"
           pl={4}
           fontWeight="600"
           justifyContent="center"
@@ -112,7 +112,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
                 px={4}
                 py={3}
                 templateColumns={{
-                  base: "50px 80px 1fr 1fr",
+                  base: "50px 80px 1fr 1fr 1fr",
                   lg: "50px 80px 1fr 1fr 1fr 1fr",
                 }}
                 gap={0}
