@@ -20,14 +20,6 @@ const theme = extendTheme({
     body: "'Inter', sans-serif",
     heading: "'Inter', sans-serif",
   },
-  styles: {
-    global() {
-      return {
-        body: "background.container",
-        minH: "100vh",
-      };
-    },
-  },
 
   colors: {
     primary: "#FFC107",
