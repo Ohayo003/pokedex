@@ -12,9 +12,9 @@ export const usePokemonHelper = ({
   gender_rate,
 }: PokemonHelperType) => {
   const nameCopy = name;
+  ///capitalized the first letter of the name of pokemon
   const capitalizedName =
     nameCopy?.charAt(0).toUpperCase()! + nameCopy?.slice(1)!;
-
 
   ///get Gender (male, female, genderless) using gender_rate
   function getGenderValue() {
