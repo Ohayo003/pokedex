@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import cardImages from "src/utils/cardImage";
 
 const useCards = () => {
@@ -39,9 +39,11 @@ const useCards = () => {
   ///set the selected card to choice 1 if its empty, otherwise choice 2
   function handleClick(pokemonCards: { id: number; src: string }) {
     if (moves >= 1) {
-      firstChoice
-        ? setSecondChoice(pokemonCards)
-        : setFirstChoice(pokemonCards);
+      if (!firstChoice || !secondChoice) {
+        firstChoice
+          ? setSecondChoice(pokemonCards)
+          : setFirstChoice(pokemonCards);
+      }
     } else {
       isLimit = true;
     }
