@@ -28,7 +28,6 @@ import { newLimit } from "src/utils/limit";
 
 const HomePage = () => {
   const bgMusic = "/assets/music/Pokemon-Theme-Song.mp3";
-  // "http://soundfxcenter.com/music/television-theme-songs/8d82b5_Pokemon_Theme_Song.mp3";
 
   ///sets the current index and the last index for limiting the page number to 10
   const setCurrentIndex = useStore((state) => state.setCurrentIndex);
@@ -52,7 +51,7 @@ const HomePage = () => {
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
-  const [play, { pause }] = useSound(bgMusic, {
+  const [play] = useSound(bgMusic, {
     volume: 0.1,
     interrupt: true,
   });
@@ -66,6 +65,7 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
+  ///play background music
   useEffect(() => {
     play();
   }, [play]);
