@@ -67,7 +67,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   background="whiteAlpha.800"
                   borderRadius={100}
                   height={{ base: "13rem", lg: "10rem" }}
-                  width={{ base: "13rem", lg: "10rem" }}
+                  // width={{ base: "13rem", lg: "10rem" }}
                   borderWidth="2px 2px 6px 2px"
                   position="relative"
                 >
