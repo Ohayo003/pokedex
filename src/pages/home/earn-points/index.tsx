@@ -28,6 +28,7 @@ const EarnPoints = () => {
   const [matchedCount, setMatchedCount] = useState(0);
   const [loadingCard, setLoadingCards] = useState(false);
   const [isWin, setIsWin] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
   const toast = useToast();
 
   const {
@@ -71,10 +72,10 @@ const EarnPoints = () => {
   ///check if the matched count is equal to the total length
   ///of the cards and then updates the user points
   useEffect(() => {
-    if (matchedCount >= pokemonCards.length / 2) {
+    if (isStarted && matchedCount >= pokemonCards.length / 2) {
       setIsWin(true);
     }
-  }, [matchedCount, pokemonCards.length, setIsWin]);
+  }, [isStarted, matchedCount, pokemonCards.length, setIsWin]);
 
   useEffect(() => {
     if (isWin) {
@@ -88,11 +89,12 @@ const EarnPoints = () => {
         isClosable: true,
       });
       setTimeout(() => setIsWin(false), 1000);
+      setIsStarted(false);
     }
   }, [earnedPoints, isWin, toast, udpatePoints]);
 
   ///checks if the moves <= to 0 and then updates the points based on
-  ///what the user earned after consuming the moves
+  ///what the user earned after consumi ng the moves
   useEffect(() => {
     if (moves <= 0) {
       if (earnedPoints > 0) {
@@ -163,6 +165,7 @@ const EarnPoints = () => {
             shuffleCards();
             setEarnedPoints(0);
             setMatchedCount(0);
+            setIsStarted(true);
             setLoadingCards(true);
           }}
         >
