@@ -83,14 +83,8 @@ const About = ({ pokemon }: AboutType) => {
           </HStack>
         </Card>
         <Box pt={8}>
-          <Card
-            height="7rem"
-            border="1px solid #718096"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <VStack align="left" width={{ lg: "40rem" }}>
+          <Card p={8}>
+            <VStack align="start" width={{ lg: "90%" }}>
               <Text
                 fontFamily="Inter"
                 fontStyle="normal"
