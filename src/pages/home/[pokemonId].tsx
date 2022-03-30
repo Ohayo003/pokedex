@@ -74,7 +74,7 @@ const PokemonId = () => {
       },
     });
   console.log(checkExistingPokemonCollection());
-  
+
   ///usePagination
   const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
     usePagination(6, { data: recentVisit, isRecent: true });
@@ -281,12 +281,14 @@ const PokemonId = () => {
         </Flex>
       </Box>
 
-      <ConfirmModal
-        isOpen={isOpen}
-        p_points_value={PPointsValue}
-        onClose={onClose}
-        obtainPokemon={ObtainPokemon}
-      />
+      {isOpen && (
+        <ConfirmModal
+          isOpen={isOpen}
+          p_points_value={PPointsValue}
+          onClose={onClose}
+          obtainPokemon={ObtainPokemon}
+        />
+      )}
     </Box>
   );
 };
