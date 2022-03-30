@@ -14,6 +14,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
 import Layout from "src/components/Layouts/Layout";
@@ -102,7 +103,9 @@ const PokemonId = () => {
             lineHeight="17px"
             color="gray500"
           >
-            <BreadcrumbLink href="/home">Home</BreadcrumbLink>
+            <Link passHref href="/home">
+              <BreadcrumbLink>Home</BreadcrumbLink>
+            </Link>
           </BreadcrumbItem>
 
           <BreadcrumbItem

@@ -8,7 +8,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -19,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import "@fontsource/inter";
+import Link from "next/link";
 import { FaChevronDown } from "react-icons/fa";
 import { BsFillHandbagFill } from "react-icons/bs";
 import { SiZcash } from "react-icons/si";
@@ -48,8 +48,9 @@ const Header = () => {
         ml={{ lg: 16, base: 10 }}
         mr={{ lg: 32, base: 10 }}
       >
-        <Link href="/home" _hover={{ link: "none" }}>
+        <Link passHref href="/home">
           <Heading
+            as="a"
             pt={8}
             pb={8}
             color="text.header"
