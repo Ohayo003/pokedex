@@ -28,6 +28,7 @@ const EarnPoints = () => {
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
   const [loadingCard, setLoadingCards] = useState(false);
+  const [isWin, setIsWin] = useState(false);
   const toast = useToast();
 
   const {
@@ -73,17 +74,24 @@ const EarnPoints = () => {
   ///of the cards and then updates the user points
   useEffect(() => {
     if (matchedCount === pokemonCards.length) {
+      // udpatePoints(earnedPoints, "increament");
+      setIsWin(true);
+    }
+  }, [earnedPoints, matchedCount, pokemonCards.length, udpatePoints]);
+
+  useEffect(() => {
+    if (isWin) {
+      udpatePoints(earnedPoints, "increament");
       toast({
-        title: "Victory",
-        description: `You guessed all cards. You win ${earnedPoints}`,
+        title: "Congratulations!",
+        description: `You have guessed all cards. You win ${earnedPoints} Points`,
         status: "success",
         duration: 3000,
         isClosable: true,
       });
-      udpatePoints(earnedPoints, "increament");
+      setTimeout(() => setIsWin(false), 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [udpatePoints, earnedPoints, matchedCount, pokemonCards]);
+  }, [earnedPoints, isWin, toast, udpatePoints]);
 
   ///checks if the moves <= to 0 and then updates the points based on
   ///what the user earned after consuming the moves
@@ -195,7 +203,7 @@ const EarnPoints = () => {
           </Flex>
         </Box>
         {loadingCard ? (
-          <Loading />
+          <Loading loadingText="Loading Cards..." />
         ) : (
           <Grid
             templateColumns={{ lg: "repeat(4,1fr)", base: "repeat(3,1fr)" }}
