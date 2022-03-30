@@ -68,7 +68,7 @@ const HomePage = () => {
   ///play background music
   useEffect(() => {
     play();
-  }, [play]);
+  }, []);
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
