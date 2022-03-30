@@ -9,14 +9,19 @@ const useCards = () => {
       matched: boolean;
     }[]
   >([]);
+
   let isLimit = false;
+
+  ///total moves that the user has
   const [moves, setMoves] = useState(5);
 
+  ///stores the first selected card
   const [firstChoice, setFirstChoice] = useState<{
     id: number;
     src: string;
   } | null>(null);
 
+  ///stores the second selected card
   const [secondChoice, setSecondChoice] = useState<{
     id: number;
     src: string;
