@@ -31,7 +31,7 @@ const Collection = () => {
       <Flex
         mx="auto"
         mt={10}
-        maxW="70%"
+        maxW={{ lg: "70%", base: "100%" }}
         justify="center"
         gap={5}
         flexDirection="column"
@@ -43,7 +43,10 @@ const Collection = () => {
           </Heading>
         </Box>
         {pokemonCollections.length ? (
-          <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+          <Grid
+            templateColumns={{ lg: "repeat(5, 1fr)", base: "repear(2,1fr)" }}
+            gap={4}
+          >
             {pokemonCollections.map((item, idx) => (
               <MotionBox whileHover={{ scale: 1.1 }} key={idx}>
                 <Card
