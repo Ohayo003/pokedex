@@ -1,11 +1,13 @@
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import { ApolloProvider } from "@apollo/client";
 import client from "src/apollo/apollo-client";
 import "@fontsource/inter";
+import { useRouter } from "next/router";
+import Loading from "src/components/widgets/Loading";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -19,6 +21,17 @@ const theme = extendTheme({
   fonts: {
     body: "'Inter', sans-serif",
     heading: "'Inter', sans-serif",
+  },
+
+  styles: {
+    global() {
+      return {
+        body: {
+          minH: "100vh",
+          bgColor: "background.container",
+        },
+      };
+    },
   },
 
   colors: {
@@ -68,12 +81,22 @@ function MyApp({
   pageProps: { session, pageProps },
 }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const router = useRouter();
+  const [status, setStatus] = useState(false);
+
+  const handleOnChange = () => setStatus(true);
+  const handleOnComplete = () => setStatus(false);
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", handleOnChange);
+    router.events.on("routeChangeComplete", handleOnComplete);
+  }, [router.events]);
 
   return (
     <ApolloProvider client={client}>
       <SessionProvider session={session}>
         <ChakraProvider theme={theme}>
-          {getLayout(<Component {...pageProps} />)}
+          {status ? <Loading /> : getLayout(<Component {...pageProps} />)}
         </ChakraProvider>
       </SessionProvider>
     </ApolloProvider>
