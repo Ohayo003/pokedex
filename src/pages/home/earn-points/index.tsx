@@ -19,7 +19,6 @@ import { HStack } from "@chakra-ui/react";
 import { SiZcash } from "react-icons/si";
 import useStore from "src/hooks/useStore";
 import Loading from "src/components/widgets/Loading";
-// import pokemonCardBack from ;
 
 const MotionBox = motion<BoxProps>(Box);
 
@@ -52,16 +51,15 @@ const EarnPoints = () => {
         setPokemonCards((prevCards) => {
           return prevCards.map((card) => {
             if (card.src === firstChoice.src) {
-              setMatchedCount(1);
               return { ...card, matched: true };
             } else {
               return card;
             }
           });
         });
-        setTimeout(() => resetSelection(true), 1000);
         setEarnedPoints((prev) => prev + 1000);
         setMatchedCount((prev) => prev + 1);
+        setTimeout(() => resetSelection(true), 1000);
       } else {
         console.log("do not matched");
         setTimeout(() => resetSelection(false), 1000);
@@ -73,17 +71,17 @@ const EarnPoints = () => {
   ///check if the matched count is equal to the total length
   ///of the cards and then updates the user points
   useEffect(() => {
-    if (matchedCount === pokemonCards.length) {
-      // udpatePoints(earnedPoints, "increament");
+    if (matchedCount >= pokemonCards.length / 2) {
       setIsWin(true);
     }
-  }, [earnedPoints, matchedCount, pokemonCards.length, udpatePoints]);
+  }, [matchedCount, pokemonCards.length, setIsWin]);
 
   useEffect(() => {
     if (isWin) {
       udpatePoints(earnedPoints, "increament");
       toast({
         title: "Congratulations!",
+        position: "top",
         description: `You have guessed all cards. You win ${earnedPoints} Points`,
         status: "success",
         duration: 3000,
