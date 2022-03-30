@@ -8,6 +8,7 @@ import client from "src/apollo/apollo-client";
 import "@fontsource/inter";
 import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
+import useSound from "use-sound";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -82,10 +83,21 @@ function MyApp({
 }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   const router = useRouter();
+  const bgMusic = "/assets/music/Pokemon-Theme-Song.mp3";
   const [status, setStatus] = useState(false);
-
   const handleOnChange = () => setStatus(true);
   const handleOnComplete = () => setStatus(false);
+
+  ///initiailize useSound
+  const [play] = useSound(bgMusic, {
+    volume: 0.1,
+    interrupt: true,
+  });
+
+  ///play background music
+  useEffect(() => {
+    play();
+  }, [play]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleOnChange);

@@ -27,7 +27,6 @@ import Pagination from "src/components/widgets/Pokemon/Pagination";
 import { newLimit } from "src/utils/limit";
 
 const HomePage = () => {
-  const bgMusic = "/assets/music/Pokemon-Theme-Song.mp3";
 
   ///sets the current index and the last index for limiting the page number to 10
   const setCurrentIndex = useStore((state) => state.setCurrentIndex);
@@ -51,10 +50,7 @@ const HomePage = () => {
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
-  const [play] = useSound(bgMusic, {
-    volume: 0.1,
-    interrupt: true,
-  });
+  
 
   ///useQuery to display list of pokemon
   const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
@@ -65,10 +61,7 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
-  ///play background music
-  useEffect(() => {
-    play();
-  }, []);
+ 
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [
