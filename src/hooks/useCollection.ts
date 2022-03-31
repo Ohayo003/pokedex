@@ -40,7 +40,7 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
 
   function ObtainPokemon() {
     if (checkPoints()) {
-      updatePoints(p_pointsValue!, "decreament");
+      updatePoints(p_pointsValue!, "decrement");
       addCollection(
         pokemon?.id!,
         pokemon?.name!,
