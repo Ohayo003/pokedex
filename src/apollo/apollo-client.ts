@@ -35,13 +35,12 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        pokemon_v2_pokemon: {
-          ...offsetLimitPagination(),
-          keyArgs: false,
-          merge(existing = [], incoming) {
-            return [...existing, ...incoming];
-          },
-        },
+        pokemon_v2_pokemon: offsetLimitPagination(),
+        // keyArgs: false,
+        // merge(existing = [], incoming) {
+        //   return [...existing, ...incoming];
+        // },
+        // },
       },
     },
   },
