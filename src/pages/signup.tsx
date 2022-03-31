@@ -1,11 +1,9 @@
-import { Box, Button, HStack, Icon, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Stack, useToast } from "@chakra-ui/react";
 import dragon from "public/assets/background/sign-up-image.png";
 import TextField from "src/components/widgets/Forms/TextField";
 import Label from "src/components/widgets/Forms/Label";
 import "@fontsource/inter";
 import { VStack } from "@chakra-ui/react";
-import ProviderButtons from "src/components/widgets/Forms/ProviderButtons";
-import { BsFacebook, BsGithub, BsGoogle } from "react-icons/bs";
 import UIAccount from "src/components/Layouts/UIAccount";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,7 +14,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
-import { useEffect, useState } from "react";
 
 let schema = yup.object().shape({
   emailAddress: yup.string().email("The email is invalid").required(),
@@ -28,7 +25,6 @@ let schema = yup.object().shape({
 const SignUp = () => {
   const router = useRouter();
   const callbackUrl = useCallbackUrl();
-  const [error, setError] = useState(false);
   const toast = useToast();
   const { status } = useSession();
 
@@ -38,32 +34,32 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<ISignup>({ mode: "onChange", resolver: yupResolver(schema) });
 
-  useEffect(() => {
-    if (router.query.error) {
-      console.log(router.query.error);
+  const onSubmit: SubmitHandler<ISignup> = async (data) => {
+    console.log(data);
+    const response = await signIn<"credentials">("credentials", {
+      ...data,
+      redirect: false,
+    });
+
+    if (response?.error) {
       toast({
-        title: "Error Sign UP.",
-        description: `${router.query.error}`,
+        title: "Error Signup.",
+        position: "top",
+        description: `${response.error}`,
         status: "error",
         duration: 3000,
         isClosable: true,
       });
+    } else {
+      toast({
+        title: "Account Created",
+        position: "top",
+        description: "Your Account Created Successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query]);
-
-  const onSubmit: SubmitHandler<ISignup> = (data) => {
-    console.log(data);
-    signIn("credentials", {
-      ...data,
-    });
-    toast({
-      title: "Account Created",
-      description: "Your Account Created Successfully",
-      status: "error",
-      duration: 3000,
-      isClosable: true,
-    });
   };
 
   if (status === "loading") {

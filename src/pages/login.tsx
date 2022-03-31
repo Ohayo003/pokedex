@@ -13,7 +13,7 @@ import pikatchu from "public/assets/background/login-image.png";
 import TextField from "src/components/widgets/Forms/TextField";
 import Label from "src/components/widgets/Forms/Label";
 import "@fontsource/inter";
-import { VStack } from "@chakra-ui/react";
+import { VStack, useToast } from "@chakra-ui/react";
 import ProviderButtons from "src/components/widgets/Forms/ProviderButtons";
 import { BsFacebook, BsGithub, BsGoogle } from "react-icons/bs";
 import * as yup from "yup";
@@ -39,6 +39,8 @@ const Login = () => {
   const { status } = useSession();
   const callbackUrl = useCallbackUrl();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const toast = useToast();
   ///Using useForm from react-hook-form
   const {
     register,
@@ -49,12 +51,35 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
+
   ///login user onSubmit
   const onSubmit: SubmitHandler<ILogin> = async (data) => {
     setLoading(true);
-    await signIn("credentials", {
+    const response = await signIn<"credentials">("credentials", {
       ...data,
+      redirect: false,
     });
+
+    if (response?.error) {
+      toast({
+        title: "Error Signin.",
+        position: "top",
+        description: `${response.error}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Signin Success!",
+        position: "top",
+        description: `Welcome back ${data.emailAddress}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
     setLoading(false);
   };
 
@@ -65,6 +90,7 @@ const Login = () => {
     router.push(callbackUrl);
     return null;
   }
+
   return (
     <UIAccount heading="Log in" image={pikatchu} alt="pikatchu">
       <Social />
