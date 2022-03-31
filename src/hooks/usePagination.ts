@@ -1,7 +1,11 @@
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { GetPokemonDataList } from "src/types/GetPokemonDataList";
 import useStore from "./useStore";
+import { GET_POKEMON_COUNT } from "../graphql/queries/pokemon/pokemonlist";
+import { GetPokemonCount } from "../types/GetPokemonCount";
+import { useGetPokemonTotal } from "./useGetPokemonTotal";
 
 type PaginationType = {
   data: GetPokemonDataList["pokemons"] | any[];
@@ -22,23 +26,25 @@ export const usePagination = (
   const currentIndex = useStore((state) => state.currentIndex);
   const [nextPageTriggered, setNextPageTriggered] = useState(false);
   const [prevPageTriggered, setPrevPageTriggered] = useState(false);
-
-  ///calculate the range of items shown in the page
-  const shownFrom =
-    currentPage * currentData()?.length! - currentData()?.length! + 1;
-  ///calculate the total items shown in the page
-  const totalItems = currentPage * currentData()?.length!;
+  const { count } = useGetPokemonTotal();
 
   let numberOfPages: number[] = [];
 
   ///computes the total number of Pages from the pokemon length divided by items per page
-  for (
-    let index = 1;
-    index <= Math.ceil(data?.length! / itemsPerPage);
-    index++
-  ) {
+  for (let index = 1; index <= Math.ceil(data.length / itemsPerPage); index++) {
     numberOfPages.push(index);
   }
+
+  ///calculate the range of items shown in the page
+  const shownFrom =
+    currentPage >= numberOfPages.length ||
+    currentLastIndex >= numberOfPages.length
+      ? currentPage * itemsPerPage - (itemsPerPage - 1)
+      : currentPage * itemsPerPage - currentData().length + 1;
+  ///calculate the total items shown in the page
+  const totalItems = numberOfPages.length
+    ? currentPage * itemsPerPage - (itemsPerPage - currentData().length)
+    : currentPage * currentData().length;
 
   ///check if the next button is triggered then
   ///sets the currentpage with the updated current index + 1
@@ -49,6 +55,28 @@ export const usePagination = (
       setTimeout(() => setNextPageTriggered(false), 100);
     }
   }, [currentIndex, nextPageTriggered, setCurrentPage]);
+
+  ///check first the currentIndex is > numberOfpages.length then if >
+  ///sets the currentIndex to - by subtracting the currentindex to both
+  ///then setst the currentPage to 1
+  useEffect(() => {
+    if (filtered) {
+      if (currentIndex > numberOfPages.length) {
+        setCurrentIndex(currentIndex, "decrement");
+        setCurrentLastIndex(currentIndex, "decrement");
+        setCurrentPage(1);
+      } else {
+        setCurrentPage(currentIndex + 1);
+      }
+    }
+  }, [
+    currentIndex,
+    filtered,
+    numberOfPages.length,
+    setCurrentIndex,
+    setCurrentLastIndex,
+    setCurrentPage,
+  ]);
 
   ///check if the prev button is triggered then
   ///sets the currentpage with the updated current index + 1
@@ -76,29 +104,17 @@ export const usePagination = (
     } else {
       ///checking if the filter is not triggered
       if (!filtered) {
-        ///check 1st if the current last index < numberOfpages which is the range from 1st - last page
-        ///then just set the a new state for currentIndex and currentlastIndex
-        ///otherwise if not filtered then the fetchAll pokemons is triggered for pagination
-        if (currentPage < numberOfPages.length) {
-          setNextPageTriggered(true);
-          setCurrentIndex(itemsPerPage, "increament");
-          setCurrentLastIndex(itemsPerPage, "increament");
-        } else if (
-          data?.length! < 1126 &&
-          currentPage >= numberOfPages.length
-        ) {
+        if (currentLastIndex >= numberOfPages.length && data.length < count) {
           setNextPageTriggered(true);
           handleFetchMore!();
-          setCurrentIndex(itemsPerPage, "increament");
-          setCurrentLastIndex(itemsPerPage, "increament");
+          setCurrentIndex(itemsPerPage, "increment");
+          setCurrentLastIndex(itemsPerPage, "increment");
         }
       } else {
-        ///if the data is filtered check only if the current last index of the page < the total number of pages
-        ///then just increament the current index and last index
-        if (currentLastIndex <= numberOfPages.length) {
+        if (currentLastIndex < numberOfPages.length) {
           setNextPageTriggered(true);
-          setCurrentIndex(itemsPerPage, "increament");
-          setCurrentLastIndex(itemsPerPage, "increament");
+          setCurrentIndex(itemsPerPage, "increment");
+          setCurrentLastIndex(itemsPerPage, "increment");
         }
       }
     }
@@ -110,8 +126,8 @@ export const usePagination = (
     } else {
       if (currentIndex > 1) {
         setPrevPageTriggered(true);
-        setCurrentIndex(itemsPerPage, "decreament");
-        setCurrentLastIndex(itemsPerPage, "decreament");
+        setCurrentIndex(itemsPerPage, "decrement");
+        setCurrentLastIndex(itemsPerPage, "decrement");
       }
     }
   }
@@ -122,13 +138,11 @@ export const usePagination = (
 
   return {
     currentData,
-    currentPage,
     nextPage,
     previousPage,
     shownFrom,
     totalItems,
     selectedPage,
-    setCurrentPage,
     numberOfPages,
   };
 };
