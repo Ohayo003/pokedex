@@ -95,12 +95,6 @@ function MyApp({
     volume: 0.1,
     interrupt: true,
   });
-
-  ///play background music
-  // useEffect(() => {
-  //   play();
-  // }, [play]);
-
   useEffect(() => {
     router.events.on("routeChangeStart", handleOnChange);
     router.events.on("routeChangeComplete", handleOnComplete);
