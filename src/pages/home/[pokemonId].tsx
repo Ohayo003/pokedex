@@ -41,6 +41,7 @@ export const MotionBox = motion<BoxProps>(Box);
 const PokemonId = () => {
   const router = useRouter();
   const { onClose, isOpen, onOpen } = useDisclosure();
+  const currentPage = useStore((state) => state.currentPage);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   const recentVisit = useStore((state) => state.carousel);
   const addCarousel = useStore((state) => state.addCarousel);
@@ -77,8 +78,10 @@ const PokemonId = () => {
   console.log(checkExistingPokemonCollection());
 
   ///usePagination
-  const { currentData, nextPage, currentPage, numberOfPages, previousPage } =
-    usePagination(6, { data: recentVisit, isRecent: true });
+  const { currentData, nextPage, numberOfPages, previousPage } = usePagination(
+    6,
+    { data: recentVisit, isRecent: true }
+  );
 
   ///set the currentPage to 1 on Load and set the activeBreadcrumb using the query tab
   useEffect(() => {
