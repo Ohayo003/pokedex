@@ -85,6 +85,8 @@ function MyApp({
   const router = useRouter();
   const bgMusic = "/assets/music/Pokemon-Theme-Song.mp3";
   const [status, setStatus] = useState(false);
+  
+  
   const handleOnChange = () => setStatus(true);
   const handleOnComplete = () => setStatus(false);
 
@@ -95,9 +97,9 @@ function MyApp({
   });
 
   ///play background music
-  useEffect(() => {
-    play();
-  }, [play]);
+  // useEffect(() => {
+  //   play();
+  // }, [play]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleOnChange);
