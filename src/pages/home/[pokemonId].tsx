@@ -35,6 +35,7 @@ import { useCollection } from "../../hooks/useCollection";
 import colorTypes from "src/utils/colorTypes";
 import pokemonImage from "src/utils/image";
 import ConfirmModal from "src/components/widgets/ConfirmModal";
+import _404 from "../404";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -49,7 +50,7 @@ const PokemonId = () => {
   const collections = useStore((state) => state.collections);
 
   ///fetch pokemon details using pokemon id
-  const { data, loading } = useQuery<GetPokemon>(GET_POKEMON, {
+  const { data, loading, error } = useQuery<GetPokemon>(GET_POKEMON, {
     variables: {
       id: router.query.pokemonId,
     },
@@ -93,6 +94,9 @@ const PokemonId = () => {
 
   if (loading) {
     return <Loading />;
+  }
+  if (!data?.pokemon) {
+    return <_404 />;
   }
 
   return (
