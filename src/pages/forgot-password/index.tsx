@@ -68,6 +68,7 @@ const ForgotPassword = () => {
       if (callback.data?.generatePasswordResetLink) {
         toast({
           title: "Success.",
+          position: "top",
           description: "Generating Reset Password Link Successful.",
           status: "success",
           duration: 3000,

@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Link, Text } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 interface ILinks {
   text?: string;
@@ -14,12 +15,15 @@ const Links = ({ text, linkname, navigation }: ILinks) => {
       fontStyle="normal"
       fontWeight="400"
       fontSize="sm"
+      display="flex"
       lineHeight="xl"
       color="text.light"
     >
-      {text}{" "}
-      <Link href={navigation} color="text.link">
-        {linkname}
+      {text}
+      <Link as="a" passHref href={navigation}>
+        <Box _hover={{ cursor: "pointer" }} ml={1} color="text.link">
+          {linkname}
+        </Box>
       </Link>
     </Box>
   );
