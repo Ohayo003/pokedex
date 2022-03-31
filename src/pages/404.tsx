@@ -19,6 +19,7 @@ const _404 = () => {
       h="100vh"
       align="center"
       gap={5}
+      color="text.light"
     >
       <Heading letterSpacing="widest" fontSize="9xl">
         Oops!
