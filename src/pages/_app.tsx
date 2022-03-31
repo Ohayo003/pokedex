@@ -79,7 +79,7 @@ const theme = extendTheme({
 
 function MyApp({
   Component,
-  pageProps: { session, pageProps },
+  pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   const router = useRouter();
