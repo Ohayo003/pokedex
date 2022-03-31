@@ -26,6 +26,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
+import { useState } from "react";
 
 ///schema for validating text field using yup
 let schema = yup.object().shape({
@@ -37,6 +38,7 @@ const Login = () => {
   const router = useRouter();
   const { status } = useSession();
   const callbackUrl = useCallbackUrl();
+  const [loading, setLoading] = useState(false);
   ///Using useForm from react-hook-form
   const {
     register,
@@ -49,9 +51,11 @@ const Login = () => {
 
   ///login user onSubmit
   const onSubmit: SubmitHandler<ILogin> = async (data) => {
+    setLoading(true);
     await signIn("credentials", {
       ...data,
     });
+    setLoading(false);
   };
 
   if (status === "loading") {
@@ -111,6 +115,7 @@ const Login = () => {
               fontSize="xs"
               lineHeight="md"
               bg="primary"
+              isLoading={loading}
               type="submit"
               width="full"
               h="3rem"
