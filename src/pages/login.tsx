@@ -9,7 +9,7 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-import pikatchu from "public/assets/background/login-image.png";
+import pikatchu from "public/assets/images/login-image.png";
 import TextField from "src/components/widgets/Forms/TextField";
 import Label from "src/components/widgets/Forms/Label";
 import "@fontsource/inter";
@@ -50,7 +50,6 @@ const Login = () => {
     mode: "onChange",
     resolver: yupResolver(schema),
   });
-
 
   ///login user onSubmit
   const onSubmit: SubmitHandler<ILogin> = async (data) => {

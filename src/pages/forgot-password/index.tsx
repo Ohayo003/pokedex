@@ -1,7 +1,6 @@
 import React from "react";
-// import UIAccount from 'src/components/Layouts/UIAccount';
-import seadragon from "public/assets/background/forgot-password-image.png";
-import { Box, Stack, Button, VStack, Link, useToast } from "@chakra-ui/react";
+import seadragon from "public/assets/images/forgot-password-image.png";
+import { Box, Stack, Button, VStack, useToast } from "@chakra-ui/react";
 import Label from "src/components/widgets/Forms/Label";
 import TextField from "src/components/widgets/Forms/TextField";
 import * as yup from "yup";

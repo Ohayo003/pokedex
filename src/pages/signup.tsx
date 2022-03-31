@@ -1,5 +1,5 @@
 import { Box, Button, Stack, useToast } from "@chakra-ui/react";
-import dragon from "public/assets/background/sign-up-image.png";
+import dragon from "public/assets/images/sign-up-image.png";
 import TextField from "src/components/widgets/Forms/TextField";
 import Label from "src/components/widgets/Forms/Label";
 import "@fontsource/inter";
