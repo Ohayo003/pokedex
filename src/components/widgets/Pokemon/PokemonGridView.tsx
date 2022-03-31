@@ -1,4 +1,4 @@
-import { Box, type BoxProps, Grid, Flex } from "@chakra-ui/react";
+import { Box, type BoxProps, Grid, Flex, Spinner } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import _1 from "public/assets/background/login-image.png";
@@ -73,11 +73,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                 >
                   <FallBackImage
                     src={pokemonImage(pokemon?.id!)}
-                    loader={
-                      <Box>
-                        <Loading />
-                      </Box>
-                    }
+                    loader={<ImageLoader />}
                     fallbackImage="/assets/background/unknown.png"
                   />
                 </Box>
@@ -137,3 +133,18 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
 };
 
 export default PokemonGridView;
+
+const ImageLoader = () => {
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translate(-50%, -50%)"
+      left="50%"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Spinner fill="red" w={10} h={10} thickness="5px" />
+    </Box>
+  );
+};
