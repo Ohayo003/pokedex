@@ -54,18 +54,30 @@ const ResetPassword = () => {
       },
     });
     if (reset.data) {
-      await signIn("credentials", {
+      const response = await signIn<"credentials">("credentials", {
         emailAddress: emailAddress,
         password: data.newPassword,
       });
-      toast({
-        title: "Success.",
-        description: "Reset Password Successful",
-        status: "success",
-        duration: 3000,
+      if (response) {
+        toast({
+          title: "Success.",
+          description: "Reset Password Successful",
+          status: "success",
+          duration: 3000,
 
-        isClosable: true,
-      });
+          isClosable: true,
+        });
+      }
+      if (response?.error) {
+        toast({
+          title: "Error.",
+          description: `${response.error}`,
+          status: "error",
+          duration: 3000,
+
+          isClosable: true,
+        });
+      }
     }
   };
 
