@@ -1,9 +1,9 @@
 import { Box, Grid } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
-import Header from "./Header";
-import psmall from "public/assets/background/pokeball-small.png";
-import pBig from "public/assets/background/pokeball-big.png";
+import Header from "src/components/Layouts/Header";
+import psmall from "public/assets/images/pokeball-small.png";
+import pBig from "public/assets/images/pokeball-big.png";
 import electric from "public/assets/elements/Electric.svg";
 import fire from "public/assets/elements/fire.svg";
 import metal from "public/assets/elements/metal.svg";
