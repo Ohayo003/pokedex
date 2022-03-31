@@ -29,10 +29,11 @@ const Pagination = ({
   const { count } = useGetPokemonTotal();
 
   const handleNextPage = () => {
-    if (currentLastIndex >= numberOfPages.length) {
+    if (currentLastIndex < count && currentLastIndex >= numberOfPages.length) {
       nextPage();
       setLoading(true);
-    } else {
+    }
+    if (currentLastIndex < numberOfPages.length) {
       nextPage();
     }
   };
