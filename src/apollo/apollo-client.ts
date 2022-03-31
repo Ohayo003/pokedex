@@ -38,17 +38,7 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        pokemon_v2_pokemon: {
-          ...concatPagination(),
-          keyArgs: false,
-          merge(existing = [], incoming, { args }) {
-            if (args && !args.after) {
-              ///Initial fetch or refetch
-              return incoming;
-            }
-            return [...existing, ...incoming];
-          },
-        },
+        pokemon_v2_pokemon: offsetLimitPagination(),
       },
     },
   },
@@ -60,6 +50,6 @@ const client = new ApolloClient({
     pokedexapi,
     authLink.concat(authentication)
   ),
-  cache: cache,
+  cache,
 });
 export default client;
