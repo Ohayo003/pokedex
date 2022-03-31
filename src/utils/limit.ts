@@ -2,38 +2,26 @@ export const newLimit = (idx: number) => {
   let newLimit: number = 1;
   switch (idx) {
     case 10:
-      newLimit = 2;
-      break;
+      return (newLimit = 200);
     case 20:
-      newLimit = 3;
-      break;
+      return (newLimit = 300);
     case 30:
-      newLimit = 4;
-      break;
+      return (newLimit = 400);
     case 40:
-      newLimit = 5;
-      break;
+      return (newLimit = 500);
     case 50:
-      newLimit = 6;
-      break;
+      return (newLimit = 600);
     case 60:
-      newLimit = 7;
-      break;
+      return (newLimit = 700);
     case 70:
-      newLimit = 8;
-      break;
+      return (newLimit = 800);
     case 80:
-      newLimit = 9;
-      break;
+      return (newLimit = 900);
     case 90:
-      newLimit = 10;
-      break;
+      return (newLimit = 1000);
     case 100:
-      newLimit = 11;
-      break;
+      return (newLimit = 1100);
     default:
-      newLimit = 1;
-      break;
+      return (newLimit = 100);
   }
-  return newLimit;
 };
