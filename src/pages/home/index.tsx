@@ -207,12 +207,12 @@ const HomePage = () => {
             ///loadingData is for clicking next and Prev Page
             ///filterLoading is for the filter query
             loading || loadingData || filterLoading ? (
-              <Loading loadingText="Loading data. Please wait..." />
+              <Loading loadingText="Loading data..." />
             ) : (
               <PokemonListView pokemons={currentData()} />
             )
           ) : loading || loadingData || filterLoading ? (
-            <Loading />
+            <Loading loadingText="Loading data..." />
           ) : (
             <PokemonGridView pokemons={currentData()} />
           )}
