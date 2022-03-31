@@ -26,18 +26,18 @@ interface IPagination {
   currentLastIndex: number;
   setCurrentIndex: (
     value: number,
-    operation: "increament" | "decreament"
+    operation?: "increment" | "decrement"
   ) => void;
   setCurrentLastIndex: (
     value: number,
-    operation: "increament" | "decreament"
+    operation?: "increment" | "decrement"
   ) => void;
   setCurrentPage: (value: number) => void;
 }
 
 interface IUserAccount {
   points: number;
-  updatePoints: (value: number, operation: "increament" | "decreament") => void;
+  updatePoints: (value: number, operation: "increment" | "decrement") => void;
   collections: {
     id: number;
     name: string;
@@ -94,18 +94,20 @@ const useStore = create<IStore & IUserAccount & IPagination>(
       currentLastIndex: 10,
       setCurrentIndex: (value, operation) => {
         return set((state) => ({
-          currentIndex:
-            operation === "increament"
+          currentIndex: operation
+            ? operation === "increment"
               ? state.currentIndex + value
-              : state.currentIndex - value,
+              : state.currentIndex - value
+            : value,
         }));
       },
       setCurrentLastIndex: (value, operation) => {
         return set((state) => ({
-          currentLastIndex:
-            operation === "increament"
+          currentLastIndex: operation
+            ? operation === "increment"
               ? state.currentLastIndex + value
-              : state.currentLastIndex - value,
+              : state.currentLastIndex - value
+            : value,
         }));
       },
       removeFilterTpyes: (value) => {
@@ -141,7 +143,7 @@ const useStore = create<IStore & IUserAccount & IPagination>(
       updatePoints: (value, operation) => {
         return set((state) => ({
           points:
-            operation === "increament"
+            operation === "increment"
               ? state.points + value
               : state.points - value,
         }));
