@@ -1,6 +1,6 @@
 import { Box, type BoxProps, Grid, Flex } from "@chakra-ui/react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import _1 from "public/assets/background/login-image.png";
 import colorTypes from "src/utils/colorTypes";
 import { motion } from "framer-motion";
@@ -78,7 +78,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                         <Loading />
                       </Box>
                     }
-                    fallback="/assets/background/whos_that_pokemon.jpg"
+                    fallbackImage="/assets/background/unknown.png"
                   />
                 </Box>
                 <Box
@@ -98,9 +98,8 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                 >
                   {pokemon.name}
                 </Box>
-                <Box width="inherit" m="5px 0px">
+                <Box width="inherit" m={2}>
                   <Flex justify="center">
-                    <Box fontWeight="bold" fontSize="xs"></Box>
                     {pokemon?.element.map((e) => {
                       return (
                         <Box
@@ -111,9 +110,12 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                           fontFamily="Inter"
                           borderRadius="25"
                           border="2px solid white"
-                          fontSize={{ lg: "xs", base: "xl" }}
+                          fontSize={{
+                            lg: ".6rem",
+                            base: "xl",
+                          }}
                           color="gray800"
-                          m="0px 5px"
+                          m="0px 2px"
                           py="2px"
                           px="10px"
                           textAlign="center"
