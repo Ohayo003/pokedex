@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import Card from "src/components/widgets/Card";
 import { FaQuestion, FaTrash } from "react-icons/fa";
 import "@fontsource/inter";
+import { useRouter } from "next/router";
 
 const MotionBox = motion<BoxProps>(Box);
 
@@ -25,6 +26,7 @@ const Collection = () => {
   const remove = useStore((state) => state.removeCollection);
   const [isHovering, setIsHovering] = useState(false);
   const [currentSelected, setCurrentSelected] = useState(0);
+  const router = useRouter();
 
   return (
     <Box minH="100vh">
@@ -48,7 +50,11 @@ const Collection = () => {
             gap={4}
           >
             {pokemonCollections.map((item, idx) => (
-              <MotionBox whileHover={{ scale: 1.1 }} key={idx}>
+              <MotionBox
+                onClick={() => router.push(`/home/${item.id}`)}
+                whileHover={{ scale: 1.1 }}
+                key={idx}
+              >
                 <Card
                   width="12rem"
                   _hover={{ cursor: "pointer" }}
