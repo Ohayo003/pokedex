@@ -85,8 +85,7 @@ function MyApp({
   const router = useRouter();
   const bgMusic = "/assets/music/Pokemon-Theme-Song.mp3";
   const [status, setStatus] = useState(false);
-  
-  
+
   const handleOnChange = () => setStatus(true);
   const handleOnComplete = () => setStatus(false);
 
@@ -104,7 +103,11 @@ function MyApp({
     <ApolloProvider client={client}>
       <SessionProvider session={session}>
         <ChakraProvider theme={theme}>
-          {status ? <Loading /> : getLayout(<Component {...pageProps} />)}
+          {status ? (
+            <Loading loadingText="Loading data..." />
+          ) : (
+            getLayout(<Component {...pageProps} />)
+          )}
         </ChakraProvider>
       </SessionProvider>
     </ApolloProvider>
