@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { Dispatch } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import useStore from "src/hooks/useStore";
+import { useGetPokemonTotal } from "../../../hooks/useGetPokemonTotal";
 
 interface IPagination {
   previousPage: () => void;
@@ -25,20 +26,27 @@ const Pagination = ({
   const currentPage = useStore((state) => state.currentPage);
   const currentIndex = useStore((state) => state.currentIndex);
   const currentLastIndex = useStore((state) => state.currentLastIndex);
+  const { count } = useGetPokemonTotal();
 
   const handleNextPage = () => {
-    previousPage();
-    setLoading(true);
+    if (currentLastIndex >= numberOfPages.length) {
+      nextPage();
+      setLoading(true);
+    } else {
+      nextPage();
+    }
   };
   const handlePrevPage = () => {
-    nextPage();
-    setLoading(true);
+    if (currentPage > 1 || currentIndex > 0) {
+      previousPage();
+      setLoading(true);
+    }
   };
 
   return (
     <Flex justifyContent="center" mt={2} gap={6} align="center" zIndex={1}>
       <Icon
-        onClick={handleNextPage}
+        onClick={handlePrevPage}
         as={BiChevronLeft}
         w={{ lg: 6, base: 10 }}
         h={{ lg: 6, base: 10 }}
@@ -58,9 +66,9 @@ const Pagination = ({
               fontWeight="500"
               onClick={() => {
                 selectedPage(idx);
-                router.push("/home", {
-                  query: `page=${idx}&total=${currentData()?.length!}`,
-                });
+                // router.push("/home", {
+                //   query: `page=${idx}&total=${currentData()?.length!}`,
+                // });
               }}
               lineHeight="lg"
               background={currentPage === idx ? "primary" : "gray100"}
@@ -72,7 +80,7 @@ const Pagination = ({
         })}
       </HStack>
       <Icon
-        onClick={handlePrevPage}
+        onClick={handleNextPage}
         as={BiChevronRight}
         w={{ lg: 6, base: 10 }}
         h={{ lg: 6, base: 10 }}
