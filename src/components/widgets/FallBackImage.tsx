@@ -18,7 +18,7 @@ interface ImageProps {
    * Image will result to error if fallback url does not exist
    *
    */
-  fallback?: string;
+  fallbackImage?: string;
 }
 
 const previouslyLoadedImage: string[] = [];
@@ -26,9 +26,9 @@ const previouslyLoadedImage: string[] = [];
 const FallBackImage = ({
   src,
   loader,
-  fallback,
+  fallbackImage,
   ...props
-}: ImageProps & Omit<CustomImageProps, "fallback">) => {
+}: ImageProps & Omit<CustomImageProps, "fallbackImage">) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +60,17 @@ const FallBackImage = ({
     <>
       {!!loading && loader}
       {!loading && (
-        <CustomImage src={!error ? src : fallback} loading="lazy" {...props} />
+        <CustomImage
+          src={!error ? src : fallbackImage}
+          height={error ? "6rem" : "inherit"}
+          width={error ? "6rem" : "inherit"}
+          position={error ? "absolute" : "relative"}
+          top={error ? "50%" : ""}
+          transform={error ? "translate(-50%, -50%)" : ""}
+          left={error ? "50%" : ""}
+          loading="lazy"
+          {...props}
+        />
       )}
     </>
   );
