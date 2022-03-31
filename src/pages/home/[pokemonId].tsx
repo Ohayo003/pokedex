@@ -36,6 +36,8 @@ import colorTypes from "src/utils/colorTypes";
 import pokemonImage from "src/utils/image";
 import ConfirmModal from "src/components/widgets/ConfirmModal";
 import _404 from "../404";
+import FallBackImage from "src/components/widgets/FallBackImage";
+import ImageLoader from "src/components/widgets/ImageLoader";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -152,11 +154,18 @@ const PokemonId = () => {
                 p={2}
                 overflow="hidden"
               >
-                <Image
+                <FallBackImage
+                  isRecent={false}
+                  height="20rem"
+                  src={pokemonImage(data?.pokemon?.id!)}
+                  fallbackImage="/assets/background/unknown.png"
+                  loader={<ImageLoader />}
+                />
+                {/* <Image
                   src={pokemonImage(data?.pokemon?.id!)}
                   alt={data?.pokemon?.name}
                   layout="fill"
-                />
+                /> */}
               </Box>
 
               {/**Carousel Container Section */}
@@ -202,12 +211,11 @@ const PokemonId = () => {
                             }}
                             position="relative"
                           >
-                            <Image
-                              src={item.image || "null"}
-                              alt="dragon"
-                              // width="57px"
-                              // height="57px"
-                              layout="fill"
+                            <FallBackImage
+                              isRecent={true}
+                              src={item.image}
+                              fallbackImage="/assets/background/unknown.png"
+                              loader={<ImageLoader />}
                             />
                           </Box>
                         </MotionBox>

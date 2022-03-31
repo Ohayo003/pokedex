@@ -72,6 +72,7 @@ const PokemonGridView = ({ pokemons }: PokemonGridViewType) => {
                   position="relative"
                 >
                   <FallBackImage
+                    isRecent={false}
                     src={pokemonImage(pokemon?.id!)}
                     loader={<ImageLoader />}
                     fallbackImage="/assets/background/unknown.png"

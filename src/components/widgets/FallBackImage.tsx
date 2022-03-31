@@ -19,6 +19,7 @@ interface ImageProps {
    *
    */
   fallbackImage?: string;
+  isRecent: boolean;
 }
 
 const previouslyLoadedImage: string[] = [];
@@ -27,6 +28,7 @@ const FallBackImage = ({
   src,
   loader,
   fallbackImage,
+  isRecent,
   ...props
 }: ImageProps & Omit<CustomImageProps, "fallbackImage">) => {
   const [error, setError] = useState(false);
@@ -62,8 +64,8 @@ const FallBackImage = ({
       {!loading && (
         <CustomImage
           src={!error ? src : fallbackImage}
-          height={error ? "6rem" : "inherit"}
-          width={error ? "6rem" : "inherit"}
+          height={error ? (isRecent ? "2.5rem" : "6rem") : "inherit"}
+          width={error ? (isRecent ? "2.5rem" : "6rem") : "inherit"}
           position={error ? "absolute" : "relative"}
           top={error ? "50%" : ""}
           transform={error ? "translate(-50%, -50%)" : ""}
