@@ -104,6 +104,10 @@ export const usePagination = (
     } else {
       ///checking if the filter is not triggered
       if (!filtered) {
+        if (currentLastIndex < numberOfPages.length) {
+          setCurrentIndex(itemsPerPage, "increment");
+          setCurrentLastIndex(itemsPerPage, "increment");
+        }
         if (currentLastIndex >= numberOfPages.length && data.length < count) {
           setNextPageTriggered(true);
           handleFetchMore!();
