@@ -161,11 +161,6 @@ const PokemonId = () => {
                   fallbackImage="/assets/background/unknown.png"
                   loader={<ImageLoader />}
                 />
-                {/* <Image
-                  src={pokemonImage(data?.pokemon?.id!)}
-                  alt={data?.pokemon?.name}
-                  layout="fill"
-                /> */}
               </Box>
 
               {/**Carousel Container Section */}
