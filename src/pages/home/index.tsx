@@ -13,7 +13,7 @@ import {
   FILTER_POKEMON_BY_ELEMENT,
   GET_POKEMON_DATA_LIST,
 } from "src/graphql/queries/pokemon/pokemonlist";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
 import {
@@ -23,11 +23,10 @@ import {
 import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 import Pagination from "src/components/widgets/Pokemon/Pagination";
 import { newLimit } from "src/utils/limit";
+import { useGetPokemonTotal } from "src/hooks/useGetPokemonTotal";
 
 const HomePage = () => {
-  ///sets the current index and the last index for limiting the page number to 10
-  const setCurrentIndex = useStore((state) => state.setCurrentIndex);
-  const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
+  const { count } = useGetPokemonTotal();
 
   ///toggles when the app fetch using the types of pokemons
   const isFiltered = useStore((state) => state.isFiltered);
@@ -39,7 +38,7 @@ const HomePage = () => {
 
   ///elements types stored here are used for filtering
   const types = useStore((state) => state.filterTypes);
-
+  const offset = currentIndex * 10;
   const [loadingData, setLoadingData] = useState(false);
 
   ///used for triggering list view
@@ -48,13 +47,25 @@ const HomePage = () => {
   const toggleView = useStore((state) => state.toggleView);
 
   ///useQuery to display list of pokemon
-  const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
-    GetPokemonDataList,
-    GetPokemonDataListVariables
-  >(GET_POKEMON_DATA_LIST, {
-    notifyOnNetworkStatusChange: true,
-    context: { clientName: "pokedexapi" },
-  });
+  const {
+    loading,
+    data: lazyQueryData,
+    error,
+    refetch,
+    fetchMore,
+  } = useQuery<GetPokemonDataList, GetPokemonDataListVariables>(
+    GET_POKEMON_DATA_LIST,
+    {
+      fetchPolicy: "network-only",
+      nextFetchPolicy: "cache-first",
+      notifyOnNetworkStatusChange: true,
+      context: { clientName: "pokedexapi" },
+      variables: {
+        offset: 0,
+        limit: 100,
+      },
+    }
+  );
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [filterDataQuery, { data: filterData, loading: filterLoading }] =
@@ -67,13 +78,9 @@ const HomePage = () => {
   ///Handle the fetchmore data for list of pokemon
   const handleFetchMore = async () => {
     await fetchMore({
-      updateQuery: (_, { fetchMoreResult: pokemons }): GetPokemonDataList => {
-        console.log(pokemons);
-        return pokemons!;
-      },
       variables: {
-        offset: pokemons.length,
-        limit: 100,
+        offset: offset,
+        limit: newLimit(currentIndex),
       },
     });
   };
@@ -83,8 +90,9 @@ const HomePage = () => {
       pokemons = filterData.pokemons;
     }
   } else {
-    if (data?.pokemons) {
-      pokemons = data.pokemons;
+    if (lazyQueryData?.pokemons) {
+      console.log(lazyQueryData.pokemons);
+      pokemons = lazyQueryData.pokemons;
     }
   }
 
@@ -106,8 +114,7 @@ const HomePage = () => {
 
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
-    const offset = currentIndex * 10;
-    console.log(data?.pokemons);
+    console.log(lazyQueryData?.pokemons);
     if (isFiltered) {
       (async function () {
         await filterDataQuery({
@@ -116,24 +123,12 @@ const HomePage = () => {
         setCurrentPage(1);
       })();
     } else {
-      (async function () {
-        await fetchAllPokemons({
-          variables: {
-            limit: newLimit(currentIndex),
-            offset: offset,
-          },
-        });
-        // setCurrentPage(1);
-      })();
+      refetch({
+        offset: 0,
+        limit: count,
+      });
     }
-  }, [
-    currentIndex,
-    fetchAllPokemons,
-    filterDataQuery,
-    isFiltered,
-    setCurrentPage,
-    types,
-  ]);
+  }, [currentIndex, filterDataQuery, isFiltered, setCurrentPage, types]);
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
@@ -230,7 +225,7 @@ const HomePage = () => {
             Showing {shownFrom}-{totalItems} of{" "}
             {isFiltered
               ? filterData?.pokemons?.length!
-              : data?.pokemons?.length!}
+              : lazyQueryData?.pokemons?.length!}
           </Text>
         </HStack>
 
