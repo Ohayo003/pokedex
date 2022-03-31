@@ -24,8 +24,31 @@ import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 import Pagination from "src/components/widgets/Pokemon/Pagination";
 import { newLimit } from "src/utils/limit";
 import { useGetPokemonTotal } from "src/hooks/useGetPokemonTotal";
+import { GetStaticProps } from "next";
+import client from "src/apollo/apollo-client";
 
-const HomePage = () => {
+export const getStaticProps: GetStaticProps = async () => {
+  const { data } = await client.query<
+    GetPokemonDataList,
+    GetPokemonDataListVariables
+  >({
+    query: GET_POKEMON_DATA_LIST,
+    variables: {
+      offset: 0,
+      limit: 100,
+    },
+
+    context: { clientName: "pokedexapi" },
+  });
+
+  return {
+    props: {
+      pokemons: data.pokemons,
+    },
+  };
+};
+
+const HomePage = ({ pokemons }: GetPokemonDataList) => {
   const { count } = useGetPokemonTotal();
 
   ///toggles when the app fetch using the types of pokemons
@@ -47,53 +70,43 @@ const HomePage = () => {
   const toggleView = useStore((state) => state.toggleView);
 
   ///useQuery to display list of pokemon
-  const {
-    loading,
-    data: lazyQueryData,
-    error,
-    refetch,
-    fetchMore,
-  } = useQuery<GetPokemonDataList, GetPokemonDataListVariables>(
-    GET_POKEMON_DATA_LIST,
-    {
-      fetchPolicy: "network-only",
-      nextFetchPolicy: "cache-first",
-      notifyOnNetworkStatusChange: true,
-      context: { clientName: "pokedexapi" },
-      variables: {
-        offset: 0,
-        limit: 100,
-      },
-    }
-  );
+  const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
+    GetPokemonDataList,
+    GetPokemonDataListVariables
+  >(GET_POKEMON_DATA_LIST, {
+    context: { clientName: "pokedexapi" },
+    notifyOnNetworkStatusChange: true,
+  });
 
   ///useLazyQuery for filtering pokemon by pokemon element Type
   const [filterDataQuery, { data: filterData, loading: filterLoading }] =
     useLazyQuery<GetPokemonDataList>(FILTER_POKEMON_BY_ELEMENT, {
-      notifyOnNetworkStatusChange: true,
       context: { clientName: "pokedexapi" },
     });
-  let pokemons: GetPokemonDataList["pokemons"] = [];
+
+  let pokemonsData: GetPokemonDataList["pokemons"] = [];
 
   ///Handle the fetchmore data for list of pokemon
   const handleFetchMore = async () => {
     await fetchMore({
+      updateQuery: (_, { fetchMoreResult: pokemons }): GetPokemonDataList => {
+        return pokemons!;
+      },
       variables: {
-        offset: offset,
-        limit: newLimit(currentIndex),
+        offset: 0,
+        limit: pokemonsData.length + 100,
       },
     });
   };
 
-  if (isFiltered) {
-    if (filterData?.pokemons) {
-      pokemons = filterData.pokemons;
-    }
-  } else {
-    if (lazyQueryData?.pokemons) {
-      console.log(lazyQueryData.pokemons);
-      pokemons = lazyQueryData.pokemons;
-    }
+  if (isFiltered && filterData?.pokemons) {
+    pokemonsData = filterData.pokemons;
+  }
+  if (!isFiltered && pokemons) {
+    pokemonsData = pokemons;
+  }
+  if (!isFiltered && data?.pokemons) {
+    pokemonsData = data.pokemons;
   }
 
   ///usePagination custom hook
@@ -106,7 +119,7 @@ const HomePage = () => {
     selectedPage,
     currentData,
   } = usePagination(10, {
-    data: pokemons,
+    data: pokemonsData,
     isRecent: false,
     filtered: isFiltered,
     handleFetchMore,
@@ -114,7 +127,6 @@ const HomePage = () => {
 
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
-    console.log(lazyQueryData?.pokemons);
     if (isFiltered) {
       (async function () {
         await filterDataQuery({
@@ -123,12 +135,17 @@ const HomePage = () => {
         setCurrentPage(1);
       })();
     } else {
-      refetch({
-        offset: 0,
-        limit: count,
-      });
+      (async function () {
+        console.log("it went here");
+        await fetchAllPokemons({
+          variables: {
+            offset: 0,
+            limit: 100,
+          },
+        });
+      })();
     }
-  }, [currentIndex, filterDataQuery, isFiltered, setCurrentPage, types]);
+  }, [fetchAllPokemons, filterDataQuery, isFiltered, setCurrentPage, types]);
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
@@ -223,9 +240,7 @@ const HomePage = () => {
             color="text.light"
           >
             Showing {shownFrom}-{totalItems} of{" "}
-            {isFiltered
-              ? filterData?.pokemons?.length!
-              : lazyQueryData?.pokemons?.length!}
+            {isFiltered ? filterData?.pokemons?.length! : pokemonsData?.length!}
           </Text>
         </HStack>
 
