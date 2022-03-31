@@ -34,6 +34,7 @@ import { useRouter } from "next/router";
 const Header = () => {
   const { data: session } = useSession({ required: true });
   const router = useRouter();
+  const numberFormat = new Intl.NumberFormat("en-US");
   const setCurrentPage = useStore((state) => state.setCurrentPage);
   ///get the current user points
   const user_points = useStore((state) => state.points);
@@ -119,7 +120,7 @@ const Header = () => {
                       fontWeight="bold"
                       fontStyle="italic"
                     >
-                      {user_points}
+                      {numberFormat.format(user_points)}
                     </Text>
                     <Icon as={SiZcash} w={4} h={4} />
                   </HStack>

@@ -26,6 +26,7 @@ const EarnPoints = () => {
   const udpatePoints = useStore((state) => state.updatePoints);
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
+  const numberFormat = new Intl.NumberFormat("en-US");
   const [loadingCard, setLoadingCards] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
@@ -197,7 +198,7 @@ const EarnPoints = () => {
                 fontWeight="bold"
                 fontStyle="italic"
               >
-                {earnedPoints}
+                {numberFormat.format(earnedPoints)}
               </Text>
               <Icon as={SiZcash} size={25} fill="primary" />
             </HStack>

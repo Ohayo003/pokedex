@@ -28,7 +28,6 @@ import Loading from "src/components/widgets/Loading";
 import useStore from "src/hooks/useStore";
 import { usePagination } from "src/hooks/usePagination";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import Card from "src/components/widgets/Card";
 import { motion } from "framer-motion";
 import { SiZcash } from "react-icons/si";
 import { useCollection } from "../../hooks/useCollection";
@@ -38,6 +37,7 @@ import ConfirmModal from "src/components/widgets/ConfirmModal";
 import _404 from "../404";
 import FallBackImage from "src/components/widgets/FallBackImage";
 import ImageLoader from "src/components/widgets/ImageLoader";
+import Card from "src/components/widgets/Card";
 
 export const MotionBox = motion<BoxProps>(Box);
 
@@ -60,6 +60,7 @@ const PokemonId = () => {
   });
 
   const image = pokemonImage(data?.pokemon?.id!);
+  const numberFormat = new Intl.NumberFormat("en-US");
 
   ///value of each pokemon
   const PPointsValue = 30 * data?.pokemon?.id!;
@@ -95,7 +96,7 @@ const PokemonId = () => {
   }, [data, router.query, setCurrentPage]);
 
   if (loading) {
-    return <Loading />;
+    return <Loading loadingText="Loading data..." />;
   }
   if (!data?.pokemon) {
     return <_404 />;
@@ -158,7 +159,7 @@ const PokemonId = () => {
                   isRecent={false}
                   height="20rem"
                   src={pokemonImage(data?.pokemon?.id!)}
-                  fallbackImage="/assets/background/unknown.png"
+                  fallbackImage="/assets/images/unknown.png"
                   loader={<ImageLoader />}
                 />
               </Box>
@@ -209,7 +210,7 @@ const PokemonId = () => {
                             <FallBackImage
                               isRecent={true}
                               src={item.image}
-                              fallbackImage="/assets/background/unknown.png"
+                              fallbackImage="/assets/images/unknown.png"
                               loader={<ImageLoader />}
                             />
                           </Box>
@@ -247,6 +248,7 @@ const PokemonId = () => {
               </HStack>
 
               {/**Points section */}
+              {/* <Card width="20rem" display="flex" justifyContent="center" p={2}> */}
               <Flex justifyContent="space-between" width="15rem">
                 <HStack>
                   <Text
@@ -265,7 +267,7 @@ const PokemonId = () => {
                       color="primary"
                       fontSize={{ base: "xl", lg: "md" }}
                     >
-                      {PPointsValue}
+                      {numberFormat.format(PPointsValue)}
                     </Text>
                     <Icon as={SiZcash} w={5} h={5} fill="primary" />
                   </HStack>
@@ -292,6 +294,7 @@ const PokemonId = () => {
                   {checkExistingPokemonCollection() ? "Obtained" : "Obtain"}
                 </Button>
               </Flex>
+              {/* </Card> */}
             </VStack>
 
             {/** Pokemon Details Section */}

@@ -28,6 +28,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
   const router = useRouter();
   const addCarousel = useStore((state) => state.addCarousel);
   const points = 30;
+  const numberFormat = new Intl.NumberFormat("en-US");
   ///adds the current Pokemon to Recent Visit
   const handleAddRecent = (id: number, image: string, bg: string) => {
     addCarousel(id, image, bg);
@@ -199,7 +200,7 @@ const PokemonListView = ({ pokemons }: PokemonListViewType) => {
                         fontWeight="bold"
                         fontStyle="italic"
                       >
-                        {points * pokemon.id}
+                        {numberFormat.format(points * pokemon.id)}
                       </Text>
                       <Icon as={SiZcash} />
                     </HStack>
