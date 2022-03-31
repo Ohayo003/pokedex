@@ -47,17 +47,17 @@ const _404 = () => {
       </Text>
 
       <Button
-        bg="blue"
-        color="white"
+        bg="transparent"
+        color="primary"
         borderRadius="full"
+        border="1px solid yellow"
         onClick={() => {
           router.back();
         }}
         _hover={{
-          backgroundColor: "transparent",
-          color: "blue",
-          borderColor: "blue",
-          border: "1px",
+          backgroundColor: "primary",
+          color: "white",
+          border: "1px solid yellow",
         }}
       >
         Go Back
