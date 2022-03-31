@@ -28,6 +28,16 @@ export const GET_POKEMON_DATA_LIST = gql`
   }
 `;
 
+export const GET_POKEMON_COUNT = gql`
+  query GetPokemonCount {
+    pokemonCount: pokemon_v2_pokemon_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
 export const FILTER_POKEMON_BY_ELEMENT = gql`
   query FilterPokemonByElement($type: [String!]) {
     pokemons: pokemon_v2_pokemon(
