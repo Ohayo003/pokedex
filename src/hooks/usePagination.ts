@@ -68,6 +68,12 @@ export const usePagination = (
       } else {
         setCurrentPage(currentIndex + 1);
       }
+    } else {
+      if (currentIndex > numberOfPages.length) {
+        setCurrentIndex(currentIndex, "decrement");
+        setCurrentLastIndex(currentIndex, "decrement");
+        setCurrentPage(1);
+      }
     }
   }, [
     currentIndex,

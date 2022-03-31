@@ -143,6 +143,7 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
             limit: 100,
           },
         });
+        setCurrentPage(1);
       })();
     }
   }, [fetchAllPokemons, filterDataQuery, isFiltered, setCurrentPage, types]);
