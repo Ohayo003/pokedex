@@ -16,18 +16,15 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import Loading from "src/components/widgets/Loading";
 import { usePagination } from "src/hooks/usePagination";
-import { useRouter } from "next/router";
 import {
   GetPokemonDataList,
   GetPokemonDataListVariables,
 } from "src/types/GetPokemonDataList";
-import useSound from "use-sound";
 import FilterType from "src/components/widgets/Pokemon/FilterTypes";
 import Pagination from "src/components/widgets/Pokemon/Pagination";
 import { newLimit } from "src/utils/limit";
 
 const HomePage = () => {
-
   ///sets the current index and the last index for limiting the page number to 10
   const setCurrentIndex = useStore((state) => state.setCurrentIndex);
   const setCurrentLastIndex = useStore((state) => state.setCurrentLastIndex);
@@ -50,8 +47,6 @@ const HomePage = () => {
   const [listView, setlistView] = useState<Boolean | undefined>();
   const toggleView = useStore((state) => state.toggleView);
 
-  
-
   ///useQuery to display list of pokemon
   const [fetchAllPokemons, { loading, data, error, fetchMore }] = useLazyQuery<
     GetPokemonDataList,
@@ -61,34 +56,40 @@ const HomePage = () => {
     context: { clientName: "pokedexapi" },
   });
 
- 
-
   ///useLazyQuery for filtering pokemon by pokemon element Type
-  const [
-    filterDataQuery,
-    { data: filterData, error: filterError, loading: filterLoading },
-  ] = useLazyQuery<GetPokemonDataList>(FILTER_POKEMON_BY_ELEMENT, {
-    notifyOnNetworkStatusChange: true,
-    context: { clientName: "pokedexapi" },
-  });
+  const [filterDataQuery, { data: filterData, loading: filterLoading }] =
+    useLazyQuery<GetPokemonDataList>(FILTER_POKEMON_BY_ELEMENT, {
+      notifyOnNetworkStatusChange: true,
+      context: { clientName: "pokedexapi" },
+    });
+  let pokemons: GetPokemonDataList["pokemons"] = [];
 
   ///Handle the fetchmore data for list of pokemon
   const handleFetchMore = async () => {
     await fetchMore({
       updateQuery: (_, { fetchMoreResult: pokemons }): GetPokemonDataList => {
         console.log(pokemons);
-        return { ...pokemons! };
+        return pokemons!;
       },
       variables: {
-        offset: data?.pokemons.length!,
+        offset: pokemons.length,
         limit: 100,
       },
     });
   };
 
+  if (isFiltered) {
+    if (filterData?.pokemons) {
+      pokemons = filterData.pokemons;
+    }
+  } else {
+    if (data?.pokemons) {
+      pokemons = data.pokemons;
+    }
+  }
+
   ///usePagination custom hook
   const {
-    currentPage,
     shownFrom,
     totalItems,
     numberOfPages,
@@ -97,35 +98,16 @@ const HomePage = () => {
     selectedPage,
     currentData,
   } = usePagination(10, {
-    data: isFiltered ? filterData?.pokemons! : data?.pokemons!,
+    data: pokemons,
     isRecent: false,
     filtered: isFiltered,
     handleFetchMore,
   });
 
-  ///check first the currentIndex is > numberOfpages.length then if >
-  ///sets the currentIndex to - by subtracting the currentindex to both
-  ///then setst the currentPage to 1
-  useEffect(() => {
-    if (isFiltered) {
-      if (currentIndex > numberOfPages.length) {
-        setCurrentIndex(currentIndex, "decreament");
-        setCurrentLastIndex(currentIndex, "decreament");
-        setCurrentPage(1);
-      }
-    }
-  }, [
-    currentIndex,
-    isFiltered,
-    numberOfPages.length,
-    setCurrentIndex,
-    setCurrentLastIndex,
-    setCurrentPage,
-  ]);
-
   ///fetch either FilteredData or FetchAllPokemons based on isFiltered value
   useEffect(() => {
     const offset = currentIndex * 10;
+    console.log(data?.pokemons);
     if (isFiltered) {
       (async function () {
         await filterDataQuery({
@@ -137,10 +119,11 @@ const HomePage = () => {
       (async function () {
         await fetchAllPokemons({
           variables: {
-            limit: 100 * newLimit(currentIndex),
+            limit: newLimit(currentIndex),
             offset: offset,
           },
         });
+        // setCurrentPage(1);
       })();
     }
   }, [
