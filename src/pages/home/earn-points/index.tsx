@@ -79,7 +79,7 @@ const EarnPoints = () => {
 
   useEffect(() => {
     if (isWin) {
-      udpatePoints(earnedPoints, "increament");
+      udpatePoints(earnedPoints, "increment");
       toast({
         title: "Congratulations!",
         position: "top",
@@ -98,7 +98,7 @@ const EarnPoints = () => {
   useEffect(() => {
     if (moves <= 0) {
       if (earnedPoints > 0) {
-        udpatePoints(earnedPoints, "increament");
+        udpatePoints(earnedPoints, "increment");
       }
       toast({
         title: "Game Over",
