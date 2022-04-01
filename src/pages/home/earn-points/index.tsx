@@ -103,6 +103,7 @@ const EarnPoints = () => {
       }
       toast({
         title: "Game Over",
+        position: "top",
         description: `You already consumed your moves. You only have earned ${earnedPoints} Points`,
         status: "error",
         duration: 3000,
