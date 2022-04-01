@@ -15,6 +15,7 @@ import { RESET_PASSWORD } from "src/graphql/mutations/auth";
 import { signIn, useSession } from "next-auth/react";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 import Loading from "src/components/widgets/Loading";
+import useStore from "src/hooks/useStore";
 
 let schema = yup.object().shape({
   newPassword: yup
@@ -47,13 +48,13 @@ const ResetPassword = () => {
 
   ///reset password onSubmit
   const onSubmit: SubmitHandler<IResetPassword> = async (data) => {
-    const reset = await resetPassword({
+    const resetResponse = await resetPassword({
       variables: {
         passwordResetCode: passwordResetCode,
         newPassword: data.newPassword,
       },
     });
-    if (reset.data) {
+    if (resetResponse.data) {
       const response = await signIn<"credentials">("credentials", {
         emailAddress: emailAddress,
         password: data.newPassword,
@@ -87,6 +88,7 @@ const ResetPassword = () => {
   if (status === "loading") {
     return <Loading />;
   }
+  ///if authenticated, redirect the user to the callbackUrl which is the home
   if (status === "authenticated") {
     router.push(callbackUrl);
     return null;
@@ -141,6 +143,7 @@ const ResetPassword = () => {
               lineHeight="md"
               bg={isValid ? "primary" : "gray400"}
               type="submit"
+              isLoading={loading}
               isDisabled={!isValid}
               h="3rem"
               color={isValid ? "#1F2937" : "text.gray300"}

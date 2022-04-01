@@ -14,6 +14,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
+import useStore from "src/hooks/useStore";
 
 let schema = yup.object().shape({
   emailAddress: yup.string().email("The email is invalid").required(),
@@ -27,6 +28,8 @@ const SignUp = () => {
   const callbackUrl = useCallbackUrl();
   const toast = useToast();
   const { status } = useSession();
+  const loading = useStore((state) => state.loading);
+  const setLoading = useStore((state) => state.setLoading);
 
   const {
     register,
@@ -35,7 +38,7 @@ const SignUp = () => {
   } = useForm<ISignup>({ mode: "onChange", resolver: yupResolver(schema) });
 
   const onSubmit: SubmitHandler<ISignup> = async (data) => {
-    console.log(data);
+    setLoading(true);
     const response = await signIn<"credentials">("credentials", {
       ...data,
       redirect: false,
@@ -60,6 +63,7 @@ const SignUp = () => {
         isClosable: true,
       });
     }
+    setLoading(false);
   };
 
   if (status === "loading") {

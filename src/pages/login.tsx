@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 import Loading from "src/components/widgets/Loading";
 import { useCallbackUrl } from "src/hooks/useCallbackUrl";
 import { useState } from "react";
+import useStore from "src/hooks/useStore";
 
 ///schema for validating text field using yup
 let schema = yup.object().shape({
@@ -38,7 +39,8 @@ const Login = () => {
   const router = useRouter();
   const { status } = useSession();
   const callbackUrl = useCallbackUrl();
-  const [loading, setLoading] = useState(false);
+  const loading = useStore((state) => state.loading);
+  const setLoading = useStore((state) => state.setLoading);
   const [error, setError] = useState(false);
   const toast = useToast();
   ///Using useForm from react-hook-form

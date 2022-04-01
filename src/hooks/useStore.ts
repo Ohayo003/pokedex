@@ -14,6 +14,8 @@ interface IStore {
     image: string;
     bg: string;
   }[];
+  loading: boolean;
+  setLoading: (value: boolean) => void;
   addCarousel: (id: number, image: string, bg: string) => void;
   removeCarouseItem: () => void;
   clearStore: () => void;
@@ -60,6 +62,10 @@ const useStore = create<IStore & IUserAccount & IPagination>(
       isFiltered: false,
       setIsFiltered: (value: boolean) => {
         return set({ isFiltered: value });
+      },
+      loading: false,
+      setLoading: (value) => {
+        return set({ loading: value });
       },
       currentPage: 1,
       setCurrentPage: (value) => {
