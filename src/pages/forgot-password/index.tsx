@@ -23,6 +23,7 @@ import {
   GENERATE_PASSWORD_RESET_LINK,
   TRIGGER_RESET_PASSWORD,
 } from "src/graphql/mutations/auth";
+import useStore from "src/hooks/useStore";
 
 let schema = yup.object().shape({
   email: yup.string().email("The email is invalid").required(),
@@ -31,7 +32,8 @@ let schema = yup.object().shape({
 const ForgotPassword = () => {
   const router = useRouter();
   const toast = useToast();
-  const [triggerResetPassword, { loading, data, error }] = useMutation<
+
+  const [triggerResetPassword, { data, error }] = useMutation<
     triggerResetPassword,
     triggerResetPasswordVariables
   >(TRIGGER_RESET_PASSWORD);
