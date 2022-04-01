@@ -30,7 +30,7 @@ const theme = extendTheme({
         body: {
           minH: "100vh",
           bgColor: "background.container",
-          "scroll-behavior": "smooth",
+          scrollBehavior: "smooth",
         },
       };
     },
