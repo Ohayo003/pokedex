@@ -31,13 +31,11 @@ export default NextAuth({
             },
           });
           if (data?.signUp.token) {
-            // console.log(data);
             return data.signUp.token;
           }
           if (errors) {
             return errors;
           }
-          // console.log(errors);
         }
         const { data } = await client.mutate<signIn, signInVariables>({
           mutation: SIGN_IN,

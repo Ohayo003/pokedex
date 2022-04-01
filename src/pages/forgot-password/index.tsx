@@ -58,7 +58,6 @@ const ForgotPassword = () => {
         emailAddress: data.email,
       },
     });
-    console.log(trigger.data?.triggerPasswordReset);
     if (trigger.data?.triggerPasswordReset) {
       const callback = await generatePswResetLink({
         variables: {

@@ -136,7 +136,6 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
       })();
     } else {
       (async function () {
-        console.log("it went here");
         await fetchAllPokemons({
           variables: {
             offset: 0,

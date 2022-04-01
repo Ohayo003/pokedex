@@ -35,14 +35,10 @@ const FilterType = () => {
   ///handles adding the selected filter types in the array of types
   ///That will be used in the fetching of pokemon by Types
   const handleAddFilter = (type: string) => {
-    const idx = types.indexOf(type);
     const findType = types.find((item) => item === type);
-    console.log(idx);
     if (!findType) {
       setTypes(type);
     }
-
-    console.log(types);
   };
 
   return (

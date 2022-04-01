@@ -79,7 +79,6 @@ const PokemonId = () => {
         bg: colorTypes(data?.pokemon?.element[0].type?.name!),
       },
     });
-  console.log(checkExistingPokemonCollection());
 
   ///usePagination
   const { currentData, nextPage, numberOfPages, previousPage } = usePagination(

@@ -72,8 +72,6 @@ const Statistics = ({ pokemon }: StatisticsType) => {
     })();
   }, [pokemon?.element]);
 
-  console.log(resistance);
-
   return (
     <Box>
       <Box

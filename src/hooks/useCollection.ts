@@ -31,7 +31,6 @@ export const useCollection = ({ p_pointsValue, pokemon }: ICollection) => {
     const idxOfExisting = collection.findIndex((obj) => {
       return obj.id === pokemon?.id!;
     });
-    console.log(idxOfExisting);
     if (idxOfExisting === -1) {
       isExisting = false;
     }

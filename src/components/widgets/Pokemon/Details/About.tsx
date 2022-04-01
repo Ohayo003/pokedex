@@ -15,8 +15,6 @@ const About = ({ pokemon }: AboutType) => {
     gender_rate: pokemon?.pokemon_v2_pokemonspecy?.gender_rate!,
   });
 
-  console.log(pokemon?.pokemon_v2_pokemonspecy?.eggroups);
-
   return (
     <Box>
       <Text
