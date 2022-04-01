@@ -55,6 +55,9 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
   const isFiltered = useStore((state) => state.isFiltered);
   const setIsFiltered = useStore((state) => state.setIsFiltered);
 
+  const filteredTicked = useStore((state) => state.loading);
+  const setFilteredTicked = useStore((state) => state.setLoading);
+
   ///set and get the current page
   const currentIndex = useStore((state) => state.currentIndex);
   const setCurrentPage = useStore((state) => state.setCurrentPage);
@@ -152,8 +155,15 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
   useEffect(() => {
     if (types?.length! > 0) {
       setIsFiltered(true);
+      setFilteredTicked(true);
     } else setIsFiltered(false);
-  }, [setIsFiltered, types?.length!]);
+  }, [setIsFiltered, types?.length!, setFilteredTicked]);
+
+  useEffect(() => {
+    if (filteredTicked) {
+      setTimeout(() => setFilteredTicked(false), 1000);
+    }
+  }, [filteredTicked]);
 
   ///stores the value of list from the useStore to setListView state on load
   useEffect(() => {
@@ -219,12 +229,12 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
             ///loading variable is for fetchingAllPokemons
             ///loadingData is for clicking next and Prev Page
             ///filterLoading is for the filter query
-            loading || loadingData || filterLoading ? (
+            loading || filteredTicked || loadingData || filterLoading ? (
               <Loading loadingText="Loading data..." />
             ) : (
               <PokemonListView pokemons={currentData()} />
             )
-          ) : loading || loadingData || filterLoading ? (
+          ) : loading || filteredTicked || loadingData || filterLoading ? (
             <Loading loadingText="Loading data..." />
           ) : (
             <PokemonGridView pokemons={currentData()} />
