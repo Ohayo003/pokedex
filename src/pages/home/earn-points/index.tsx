@@ -127,10 +127,19 @@ const EarnPoints = () => {
     return flipped;
   };
 
+  ///triggers new game
+  const handleNewGame = () => {
+    shuffleCards();
+    setEarnedPoints(0);
+    setMatchedCount(0);
+    setIsStarted(true);
+    setLoadingCards(true);
+  };
+
   ///sets back the loading the false after 1 sec
   useEffect(() => {
     if (loadingCard) {
-      setTimeout(() => setLoadingCards(false), 1000);
+      setTimeout(() => setLoadingCards(false), 1500);
     }
   }, [loadingCard]);
 
@@ -163,13 +172,7 @@ const EarnPoints = () => {
           height="2rem"
           fontWeight="bold"
           color="primary"
-          onClick={() => {
-            shuffleCards();
-            setEarnedPoints(0);
-            setMatchedCount(0);
-            setIsStarted(true);
-            setLoadingCards(true);
-          }}
+          onClick={handleNewGame}
         >
           New Game
         </Button>
