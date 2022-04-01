@@ -30,6 +30,7 @@ import { GET_ME } from "src/graphql/queries/profile/me";
 import { getMe } from "src/types/getMe";
 import useStore from "src/hooks/useStore";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const Header = () => {
   const { data: session } = useSession({ required: true });
@@ -44,6 +45,10 @@ const Header = () => {
 
   return (
     <Box h="7.25rem" background="background.gray500">
+      <Head>
+        <title>Pokedex App</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Flex
         justifyContent="space-between"
         ml={{ lg: 16, base: 10 }}
