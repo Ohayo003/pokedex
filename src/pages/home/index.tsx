@@ -60,6 +60,10 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
 
   ///elements types stored here are used for filtering
   const types = useStore((state) => state.filterTypes);
+  const [elementFilters, setElementFilters] = useState<string[] | undefined>(
+    []
+  );
+
   const offset = currentIndex * 10;
   const [loadingData, setLoadingData] = useState(false);
 
@@ -148,15 +152,16 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
 
   ///set toggle the isFiltered Value based on the filterTypes Length
   useEffect(() => {
-    if (types?.length! > 0) {
+    if (elementFilters?.length ?? 0 > 0) {
       setIsFiltered(true);
     } else setIsFiltered(false);
-  }, [setIsFiltered, types?.length!]);
+  }, [setIsFiltered, elementFilters?.length]);
 
   ///stores the value of list from the useStore to setListView state on load
   useEffect(() => {
     setlistView(list);
-  }, [list]);
+    setElementFilters(types);
+  }, [list, setElementFilters, types]);
 
   ///sets back the loadingData to false after 1 sec
   useEffect(() => {
