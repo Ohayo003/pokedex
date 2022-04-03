@@ -52,8 +52,7 @@ const HomePage = ({ pokemons }: GetPokemonDataList) => {
   const { count } = useGetPokemonTotal();
 
   ///toggles when the app fetch using the types of pokemons
-  const isFiltered = useStore((state) => state.isFiltered);
-  const setIsFiltered = useStore((state) => state.setIsFiltered);
+  const [isFiltered, setIsFiltered] = useState<boolean | undefined>();
 
   ///set and get the current page
   const currentIndex = useStore((state) => state.currentIndex);

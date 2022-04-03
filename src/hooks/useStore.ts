@@ -4,11 +4,9 @@ import { persist, devtools } from "zustand/middleware";
 interface IStore {
   listView?: boolean;
   toggleView: (value?: boolean) => void;
-  isFiltered: boolean;
   filterTypes: string[];
   removeFilterTpyes: (value: string) => void;
   setFilterTypes: (value: string) => void;
-  setIsFiltered: (value: boolean) => void;
   carousel: {
     id: number;
     image: string;
@@ -58,10 +56,6 @@ const useStore = create<IStore & IUserAccount & IPagination>(
         return set((state) => ({
           listView: typeof value === "boolean" ? value : !state.listView,
         }));
-      },
-      isFiltered: false,
-      setIsFiltered: (value: boolean) => {
-        return set({ isFiltered: value });
       },
       loading: false,
       setLoading: (value) => {
